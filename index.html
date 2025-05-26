@@ -115,13 +115,25 @@
 
     .image-area {
       width: 66.66%; /* Two-thirds for image area */
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start; /* Align content to the top */
+      padding: 20px;
     }
 
     .image-area img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      max-width: 100%;
+      max-height: 70%; /* Limit image height to leave space for text */
+      object-fit: contain; /* Fit image without cropping */
+    }
+
+    .image-text {
+      margin-top: 20px;
+      padding: 10px;
+      text-align: center;
+      color: #e0e0e0;
+      font-size: 1rem;
     }
 
     .events {
@@ -200,6 +212,14 @@
         width: 100%;
       }
 
+      .image-area {
+        padding: 10px;
+      }
+
+      .image-area img {
+        max-height: 50%; /* Smaller image height on mobile */
+      }
+
       .events {
         height: auto;
         padding: 10px;
@@ -240,6 +260,9 @@
     <div class="content">
       <div class="image-area">
         <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party">
+        <div class="image-text">
+          <p>Join us for an unforgettable night at the Skinny Dipping Pool Party! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.</p>
+        </div>
       </div>
       <div class="events">
         <h2>Upcoming Parties</h2>
