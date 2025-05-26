@@ -22,6 +22,7 @@
 
     .container {
       display: flex;
+      flex-direction: column;
       height: 100vh;
       position: relative;
       z-index: 1;
@@ -104,15 +105,23 @@
       color: #ff6f61;
     }
 
-    /* Layout */
+    /* Content Layout */
     .content {
       display: flex;
-      width: 100%;
-      height: 100vh;
+      flex: 1;
+      margin-top: 80px; /* Space below header */
+      height: calc(100vh - 80px);
     }
 
-    .spacer {
-      width: 66.66%; /* Two-thirds for content area */
+    .image-area {
+      width: 66.66%; /* Two-thirds for image area */
+      overflow: hidden;
+    }
+
+    .image-area img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .events {
@@ -183,9 +192,11 @@
     @media (max-width: 768px) {
       .content {
         flex-direction: column;
+        margin-top: 60px; /* Adjusted for mobile header */
+        height: calc(100vh - 60px);
       }
 
-      .spacer, .events {
+      .image-area, .events {
         width: 100%;
       }
 
@@ -227,7 +238,9 @@
 
   <div class="container">
     <div class="content">
-      <div class="spacer"></div>
+      <div class="image-area">
+        <img src="pool_party.jpg" alt="Skinny Dipping Pool Party">
+      </div>
       <div class="events">
         <h2>Upcoming Parties</h2>
         <div class="event">
