@@ -16,14 +16,14 @@
       font-family: 'Poppins', sans-serif;
       background: #000;
       color: #fff;
-      overflow: hidden;
       position: relative;
+      /* Removed overflow: hidden to allow scrolling if needed */
     }
 
     .container {
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      min-height: 100vh; /* Changed to min-height to allow content to expand */
       position: relative;
       z-index: 1;
     }
@@ -46,6 +46,7 @@
       display: flex;
       align-items: center;
       z-index: 1000;
+      height: 60px; /* Explicit height for clarity */
     }
 
     .hamburger {
@@ -109,8 +110,8 @@
     .content {
       display: flex;
       flex: 1;
-      margin-top: 80px; /* Space below header */
-      height: calc(100vh - 80px);
+      margin-top: 120px; /* Increased to clear the header fully */
+      min-height: calc(100vh - 120px); /* Adjusted to account for margin-top */
     }
 
     .image-area {
@@ -118,13 +119,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start; /* Align content to the top */
+      justify-content: flex-start;
       padding: 20px;
+      padding-top: 40px; /* Additional buffer to ensure flyer is below header */
     }
 
     .image-area img {
-      max-width: 100%;
-      max-height: 70%; /* Limit image height to leave space for text */
+      max-width: 80%; /* Limit width to prevent overflow */
+      max-height: 50%; /* Reduced height to ensure flyer is fully visible */
       object-fit: contain; /* Fit image without cropping */
     }
 
@@ -204,8 +206,8 @@
     @media (max-width: 768px) {
       .content {
         flex-direction: column;
-        margin-top: 60px; /* Adjusted for mobile header */
-        height: calc(100vh - 60px);
+        margin-top: 100px; /* Adjusted for mobile header */
+        min-height: calc(100vh - 100px);
       }
 
       .image-area, .events {
@@ -214,10 +216,12 @@
 
       .image-area {
         padding: 10px;
+        padding-top: 20px; /* Adjusted buffer for mobile */
       }
 
       .image-area img {
-        max-height: 50%; /* Smaller image height on mobile */
+        max-width: 90%; /* Slightly larger on mobile */
+        max-height: 30%; /* Further reduced height on mobile to ensure visibility */
       }
 
       .events {
