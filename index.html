@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>One Leg Up - Swingers Club</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #000;
+      color: #fff;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Canvas for Smoke */
+    #smokeCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    /* Header with Hamburger and Title */
+    .header {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .hamburger {
+      cursor: pointer;
+      margin-right: 15px;
+    }
+
+    .hamburger div {
+      width: 30px;
+      height: 3px;
+      background: #fff;
+      margin: 5px 0;
+      transition: all 0.3s ease;
+    }
+
+    .site-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #ffeb3b;
+      text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
+      animation: colorCycle 5s ease infinite;
+    }
+
+    .menu {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: #1a1a1a;
+      transition: left 0.3s ease;
+      z-index: 999;
+      padding-top: 60px;
+    }
+
+    .menu.active {
+      left: 0;
+    }
+
+    .menu ul {
+      list-style: none;
+      padding: 0 20px;
+    }
+
+    .menu ul li {
+      margin: 20px 0;
+    }
+
+    .menu ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+
+    .menu ul li a:hover {
+      color: #ff6f61;
+    }
+
+    /* Layout */
+    .content {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+    }
+
+    .spacer {
+      width: 66.66%; /* Two-thirds for content area */
+    }
+
+    .events {
+      width: 33.33%;
+      padding: 20px;
+      overflow-y: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .events h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      animation: colorPulse 3s ease infinite;
+    }
+
+    .event {
+      margin-bottom: 20px;
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .event:hover {
+      transform: scale(1.05);
+    }
+
+    .event h3 {
+      font-size: 1.4rem;
+      color: #ffeb3b;
+      animation: colorCycle 5s ease infinite;
+    }
+
+    .event p {
+      font-size: 0.9rem;
+      color: #e0e0e0;
+    }
+
+    .event a {
+      color: #00e5ff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .event a:hover {
+      color: #ff4081;
+      text-decoration: underline;
+    }
+
+    @keyframes colorCycle {
+      0% { color: #ffeb3b; }
+      33% { color: #40c4ff; }
+      66% { color: #ff4081; }
+      100% { color: #ffeb3b; }
+    }
+
+    @keyframes colorPulse {
+      0% { text-shadow: 0 0 10px rgba(255, 107, 97, 0.8); }
+      50% { text-shadow: 0 0 15px rgba(64, 196, 255, 0.8); }
+      100% { text-shadow: 0 0 10px rgba(255, 107, 97, 0.8); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .content {
+        flex-direction: column;
+      }
+
+      .spacer, .events {
+        width: 100%;
+      }
+
+      .events {
+        height: auto;
+        padding: 10px;
+      }
+
+      .header {
+        left: 10px;
+      }
+
+      .site-title {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="smokeCanvas"></canvas>
+
+  <div class="header">
+    <div class="hamburger" onclick="toggleMenu()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <h1 class="site-title">One Leg Up</h1>
+  </div>
+
+  <div class="menu" id="menu">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="events.html">Upcoming Events</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <div class="content">
+      <div class="spacer"></div>
+      <div class="events">
+        <h2>Upcoming Parties</h2>
+        <div class="event">
+          <h3>Summer Swing Bash</h3>
+          <p>Date: June 15, 2025<br>Location: Private Venue, NYC</p>
+          <a href="https://www.swinglifestyle.com" target="_blank">View on SLS</a>
+        </div>
+        <div class="event">
+          <h3>Midsummer Night's Dream</h3>
+          <p>Date: July 20, 2025<br>Location: Private Venue, NYC</p>
+          <a href="https://www.swinglifestyle.com" target="_blank">View on SLS</a>
+        </div>
+        <div class="event">
+          <h3>Autumn Affair</h3>
+          <p>Date: September 10, 2025<br>Location: Private Venue, NYC</p>
+          <a href="https://www.swinglifestyle.com" target="_blank">View on SLS</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script>
+    // Hamburger Menu Toggle
+    function toggleMenu() {
+      document.getElementById('menu').classList.toggle('active');
+    }
+
+    // Three.js Smoke Effect (Adapted from https://www.youtube.com/watch?v=otavCmIuEhY)
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+    camera.position.z = 1;
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('smokeCanvas'), alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // Generate Perlin Noise Texture
+    function generateNoiseTexture(width, height) {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      const imageData = ctx.createImageData(width, height);
+      for (let i = 0; i < imageData.data.length; i += 4) {
+        const value = Math.random() * 255;
+        imageData.data[i] = value;
+        imageData.data[i + 1] = value;
+        imageData.data[i + 2] = value;
+        imageData.data[i + 3] = 255;
+      }
+      ctx.putImageData(imageData, 0, 0);
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    const noiseTexture = generateNoiseTexture(256, 256);
+    noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
+
+    // Plane Geometry
+    const geometry = new THREE.PlaneGeometry(2, 2);
+
+    // Custom Shader
+    const vertexShader = `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+
+    const fragmentShader = `
+      uniform sampler2D noiseTexture;
+      uniform float time;
+      varying vec2 vUv;
+      void main() {
+        // Scroll noise left and upward
+        vec2 uv = vUv + vec2(-time * 0.1, time * 0.05);
+        float noise = texture2D(noiseTexture, uv * 0.5).r;
+        // Additional noise layer for wispiness
+        float noise2 = texture2D(noiseTexture, uv * 0.2 + vec2(time * 0.05, -time * 0.03)).r;
+        float smoke = noise * noise2;
+        // Fade opacity on left side
+        float alpha = smoothstep(0.0, 0.5, vUv.x) * smoke * 0.7;
+        // Rave-like colored lights
+        vec3 color = vec3(
+          abs(sin(time * 0.7 + vUv.x)),
+          abs(sin(time * 0.8 + vUv.y)),
+          abs(sin(time * 0.9 + vUv.x + vUv.y))
+        );
+        gl_FragColor = vec4(color, alpha);
+      }
+    `;
+
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms: {
+        noiseTexture: { value: noiseTexture },
+        time: { value: 0.0 }
+      },
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+
+    const plane = new THREE.Mesh(geometry, material);
+    scene.add(plane);
+
+    // Animation
+    function animate(time) {
+      requestAnimationFrame(animate);
+      material.uniforms.time.value = time * 0.001;
+      renderer.render(scene, camera);
+    }
+    animate(0);
+
+    // Resize Handler
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.left = -window.innerWidth / window.innerHeight;
+      camera.right = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    });
+  </script>
+</body>
+</html>
