@@ -17,13 +17,12 @@
       background: #000;
       color: #fff;
       position: relative;
-      /* Removed overflow: hidden to allow scrolling if needed */
     }
 
     .container {
       display: flex;
       flex-direction: column;
-      min-height: 100vh; /* Changed to min-height to allow content to expand */
+      min-height: 100vh;
       position: relative;
       z-index: 1;
     }
@@ -46,7 +45,7 @@
       display: flex;
       align-items: center;
       z-index: 1000;
-      height: 60px; /* Explicit height for clarity */
+      height: 60px;
     }
 
     .hamburger {
@@ -110,24 +109,25 @@
     .content {
       display: flex;
       flex: 1;
-      margin-top: 120px; /* Increased to clear the header fully */
-      min-height: calc(100vh - 120px); /* Adjusted to account for margin-top */
+      margin-top: 150px;
+      min-height: calc(100vh - 150px);
     }
 
     .image-area {
-      width: 66.66%; /* Two-thirds for image area */
+      width: 66.66%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       padding: 20px;
-      padding-top: 40px; /* Additional buffer to ensure flyer is below header */
+      padding-top: 20px;
     }
 
     .image-area img {
-      max-width: 80%; /* Limit width to prevent overflow */
-      max-height: 50%; /* Reduced height to ensure flyer is fully visible */
-      object-fit: contain; /* Fit image without cropping */
+      max-width: 80%;
+      max-height: 40%;
+      object-fit: contain;
+      margin-top: 20px;
     }
 
     .image-text {
@@ -172,6 +172,17 @@
       animation: colorCycle 5s ease infinite;
     }
 
+    .event h3 a {
+      color: #ffeb3b;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .event h3 a:hover {
+      color: #ff4081;
+      text-decoration: underline;
+    }
+
     .event p {
       font-size: 0.9rem;
       color: #e0e0e0;
@@ -206,8 +217,8 @@
     @media (max-width: 768px) {
       .content {
         flex-direction: column;
-        margin-top: 100px; /* Adjusted for mobile header */
-        min-height: calc(100vh - 100px);
+        margin-top: 120px;
+        min-height: calc(100vh - 120px);
       }
 
       .image-area, .events {
@@ -216,12 +227,13 @@
 
       .image-area {
         padding: 10px;
-        padding-top: 20px; /* Adjusted buffer for mobile */
+        padding-top: 10px;
       }
 
       .image-area img {
-        max-width: 90%; /* Slightly larger on mobile */
-        max-height: 30%; /* Further reduced height on mobile to ensure visibility */
+        max-width: 90%;
+        max-height: 25%;
+        margin-top: 10px;
       }
 
       .events {
@@ -265,14 +277,13 @@
       <div class="image-area">
         <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party">
         <div class="image-text">
-          <p>Join us for an unforgettable night at the Skinny Dipping Pool Party! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.<br><br>
-          Be there by 6pm if you want tri tip sandwiches! 7pm Games Begin<br>Condoms and Lube Provided!<br>Mixers Provided, and we will have our bar tender on hand for your convenience!</p>
+          <p>Join us for an unforgettable night at the Skinny Dipping Pool Party! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.</p>
         </div>
       </div>
       <div class="events">
         <h2>Upcoming Parties</h2>
         <div class="event">
-          <h3>Skinny Dipping Pool Party</h3>
+          <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
           <p>Date: May 31, 2025<br>Location: Fresno, CA</p>
           <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
         </div>
@@ -297,14 +308,13 @@
       document.getElementById('menu').classList.toggle('active');
     }
 
-    // Three.js Smoke Effect (Adapted from https://www.youtube.com/watch?v=otavCmIuEhY)
+    // Three.js Smoke Effect
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
     camera.position.z = 1;
     const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('smokeCanvas'), alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Generate Perlin Noise Texture
     function generateNoiseTexture(width, height) {
       const canvas = document.createElement('canvas');
       canvas.width = width;
@@ -325,10 +335,8 @@
     const noiseTexture = generateNoiseTexture(256, 256);
     noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
 
-    // Plane Geometry
     const geometry = new THREE.PlaneGeometry(2, 2);
 
-    // Custom Shader
     const vertexShader = `
       varying vec2 vUv;
       void main() {
@@ -342,15 +350,12 @@
       uniform float time;
       varying vec2 vUv;
       void main() {
-        // Scroll noise left and upward
-        vec2 uv = vUv + vec2(-time * 0.1, time * 0.05);
+        vec2 uv = vUv + vec2(-time * 0.1, time * 0.05); // Scroll left and upward
         float noise = texture2D(noiseTexture, uv * 0.5).r;
-        // Additional noise layer for wispiness
         float noise2 = texture2D(noiseTexture, uv * 0.2 + vec2(time * 0.05, -time * 0.03)).r;
         float smoke = noise * noise2;
-        // Fade opacity on left side
-        float alpha = smoothstep(0.0, 0.5, vUv.x) * smoke * 0.7;
-        // Rave-like colored lights
+        // Right-justified: increase opacity toward the right (vUv.x near 1), fade left
+        float alpha = smoothstep(0.5, 1.0, vUv.x) * smoke * 0.7;
         vec3 color = vec3(
           abs(sin(time * 0.7 + vUv.x)),
           abs(sin(time * 0.8 + vUv.y)),
@@ -374,7 +379,6 @@
     const plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
 
-    // Animation
     function animate(time) {
       requestAnimationFrame(animate);
       material.uniforms.time.value = time * 0.001;
@@ -382,7 +386,6 @@
     }
     animate(0);
 
-    // Resize Handler
     window.addEventListener('resize', () => {
       renderer.setSize(window.innerWidth, window.innerHeight);
       camera.left = -window.innerWidth / window.innerHeight;
