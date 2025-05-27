@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - One Leg Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #000;
+      color: #fff;
+      position: relative;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Canvas for Smoke */
+    #smokeCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    /* Header with Hamburger and Title */
+    .header {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      z-index: 1000;
+      height: 60px;
+    }
+
+    .hamburger {
+      cursor: pointer;
+      margin-right: 15px;
+    }
+
+    .hamburger div {
+      width: 30px;
+      height: 3px;
+      background: #fff;
+      margin: 5px 0;
+      transition: all 0.3s ease;
+    }
+
+    .site-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #ffeb3b;
+      text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
+      animation: colorCycle 5s ease infinite;
+    }
+
+    .menu {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: #1a1a1a;
+      transition: left 0.3s ease;
+      z-index: 999;
+      padding-top: 60px;
+    }
+
+    .menu.active {
+      left: 0;
+    }
+
+    .menu ul {
+      list-style: none;
+      padding: 0 20px;
+    }
+
+    .menu ul li {
+      margin: 20px 0;
+    }
+
+    .menu ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+
+    .menu ul li a:hover {
+      color: #ff6f61;
+    }
+
+    /* About Content */
+    .about-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      margin-top: 150px;
+      padding: 20px;
+      text-align: center;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .about-content h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #ffeb3b;
+      animation: colorCycle 5s ease infinite;
+    }
+
+    .about-content p {
+      font-size: 1.1rem;
+      color: #e0e0e0;
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+
+    .highlight {
+      color: #00e5ff;
+      font-weight: 600;
+    }
+
+    @keyframes colorCycle {
+      0% { color: #ffeb3b; }
+      33% { color: #40c4ff; }
+      66% { color: #ff4081; }
+      100% { color: #ffeb3b; }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .about-content {
+        margin-top: 120px;
+        padding: 10px;
+      }
+
+      .about-content h2 {
+        font-size: 2rem;
+      }
+
+      .about-content p {
+        font-size: 1rem;
+      }
+
+      .header {
+        left: 10px;
+      }
+
+      .site-title {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="smokeCanvas"></canvas>
+
+  <div class="header">
+    <div class="hamburger" onclick="toggleMenu()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <h1 class="site-title">One Leg Up</h1>
+  </div>
+
+  <div class="menu" id="menu">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="events.html">Upcoming Events</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <div class="about-content">
+      <h2>About One Leg Up</h2>
+      <p>Welcome to <span class="highlight">One Leg Up</span>, where the party never stops and the vibe is always... well, let’s just say “open-minded”! We kicked things off back in <span class="highlight">2012</span>, throwing the wildest swingers’ parties this side of the country. From steamy <span class="highlight">Vegas hotel trips</span> where what happens in Vegas definitely doesn’t stay in Vegas, to cozy <span class="highlight">house parties</span> that turn neighbors into “close friends,” and full-on <span class="highlight">hotel takeovers</span> that make the staff blush—we’ve done it all, and we’re just getting started!</p>
+      <p>We’re hosted by the dynamic duo, <span class="highlight">Shane and Aly</span>, who are basically the king and queen of keeping things spicy. Shane’s been swinging since 2012—yep, he’s the OG party animal who knows every trick in the book (and probably wrote a few chapters himself). Aly joined the lifestyle in <span class="highlight">2022</span>, bringing a fresh burst of energy and a knack for turning any gathering into an unforgettable night. Fun fact: Shane claims he knew Aly was the one when she showed up to a party with a bottle of tequila and a playlist that had everyone dancing on the tables by midnight. Aly says it was Shane’s “impressive... dance moves” that sealed the deal. We’ll let you decide who’s telling the truth!</p>
+      <p>Their meet-cute? Oh, it’s a classic! They locked eyes (and a few other things) at a swinger party in 2022, where sparks flew faster than you can say “open bar.” They hooked up that night—let’s just say the chemistry was hotter than a Vegas summer—and by morning, they were already planning their next adventure together. “We just kept needing more of each other,” Aly says with a wink, “and apparently, the swinger community needed more of us too!” Shane adds, “Yeah, we figured if we’re this good at throwing ourselves together, imagine the parties we could throw!” And thus, One Leg Up became the ultimate destination for swingers looking to let loose.</p>
+      <p>Shane’s the mastermind behind the logistics—booking hotels, planning trips, and making sure every party has just the right amount of naughty. Aly’s the vibe curator, with a talent for creating atmospheres that get everyone in the mood to mingle (and then some). Together, they’re a match made in swinger heaven, hosting events that are equal parts flirty, fun, and downright hilarious—like that one time Shane accidentally booked a hotel next to a knitting convention. Let’s just say the knitters got a lot more than they bargained for that weekend!</p>
+      <p>At One Leg Up, we’re all about creating a space where you can be yourself—or whoever you feel like being that night. So whether you’re a seasoned swinger or just dipping your toes (or other things) into the lifestyle, come join us for a party that’ll leave you smiling, laughing, and maybe even blushing a little. Shane and Aly can’t wait to welcome you with open arms—and maybe a shot of tequila if Aly’s in charge of the bar!</p>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script>
+    // Hamburger Menu Toggle
+    function toggleMenu() {
+      document.getElementById('menu').classList.toggle('active');
+    }
+
+    // Three.js Smoke Effect
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+    camera.position.z = 1;
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('smokeCanvas'), alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    function generateNoiseTexture(width, height) {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      const imageData = ctx.createImageData(width, height);
+      for (let i = 0; i < imageData.data.length; i += 4) {
+        const value = Math.random() * 255;
+        imageData.data[i] = value;
+        imageData.data[i + 1] = value;
+        imageData.data[i + 2] = value;
+        imageData.data[i + 3] = 255;
+      }
+      ctx.putImageData(imageData, 0, 0);
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    const noiseTexture = generateNoiseTexture(256, 256);
+    noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
+
+    const geometry = new THREE.PlaneGeometry(2, 2);
+
+    const vertexShader = `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+
+    const fragmentShader = `
+      uniform sampler2D noiseTexture;
+      uniform float time;
+      varying vec2 vUv;
+      void main() {
+        vec2 uv = vUv + vec2(-time * 0.1, time * 0.05);
+        float noise = texture2D(noiseTexture, uv * 0.5).r;
+        float noise2 = texture2D(noiseTexture, uv * 0.2 + vec2(time * 0.05, -time * 0.03)).r;
+        float smoke = noise * noise2;
+        float alpha = smoothstep(0.5, 1.0, vUv.x) * smoke * 0.7;
+        vec3 color = vec3(
+          abs(sin(time * 0.7 + vUv.x)),
+          abs(sin(time * 0.8 + vUv.y)),
+          abs(sin(time * 0.9 + vUv.x + vUv.y))
+        );
+        gl_FragColor = vec4(color, alpha);
+      }
+    `;
+
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms: {
+        noiseTexture: { value: noiseTexture },
+        time: { value: 0.0 }
+      },
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+
+    const plane = new THREE.Mesh(geometry, material);
+    scene.add(plane);
+
+    function animate(time) {
+      requestAnimationFrame(animate);
+      material.uniforms.time.value = time * 0.001;
+      renderer.render(scene, camera);
+    }
+    animate(0);
+
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.left = -window.innerWidth / window.innerHeight;
+      camera.right = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    });
+  </script>
+</body>
+</html>
