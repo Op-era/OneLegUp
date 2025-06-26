@@ -6,7 +6,6 @@
   <title>One Leg Up - Home</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    /* Your original styles here */
     * {
       margin: 0;
       padding: 0;
@@ -27,6 +26,8 @@
       position: relative;
       z-index: 1;
       padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     /* Canvas for Smoke */
@@ -107,54 +108,63 @@
       color: #ff6f61;
     }
 
-    /* Events Section */
-    .events {
+    /* Middle flyer row */
+    .flyer-row {
       width: 100%;
       margin-top: 150px;
+      text-align: center;
       position: relative;
       z-index: 1;
-      display: flex;
-      gap: 40px;
-      flex-wrap: wrap;
-      justify-content: center;
     }
 
-    .event-column {
-      flex: 1 1 400px;
+    .flyer-row img {
       max-width: 600px;
-      background: rgba(0, 0, 0, 0.3);
+      width: 90%;
       border-radius: 10px;
-      padding: 20px;
-      box-sizing: border-box;
-      overflow-y: auto;
-      max-height: calc(100vh - 200px);
-    }
-
-    .event-column h2 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      color: #fff;
-      text-align: center;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-      animation: colorPulse 3s ease infinite;
-    }
-
-    .event {
-      margin-bottom: 30px;
-      padding: 15px;
-      border-radius: 8px;
-      background: rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255, 107, 97, 0.7);
       transition: transform 0.3s ease;
     }
 
+    .flyer-row img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Upcoming and Past Events Sections */
+    .events-section {
+      margin-top: 60px;
+    }
+
+    .events-section h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #ffeb3b;
+      animation: colorCycle 5s ease infinite;
+      text-align: center;
+    }
+
+    .events-list {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .event {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      border-radius: 10px;
+      transition: background 0.3s;
+    }
+
     .event:hover {
-      transform: scale(1.02);
+      background: rgba(255, 64, 129, 0.3);
     }
 
     .event h3 {
       font-size: 1.6rem;
       color: #ffeb3b;
-      animation: colorCycle 5s ease infinite;
       margin-bottom: 10px;
     }
 
@@ -187,11 +197,11 @@
       text-decoration: underline;
     }
 
-    .event .flyer-thumbnail {
+    .event img {
       margin-top: 10px;
-      cursor: pointer;
       max-width: 150px;
       border-radius: 5px;
+      cursor: pointer;
     }
 
     /* Flyer Overlay */
@@ -234,26 +244,15 @@
       100% { color: #ffeb3b; }
     }
 
-    @keyframes colorPulse {
-      0% { text-shadow: 0 0 10px rgba(255, 107, 97, 0.8); }
-      50% { text-shadow: 0 0 15px rgba(64, 196, 255, 0.8); }
-      100% { text-shadow: 0 0 10px rgba(255, 107, 97, 0.8); }
-    }
-
     /* Responsive Design */
     @media (max-width: 768px) {
-      .events {
-        flex-direction: column;
-        margin-top: 120px;
-      }
-
-      .event-column {
+      .flyer-row img {
         max-width: 100%;
-        max-height: none;
       }
 
-      .event-column h2 {
-        font-size: 1.5rem;
+      .events-list {
+        max-width: 100%;
+        padding: 0 10px;
       }
 
       .event h3 {
@@ -264,7 +263,7 @@
         font-size: 0.9rem;
       }
 
-      .event .flyer-thumbnail {
+      .event img {
         max-width: 120px;
       }
 
@@ -300,19 +299,21 @@
   </div>
 
   <div class="container">
-    <div class="events">
-      <!-- Upcoming Events Column -->
-      <div class="event-column" id="upcoming-events">
-        <h2>Upcoming Parties</h2>
+    <!-- Middle flyer row -->
+    <div class="flyer-row">
+      <img src="images/pool_party2.jpg" alt="Skinny Dipping Pool Party Flyer" />
+    </div>
 
+    <!-- Upcoming Parties Section -->
+    <section class="events-section" id="upcoming-parties">
+      <h2>Upcoming Parties</h2>
+      <div class="events-list">
         <div class="event">
           <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
-          <p>Date: TBD</p>
+          <p>Date: To Be Determined</p>
           <p>Location: Fresno, CA</p>
           <p>Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.</p>
           <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
-          <br />
-          <img src="images/event2_thumb.jpg" alt="Sunday Funday Pool Party Thumbnail" class="flyer-thumbnail" onclick="showFlyer('images/event2.jpg')" />
         </div>
 
         <div class="event">
@@ -321,31 +322,25 @@
           <p>Location: Las Vegas, NV</p>
           <p>Address: 1234 Event Street, Las Vegas, NV 89110</p>
           <a href="https://www.swinglifestyle.com" target="_blank">View on SLS</a>
-          <br />
-          <img src="images/event3_thumb.jpg" alt="I'm almost there Thumbnail" class="flyer-thumbnail" onclick="showFlyer('images/event3.jpg')" />
         </div>
       </div>
+    </section>
 
-      <!-- Past Events Column -->
-      <div class="event-column" id="past-events">
-        <h2>Past Events</h2>
-
+    <!-- Past Events Section -->
+    <section class="events-section" id="past-events">
+      <h2>Past Events</h2>
+      <div class="events-list">
         <div class="event">
           <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
           <p>Date: May 31, 2025</p>
           <p>Location: Fresno, CA</p>
           <p>Address: 1838 East Everglade Ave, Fresno, CA 93720</p>
-          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
+          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
           <br />
-          <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="flyer-thumbnail" onclick="showFlyer('images/pool_party.jpg')" />
+          <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" style="max-width: 150px; border-radius: 5px;" />
         </div>
       </div>
-    </div>
-  </div>
-
-  <div class="flyer-overlay" id="flyerOverlay">
-    <span class="close-btn" onclick="hideFlyer()">&times;</span>
-    <img id="fullFlyer" src="" alt="Full Flyer" />
+    </section>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
@@ -353,19 +348,6 @@
     // Hamburger Menu Toggle
     function toggleMenu() {
       document.getElementById('menu').classList.toggle('active');
-    }
-
-    // Flyer Overlay Functions
-    function showFlyer(imageSrc) {
-      const overlay = document.getElementById('flyerOverlay');
-      const fullFlyer = document.getElementById('fullFlyer');
-      fullFlyer.src = imageSrc;
-      overlay.classList.add('active');
-    }
-
-    function hideFlyer() {
-      const overlay = document.getElementById('flyerOverlay');
-      overlay.classList.remove('active');
     }
 
     // Three.js Smoke Effect
