@@ -3,212 +3,139 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>One Leg Up Swingers Club</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
-    rel="stylesheet"
-  />
+  <title>One Leg Up - Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      margin: 0; padding: 0; box-sizing: border-box;
     }
-
     body {
       font-family: 'Poppins', sans-serif;
       background: #000;
       color: #fff;
       position: relative;
       min-height: 100vh;
-      overflow-x: hidden;
     }
-
     .container {
       display: flex;
-      justify-content: space-between;
-      padding: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
       height: 100vh;
+      padding: 20px;
+      gap: 20px;
       position: relative;
       z-index: 1;
     }
-
     /* Left Column */
     .left-column {
-      width: 25%;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      gap: 20px;
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 20px;
+      overflow-y: auto;
     }
-
-    /* Middle Column */
+    /* Middle Column - Main Image */
     .middle-column {
-      width: 50%;
+      flex: 2;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      padding: 10px;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
     }
-
     .middle-column img {
       max-width: 100%;
+      max-height: 100%;
       border-radius: 10px;
-      box-shadow: 0 0 15px rgba(255, 107, 97, 0.7);
+      object-fit: contain;
     }
-
-    /* Right Column */
+    /* Right Column - Events */
     .right-column {
-      width: 25%;
+      flex: 1;
       display: flex;
       flex-direction: column;
       gap: 40px;
       overflow-y: auto;
-      padding-left: 20px;
-      max-height: 100vh;
     }
-
-    h2 {
-      font-size: 1.6rem;
+    /* Upcoming Parties and Past Events styling */
+    .events-section {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 15px;
+    }
+    .events-section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
       color: #ffeb3b;
-      margin-bottom: 10px;
       text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
       animation: colorCycle 5s ease infinite;
     }
-
     .event {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 15px;
+      margin-bottom: 20px;
+      padding: 10px;
       border-radius: 8px;
+      background: rgba(0, 0, 0, 0.3);
       transition: transform 0.3s ease;
+      cursor: default;
     }
-
     .event:hover {
       transform: scale(1.02);
     }
-
     .event h3 {
       font-size: 1.3rem;
       color: #ffeb3b;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
       animation: colorCycle 5s ease infinite;
     }
-
     .event h3 a {
       color: #ffeb3b;
       text-decoration: none;
       transition: color 0.3s;
     }
-
     .event h3 a:hover {
       color: #ff4081;
       text-decoration: underline;
     }
-
     .event p {
       font-size: 1rem;
       color: #e0e0e0;
       margin-bottom: 5px;
     }
-
     .event a {
       color: #00e5ff;
       text-decoration: none;
       font-weight: 600;
       transition: color 0.3s;
     }
-
     .event a:hover {
       color: #ff4081;
       text-decoration: underline;
     }
-
     .flyer-thumbnail {
       margin-top: 10px;
-      cursor: pointer;
       max-width: 150px;
       border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
-      transition: box-shadow 0.3s ease;
-    }
-
-    .flyer-thumbnail:hover {
-      box-shadow: 0 0 15px rgba(255, 64, 129, 0.9);
-    }
-
-    /* Flyer Overlay */
-    .flyer-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 10000;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .flyer-overlay.active {
-      display: flex;
-    }
-
-    .flyer-overlay img {
-      max-width: 90%;
-      max-height: 90%;
-      object-fit: contain;
-      border-radius: 8px;
-      box-shadow: 0 0 25px rgba(255, 107, 97, 0.9);
-    }
-
-    .flyer-overlay .close-btn {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      color: #fff;
-      font-size: 3rem;
       cursor: pointer;
-      user-select: none;
-      font-weight: 900;
-      text-shadow: 0 0 10px #ff4081;
     }
 
+    /* Animations */
     @keyframes colorCycle {
-      0% {
-        color: #ffeb3b;
-      }
-      33% {
-        color: #40c4ff;
-      }
-      66% {
-        color: #ff4081;
-      }
-      100% {
-        color: #ffeb3b;
-      }
+      0% { color: #ffeb3b; }
+      33% { color: #40c4ff; }
+      66% { color: #ff4081; }
+      100% { color: #ffeb3b; }
     }
 
     /* Responsive */
-    @media (max-width: 992px) {
+    @media (max-width: 900px) {
       .container {
         flex-direction: column;
-        height: auto;
       }
-      .left-column,
-      .middle-column,
-      .right-column {
+      .left-column, .middle-column, .right-column {
+        flex: unset;
         width: 100%;
         max-height: none;
-        padding: 0;
       }
-      .right-column {
-        padding-left: 0;
-        gap: 30px;
-        margin-top: 30px;
+      .middle-column {
+        margin: 20px 0;
       }
     }
   </style>
@@ -217,108 +144,59 @@
   <canvas id="smokeCanvas"></canvas>
 
   <div class="container">
-    <!-- Left Column: Could be navigation or ads, you said keep as is, so blank here -->
     <div class="left-column">
-      <!-- Placeholder or content if originally present -->
+      <!-- Your original left column content here -->
+      <h1>Welcome to One Leg Up</h1>
+      <p>Your original content goes here.</p>
     </div>
 
-    <!-- Middle Column: Main Flyer -->
     <div class="middle-column">
-      <img src="images/pool_party2.jpg" alt="Main Flyer: Sunday Funday Pool Party" />
+      <img src="images/pool_party2.jpg" alt="Main Pool Party Image" />
     </div>
 
-    <!-- Right Column: Upcoming Parties & Past Events -->
     <div class="right-column">
       <!-- Upcoming Parties -->
-      <section class="upcoming-parties">
+      <div class="events-section">
         <h2>Upcoming Parties</h2>
 
         <div class="event">
-          <h3>
-            <a href="payment.html">Sunday Funday Pool Party</a>
-          </h3>
+          <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
           <p>Date: July 20, 2025</p>
           <p>Location: Fresno, CA</p>
-          <p>Address: 1838 East Everglade Ave, Fresno, CA 93720</p>
-          <p>
-            Join us for a Sunday funday! Full of wet play time for adults! Dive
-            into the fun and connect with like-minded individuals in a relaxed,
-            vibrant atmosphere.
-          </p>
-          <a
-            href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723"
-            target="_blank"
-            >View on SLS</a
-          >
+          <p>Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.</p>
+          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
         </div>
 
         <div class="event">
           <h3>I'm almost there</h3>
           <p>Date: To Be Determined</p>
           <p>Location: Las Vegas, NV</p>
-          <p>Address: 1234 Event Street, Las Vegas, NV 89110</p>
-          <a href="https://www.swinglifestyle.com" target="_blank"
-            >View on SLS</a
-          >
+          <a href="https://www.swinglifestyle.com" target="_blank">View on SLS</a>
         </div>
-      </section>
+      </div>
 
       <!-- Past Events -->
-      <section class="past-events" style="margin-top: 40px;">
+      <div class="events-section">
         <h2>Past Events</h2>
-
         <div class="event">
-          <h3>
-            <a href="payment.html">Skinny Dipping Pool Party</a>
-          </h3>
+          <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
           <p>Date: May 31, 2025</p>
           <p>Location: Fresno, CA</p>
-          <p>Address: 1838 East Everglade Ave, Fresno, CA 93720</p>
-          <a
-            href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639"
-            target="_blank"
-            >View on SLS</a
-          >
+          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
           <br />
-          <img
-            src="images/pool_party.jpg"
-            alt="Skinny Dipping Pool Party Thumbnail"
-            class="flyer-thumbnail"
-            onclick="showFlyer('images/pool_party.jpg')"
-          />
+          <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="flyer-thumbnail" />
         </div>
-      </section>
+      </div>
     </div>
-  </div>
-
-  <div class="flyer-overlay" id="flyerOverlay">
-    <span class="close-btn" onclick="hideFlyer()">&times;</span>
-    <img id="fullFlyer" src="" alt="Full Flyer" />
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script>
-    // Flyer Overlay Functions
-    function showFlyer(imageSrc) {
-      const overlay = document.getElementById('flyerOverlay');
-      const fullFlyer = document.getElementById('fullFlyer');
-      fullFlyer.src = imageSrc;
-      overlay.classList.add('active');
-    }
-
-    function hideFlyer() {
-      const overlay = document.getElementById('flyerOverlay');
-      overlay.classList.remove('active');
-    }
-
     // Three.js Smoke Effect
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
     camera.position.z = 1;
-    const renderer = new THREE.WebGLRenderer({
-      canvas: document.getElementById('smokeCanvas'),
-      alpha: true,
-    });
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('smokeCanvas'), alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     function generateNoiseTexture(width, height) {
@@ -375,10 +253,10 @@
       fragmentShader,
       uniforms: {
         noiseTexture: { value: noiseTexture },
-        time: { value: 0.0 },
+        time: { value: 0.0 }
       },
       transparent: true,
-      side: THREE.DoubleSide,
+      side: THREE.DoubleSide
     });
 
     const plane = new THREE.Mesh(geometry, material);
@@ -393,6 +271,9 @@
 
     window.addEventListener('resize', () => {
       renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.left = -window.innerWidth / window.innerHeight;
+      camera.right = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
     });
   </script>
 </body>
