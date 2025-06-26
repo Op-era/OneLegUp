@@ -1,18 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>One Leg Up - Home</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
+    /* Your original styles here */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Poppins', sans-serif;
       background: #000;
       color: #fff;
-      margin: 0;
-      padding: 0;
+      position: relative;
     }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+      padding: 20px;
+    }
+
+    /* Canvas for Smoke */
+    #smokeCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    /* Header with Hamburger and Title */
     .header {
       position: fixed;
       top: 20px;
@@ -20,17 +47,22 @@
       display: flex;
       align-items: center;
       z-index: 1000;
+      height: 60px;
     }
+
     .hamburger {
       cursor: pointer;
       margin-right: 15px;
     }
+
     .hamburger div {
       width: 30px;
       height: 3px;
       background: #fff;
       margin: 5px 0;
+      transition: all 0.3s ease;
     }
+
     .site-title {
       font-size: 1.5rem;
       font-weight: 600;
@@ -38,39 +70,217 @@
       text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
       animation: colorCycle 5s ease infinite;
     }
-    .main-image {
-      width: 100%;
-      max-width: 800px;
-      display: block;
-      margin: 150px auto 20px;
-      border-radius: 10px;
+
+    .menu {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: #1a1a1a;
+      transition: left 0.3s ease;
+      z-index: 999;
+      padding-top: 60px;
     }
-    .description {
-      text-align: center;
-      font-size: 1.2rem;
+
+    .menu.active {
+      left: 0;
+    }
+
+    .menu ul {
+      list-style: none;
       padding: 0 20px;
-      color: #e0e0e0;
     }
-    .past-event-thumbnail {
-      display: block;
-      margin: 40px auto 10px;
-      max-width: 300px;
+
+    .menu ul li {
+      margin: 20px 0;
+    }
+
+    .menu ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+
+    .menu ul li a:hover {
+      color: #ff6f61;
+    }
+
+    /* Events Section */
+    .events {
+      width: 100%;
+      margin-top: 150px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .event-column {
+      flex: 1 1 400px;
+      max-width: 600px;
+      background: rgba(0, 0, 0, 0.3);
       border-radius: 10px;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      max-height: calc(100vh - 200px);
     }
-    .caption {
+
+    .event-column h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #fff;
       text-align: center;
-      font-size: 1rem;
-      color: #ccc;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      animation: colorPulse 3s ease infinite;
     }
+
+    .event {
+      margin-bottom: 30px;
+      padding: 15px;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease;
+    }
+
+    .event:hover {
+      transform: scale(1.02);
+    }
+
+    .event h3 {
+      font-size: 1.6rem;
+      color: #ffeb3b;
+      animation: colorCycle 5s ease infinite;
+      margin-bottom: 10px;
+    }
+
+    .event h3 a {
+      color: #ffeb3b;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .event h3 a:hover {
+      color: #ff4081;
+      text-decoration: underline;
+    }
+
+    .event p {
+      font-size: 1rem;
+      color: #e0e0e0;
+      margin-bottom: 5px;
+    }
+
+    .event a {
+      color: #00e5ff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .event a:hover {
+      color: #ff4081;
+      text-decoration: underline;
+    }
+
+    .event .flyer-thumbnail {
+      margin-top: 10px;
+      cursor: pointer;
+      max-width: 150px;
+      border-radius: 5px;
+    }
+
+    /* Flyer Overlay */
+    .flyer-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .flyer-overlay.active {
+      display: flex;
+    }
+
+    .flyer-overlay img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+    }
+
+    .flyer-overlay .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+    }
+
     @keyframes colorCycle {
       0% { color: #ffeb3b; }
       33% { color: #40c4ff; }
       66% { color: #ff4081; }
       100% { color: #ffeb3b; }
     }
+
+    @keyframes colorPulse {
+      0% { text-shadow: 0 0 10px rgba(255, 107, 97, 0.8); }
+      50% { text-shadow: 0 0 15px rgba(64, 196, 255, 0.8); }
+      100% { text-shadow: 0 0 10px rgba(255, 107, 97, 0.8); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .events {
+        flex-direction: column;
+        margin-top: 120px;
+      }
+
+      .event-column {
+        max-width: 100%;
+        max-height: none;
+      }
+
+      .event-column h2 {
+        font-size: 1.5rem;
+      }
+
+      .event h3 {
+        font-size: 1.3rem;
+      }
+
+      .event p {
+        font-size: 0.9rem;
+      }
+
+      .event .flyer-thumbnail {
+        max-width: 120px;
+      }
+
+      .header {
+        left: 10px;
+      }
+
+      .site-title {
+        font-size: 1.2rem;
+      }
+    }
   </style>
 </head>
 <body>
+  <canvas id="smokeCanvas"></canvas>
+
   <div class="header">
     <div class="hamburger" onclick="toggleMenu()">
       <div></div>
@@ -80,17 +290,167 @@
     <h1 class="site-title">One Leg Up</h1>
   </div>
 
-  <img src="images/pool_party2.jpg" alt="Sunday Funday Pool Party" class="main-image">
-  <p class="description">Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.</p>
+  <div class="menu" id="menu">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="events.html">Upcoming Events</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+  </div>
 
-  <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="past-event-thumbnail">
-  <p class="caption">Our last event: Skinny Dipping Pool Party - May 31, 2025</p>
+  <div class="container">
+    <div class="events">
+      <!-- Upcoming Events Column -->
+      <div class="event-column" id="upcoming-events">
+        <h2>Upcoming Parties</h2>
 
+        <div class="event">
+          <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
+          <p>Date: TBD</p>
+          <p>Location: Fresno, CA</p>
+          <p>Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.</p>
+          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
+          <br />
+          <img src="images/event2_thumb.jpg" alt="Sunday Funday Pool Party Thumbnail" class="flyer-thumbnail" onclick="showFlyer('images/event2.jpg')" />
+        </div>
+
+        <div class="event">
+          <h3>I'm almost there</h3>
+          <p>Date: To Be Determined</p>
+          <p>Location: Las Vegas, NV</p>
+          <p>Address: 1234 Event Street, Las Vegas, NV 89110</p>
+          <a href="https://www.swinglifestyle.com" target="_blank">View on SLS</a>
+          <br />
+          <img src="images/event3_thumb.jpg" alt="I'm almost there Thumbnail" class="flyer-thumbnail" onclick="showFlyer('images/event3.jpg')" />
+        </div>
+      </div>
+
+      <!-- Past Events Column -->
+      <div class="event-column" id="past-events">
+        <h2>Past Events</h2>
+
+        <div class="event">
+          <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
+          <p>Date: May 31, 2025</p>
+          <p>Location: Fresno, CA</p>
+          <p>Address: 1838 East Everglade Ave, Fresno, CA 93720</p>
+          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
+          <br />
+          <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="flyer-thumbnail" onclick="showFlyer('images/pool_party.jpg')" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flyer-overlay" id="flyerOverlay">
+    <span class="close-btn" onclick="hideFlyer()">&times;</span>
+    <img id="fullFlyer" src="" alt="Full Flyer" />
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script>
+    // Hamburger Menu Toggle
     function toggleMenu() {
-      // Placeholder for menu toggle function
-      alert("Menu toggle clicked");
+      document.getElementById('menu').classList.toggle('active');
     }
+
+    // Flyer Overlay Functions
+    function showFlyer(imageSrc) {
+      const overlay = document.getElementById('flyerOverlay');
+      const fullFlyer = document.getElementById('fullFlyer');
+      fullFlyer.src = imageSrc;
+      overlay.classList.add('active');
+    }
+
+    function hideFlyer() {
+      const overlay = document.getElementById('flyerOverlay');
+      overlay.classList.remove('active');
+    }
+
+    // Three.js Smoke Effect
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+    camera.position.z = 1;
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('smokeCanvas'), alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    function generateNoiseTexture(width, height) {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      const imageData = ctx.createImageData(width, height);
+      for (let i = 0; i < imageData.data.length; i += 4) {
+        const value = Math.random() * 255;
+        imageData.data[i] = value;
+        imageData.data[i + 1] = value;
+        imageData.data[i + 2] = value;
+        imageData.data[i + 3] = 255;
+      }
+      ctx.putImageData(imageData, 0, 0);
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    const noiseTexture = generateNoiseTexture(256, 256);
+    noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
+
+    const geometry = new THREE.PlaneGeometry(2, 2);
+
+    const vertexShader = `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+
+    const fragmentShader = `
+      uniform sampler2D noiseTexture;
+      uniform float time;
+      varying vec2 vUv;
+      void main() {
+        vec2 uv = vUv + vec2(-time * 0.1, time * 0.05);
+        float noise = texture2D(noiseTexture, uv * 0.5).r;
+        float noise2 = texture2D(noiseTexture, uv * 0.2 + vec2(time * 0.05, -time * 0.03)).r;
+        float smoke = noise * noise2;
+        float alpha = smoothstep(0.5, 1.0, vUv.x) * smoke * 0.7;
+        vec3 color = vec3(
+          abs(sin(time * 0.7 + vUv.x)),
+          abs(sin(time * 0.8 + vUv.y)),
+          abs(sin(time * 0.9 + vUv.x + vUv.y))
+        );
+        gl_FragColor = vec4(color, alpha);
+      }
+    `;
+
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms: {
+        noiseTexture: { value: noiseTexture },
+        time: { value: 0.0 }
+      },
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+
+    const plane = new THREE.Mesh(geometry, material);
+    scene.add(plane);
+
+    function animate(time) {
+      requestAnimationFrame(animate);
+      material.uniforms.time.value = time * 0.001;
+      renderer.render(scene, camera);
+    }
+    animate(0);
+
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.left = -window.innerWidth / window.innerHeight;
+      camera.right = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    });
   </script>
 </body>
 </html>
