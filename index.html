@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>One Leg Up - Home</title>
+  <title>One Leg Up Swingers Club</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     * {
@@ -16,156 +16,82 @@
       font-family: 'Poppins', sans-serif;
       background: #000;
       color: #fff;
-      position: relative;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
     .container {
       display: flex;
-      flex-direction: column;
       min-height: 100vh;
-      position: relative;
-      z-index: 1;
-      padding: 20px;
       max-width: 1200px;
       margin: 0 auto;
+      padding: 20px;
+      gap: 20px;
     }
 
-    /* Canvas for Smoke */
-    #smokeCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
-
-    /* Header with Hamburger and Title */
-    .header {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      display: flex;
-      align-items: center;
-      z-index: 1000;
-      height: 60px;
-    }
-
-    .hamburger {
-      cursor: pointer;
-      margin-right: 15px;
-    }
-
-    .hamburger div {
-      width: 30px;
-      height: 3px;
-      background: #fff;
-      margin: 5px 0;
-      transition: all 0.3s ease;
-    }
-
-    .site-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #ffeb3b;
-      text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
-      animation: colorCycle 5s ease infinite;
-    }
-
-    .menu {
-      position: fixed;
-      top: 0;
-      left: -250px;
-      width: 250px;
-      height: 100%;
-      background: #1a1a1a;
-      transition: left 0.3s ease;
-      z-index: 999;
-      padding-top: 60px;
-    }
-
-    .menu.active {
-      left: 0;
-    }
-
-    .menu ul {
-      list-style: none;
-      padding: 0 20px;
-    }
-
-    .menu ul li {
-      margin: 20px 0;
-    }
-
-    .menu ul li a {
-      color: #fff;
-      text-decoration: none;
-      font-size: 1.2rem;
-      transition: color 0.3s;
-    }
-
-    .menu ul li a:hover {
-      color: #ff6f61;
-    }
-
-    /* Middle flyer row */
-    .flyer-row {
-      width: 100%;
-      margin-top: 150px;
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-
-    .flyer-row img {
-      max-width: 600px;
-      width: 90%;
+    /* Left Column */
+    .left-column {
+      flex: 1;
+      background: #111;
+      padding: 20px;
       border-radius: 10px;
-      cursor: pointer;
-      box-shadow: 0 0 15px rgba(255, 107, 97, 0.7);
-      transition: transform 0.3s ease;
+      /* Put your original left column content here or leave blank */
     }
 
-    .flyer-row img:hover {
-      transform: scale(1.05);
-    }
-
-    /* Upcoming and Past Events Sections */
-    .events-section {
-      margin-top: 60px;
-    }
-
-    .events-section h2 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      color: #ffeb3b;
-      animation: colorCycle 5s ease infinite;
-      text-align: center;
-    }
-
-    .events-list {
+    /* Middle Column */
+    .middle-column {
+      flex: 1.5;
       display: flex;
       flex-direction: column;
-      gap: 30px;
-      max-width: 600px;
-      margin: 0 auto;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .main-flyer {
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #ff6b61;
+    }
+
+    /* Right Column */
+    .right-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      overflow-y: auto;
+      max-height: 90vh;
+      padding: 10px;
+      background: #111;
+      border-radius: 10px;
+    }
+
+    h2.section-title {
+      font-size: 1.8rem;
+      color: #ffeb3b;
+      text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
+      margin-bottom: 15px;
+      animation: colorCycle 5s ease infinite;
     }
 
     .event {
-      background: rgba(0, 0, 0, 0.4);
-      padding: 20px;
-      border-radius: 10px;
-      transition: background 0.3s;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      transition: transform 0.3s ease;
     }
 
     .event:hover {
-      background: rgba(255, 64, 129, 0.3);
+      transform: scale(1.03);
+      box-shadow: 0 0 10px #ff6b61;
     }
 
     .event h3 {
-      font-size: 1.6rem;
+      font-size: 1.3rem;
       color: #ffeb3b;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+      animation: colorCycle 5s ease infinite;
     }
 
     .event h3 a {
@@ -187,8 +113,8 @@
 
     .event a {
       color: #00e5ff;
-      text-decoration: none;
       font-weight: 600;
+      text-decoration: none;
       transition: color 0.3s;
     }
 
@@ -204,116 +130,76 @@
       cursor: pointer;
     }
 
-    /* Flyer Overlay */
-    .flyer-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .flyer-overlay.active {
-      display: flex;
-    }
-
-    .flyer-overlay img {
-      max-width: 90%;
-      max-height: 90%;
-      object-fit: contain;
-    }
-
-    .flyer-overlay .close-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      color: #fff;
-      font-size: 2rem;
-      cursor: pointer;
-    }
-
+    /* Animations */
     @keyframes colorCycle {
-      0% { color: #ffeb3b; }
-      33% { color: #40c4ff; }
-      66% { color: #ff4081; }
-      100% { color: #ffeb3b; }
+      0% {
+        color: #ffeb3b;
+      }
+      33% {
+        color: #40c4ff;
+      }
+      66% {
+        color: #ff4081;
+      }
+      100% {
+        color: #ffeb3b;
+      }
     }
 
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .flyer-row img {
+    /* Responsive */
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
         max-width: 100%;
+        padding: 10px;
       }
 
-      .events-list {
-        max-width: 100%;
-        padding: 0 10px;
+      .left-column,
+      .middle-column,
+      .right-column {
+        flex: unset;
+        max-height: none;
       }
 
-      .event h3 {
-        font-size: 1.3rem;
-      }
-
-      .event p {
-        font-size: 0.9rem;
-      }
-
-      .event img {
-        max-width: 120px;
-      }
-
-      .header {
-        left: 10px;
-      }
-
-      .site-title {
-        font-size: 1.2rem;
+      .main-flyer {
+        max-width: 90vw;
       }
     }
   </style>
 </head>
 <body>
-  <canvas id="smokeCanvas"></canvas>
-
-  <div class="header">
-    <div class="hamburger" onclick="toggleMenu()">
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-    <h1 class="site-title">One Leg Up</h1>
-  </div>
-
-  <div class="menu" id="menu">
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="events.html">Upcoming Events</a></li>
-      <li><a href="about.html">About Us</a></li>
-      <li><a href="contact.html">Contact Us</a></li>
-    </ul>
-  </div>
-
   <div class="container">
-    <!-- Middle flyer row -->
-    <div class="flyer-row">
-      <img src="images/pool_party2.jpg" alt="Skinny Dipping Pool Party Flyer" />
+    <div class="left-column">
+      <!-- Original left column content here if any -->
     </div>
 
-    <!-- Upcoming Parties Section -->
-    <section class="events-section" id="upcoming-parties">
-      <h2>Upcoming Parties</h2>
-      <div class="events-list">
+    <div class="middle-column">
+      <img
+        src="images/pool_party2.jpg"
+        alt="Main Flyer - Skinny Dipping Pool Party"
+        class="main-flyer"
+      />
+    </div>
+
+    <div class="right-column">
+      <section>
+        <h2 class="section-title">Upcoming Parties</h2>
+
         <div class="event">
           <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
-          <p>Date: To Be Determined</p>
+          <p>Date: July 20, 2025</p>
           <p>Location: Fresno, CA</p>
-          <p>Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.</p>
-          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
+          <p>Address: 1838 East Everglade Ave, Fresno, CA 93720</p>
+          <p>
+            Join us for a Sunday funday! Full of wet play time for adults! Dive
+            into the fun and connect with like-minded individuals in a relaxed,
+            vibrant atmosphere.
+          </p>
+          <a
+            href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723"
+            target="_blank"
+            >View on SLS</a
+          >
         </div>
 
         <div class="event">
@@ -321,118 +207,33 @@
           <p>Date: To Be Determined</p>
           <p>Location: Las Vegas, NV</p>
           <p>Address: 1234 Event Street, Las Vegas, NV 89110</p>
-          <a href="https://www.swinglifestyle.com" target="_blank">View on SLS</a>
+          <a href="https://www.swinglifestyle.com" target="_blank"
+            >View on SLS</a
+          >
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Past Events Section -->
-    <section class="events-section" id="past-events">
-      <h2>Past Events</h2>
-      <div class="events-list">
+      <section>
+        <h2 class="section-title">Past Events</h2>
+
         <div class="event">
           <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
           <p>Date: May 31, 2025</p>
           <p>Location: Fresno, CA</p>
           <p>Address: 1838 East Everglade Ave, Fresno, CA 93720</p>
-          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
+          <a
+            href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639"
+            target="_blank"
+            >View on SLS</a
+          >
           <br />
-          <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" style="max-width: 150px; border-radius: 5px;" />
+          <img
+            src="images/pool_party.jpg"
+            alt="Skinny Dipping Pool Party Thumbnail"
+          />
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-  <script>
-    // Hamburger Menu Toggle
-    function toggleMenu() {
-      document.getElementById('menu').classList.toggle('active');
-    }
-
-    // Three.js Smoke Effect
-    const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
-    camera.position.z = 1;
-    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('smokeCanvas'), alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-    function generateNoiseTexture(width, height) {
-      const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext('2d');
-      const imageData = ctx.createImageData(width, height);
-      for (let i = 0; i < imageData.data.length; i += 4) {
-        const value = Math.random() * 255;
-        imageData.data[i] = value;
-        imageData.data[i + 1] = value;
-        imageData.data[i + 2] = value;
-        imageData.data[i + 3] = 255;
-      }
-      ctx.putImageData(imageData, 0, 0);
-      return new THREE.CanvasTexture(canvas);
-    }
-
-    const noiseTexture = generateNoiseTexture(256, 256);
-    noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
-
-    const geometry = new THREE.PlaneGeometry(2, 2);
-
-    const vertexShader = `
-      varying vec2 vUv;
-      void main() {
-        vUv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `;
-
-    const fragmentShader = `
-      uniform sampler2D noiseTexture;
-      uniform float time;
-      varying vec2 vUv;
-      void main() {
-        vec2 uv = vUv + vec2(-time * 0.1, time * 0.05);
-        float noise = texture2D(noiseTexture, uv * 0.5).r;
-        float noise2 = texture2D(noiseTexture, uv * 0.2 + vec2(time * 0.05, -time * 0.03)).r;
-        float smoke = noise * noise2;
-        float alpha = smoothstep(0.5, 1.0, vUv.x) * smoke * 0.7;
-        vec3 color = vec3(
-          abs(sin(time * 0.7 + vUv.x)),
-          abs(sin(time * 0.8 + vUv.y)),
-          abs(sin(time * 0.9 + vUv.x + vUv.y))
-        );
-        gl_FragColor = vec4(color, alpha);
-      }
-    `;
-
-    const material = new THREE.ShaderMaterial({
-      vertexShader,
-      fragmentShader,
-      uniforms: {
-        noiseTexture: { value: noiseTexture },
-        time: { value: 0.0 }
-      },
-      transparent: true,
-      side: THREE.DoubleSide
-    });
-
-    const plane = new THREE.Mesh(geometry, material);
-    scene.add(plane);
-
-    function animate(time) {
-      requestAnimationFrame(animate);
-      material.uniforms.time.value = time * 0.001;
-      renderer.render(scene, camera);
-    }
-    animate(0);
-
-    window.addEventListener('resize', () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      camera.left = -window.innerWidth / window.innerHeight;
-      camera.right = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-    });
-  </script>
 </body>
 </html>
