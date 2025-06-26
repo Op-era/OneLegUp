@@ -32,7 +32,7 @@
       padding: 20px;
       overflow-y: auto;
     }
-    /* Middle Column - Main Image */
+    /* Middle Column */
     .middle-column {
       flex: 2;
       display: flex;
@@ -47,7 +47,7 @@
       border-radius: 10px;
       object-fit: contain;
     }
-    /* Right Column - Events */
+    /* Right Column */
     .right-column {
       flex: 1;
       display: flex;
@@ -55,13 +55,13 @@
       gap: 40px;
       overflow-y: auto;
     }
-    /* Upcoming Parties and Past Events styling */
-    .events-section {
+    /* Upcoming Parties */
+    .upcoming-parties {
       background: rgba(255, 255, 255, 0.05);
       border-radius: 10px;
       padding: 15px;
     }
-    .events-section h2 {
+    .upcoming-parties h2 {
       font-size: 1.8rem;
       margin-bottom: 15px;
       color: #ffeb3b;
@@ -115,16 +115,12 @@
       border-radius: 5px;
       cursor: pointer;
     }
-
-    /* Animations */
     @keyframes colorCycle {
       0% { color: #ffeb3b; }
       33% { color: #40c4ff; }
       66% { color: #ff4081; }
       100% { color: #ffeb3b; }
     }
-
-    /* Responsive */
     @media (max-width: 900px) {
       .container {
         flex-direction: column;
@@ -151,20 +147,19 @@
     </div>
 
     <div class="middle-column">
-      <img src="images/pool_party2.jpg" alt="Main Pool Party Image" />
+      <img src="images/pool_party.jpg" alt="Pool Party Flyer" />
     </div>
 
     <div class="right-column">
-      <!-- Upcoming Parties -->
-      <div class="events-section">
+      <div class="upcoming-parties">
         <h2>Upcoming Parties</h2>
 
         <div class="event">
-          <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
-          <p>Date: July 20, 2025</p>
+          <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
+          <p>Date: May 31, 2025</p>
           <p>Location: Fresno, CA</p>
-          <p>Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.</p>
-          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
+          <p>Join us for an unforgettable night at the Skinny Dipping Pool Party! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.</p>
+          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
         </div>
 
         <div class="event">
@@ -173,19 +168,7 @@
           <p>Location: Las Vegas, NV</p>
           <a href="https://www.swinglifestyle.com" target="_blank">View on SLS</a>
         </div>
-      </div>
 
-      <!-- Past Events -->
-      <div class="events-section">
-        <h2>Past Events</h2>
-        <div class="event">
-          <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
-          <p>Date: May 31, 2025</p>
-          <p>Location: Fresno, CA</p>
-          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
-          <br />
-          <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="flyer-thumbnail" />
-        </div>
       </div>
     </div>
   </div>
