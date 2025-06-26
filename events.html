@@ -2,21 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Upcoming Events - One Leg Up</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
     body {
       font-family: 'Poppins', sans-serif;
       background: #000;
       color: #fff;
       position: relative;
     }
+
     .container {
       display: flex;
       flex-direction: column;
@@ -24,6 +26,7 @@
       position: relative;
       z-index: 1;
     }
+
     /* Canvas for Smoke */
     #smokeCanvas {
       position: fixed;
@@ -33,6 +36,7 @@
       height: 100%;
       z-index: 0;
     }
+
     /* Header with Hamburger and Title */
     .header {
       position: fixed;
@@ -43,10 +47,12 @@
       z-index: 1000;
       height: 60px;
     }
+
     .hamburger {
       cursor: pointer;
       margin-right: 15px;
     }
+
     .hamburger div {
       width: 30px;
       height: 3px;
@@ -54,6 +60,7 @@
       margin: 5px 0;
       transition: all 0.3s ease;
     }
+
     .site-title {
       font-size: 1.5rem;
       font-weight: 600;
@@ -61,6 +68,7 @@
       text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
       animation: colorCycle 5s ease infinite;
     }
+
     .menu {
       position: fixed;
       top: 0;
@@ -72,25 +80,31 @@
       z-index: 999;
       padding-top: 60px;
     }
+
     .menu.active {
       left: 0;
     }
+
     .menu ul {
       list-style: none;
       padding: 0 20px;
     }
+
     .menu ul li {
       margin: 20px 0;
     }
+
     .menu ul li a {
       color: #fff;
       text-decoration: none;
       font-size: 1.2rem;
       transition: color 0.3s;
     }
+
     .menu ul li a:hover {
       color: #ff6f61;
     }
+
     /* Events Section */
     .events {
       width: 100%;
@@ -101,6 +115,7 @@
       position: relative;
       z-index: 1;
     }
+
     .events h2 {
       font-size: 2rem;
       margin-bottom: 20px;
@@ -109,6 +124,7 @@
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
       animation: colorPulse 3s ease infinite;
     }
+
     .event {
       margin-bottom: 30px;
       padding: 15px;
@@ -116,45 +132,54 @@
       background: rgba(0, 0, 0, 0.3);
       transition: transform 0.3s ease;
     }
+
     .event:hover {
       transform: scale(1.02);
     }
+
     .event h3 {
       font-size: 1.6rem;
       color: #ffeb3b;
       animation: colorCycle 5s ease infinite;
       margin-bottom: 10px;
     }
+
     .event h3 a {
       color: #ffeb3b;
       text-decoration: none;
       transition: color 0.3s;
     }
+
     .event h3 a:hover {
       color: #ff4081;
       text-decoration: underline;
     }
+
     .event p {
       font-size: 1rem;
       color: #e0e0e0;
       margin-bottom: 5px;
     }
+
     .event a {
       color: #00e5ff;
       text-decoration: none;
       font-weight: 600;
       transition: color 0.3s;
     }
+
     .event a:hover {
       color: #ff4081;
       text-decoration: underline;
     }
+
     .event .flyer-thumbnail {
       margin-top: 10px;
       cursor: pointer;
       max-width: 150px;
       border-radius: 5px;
     }
+
     /* Flyer Overlay */
     .flyer-overlay {
       display: none;
@@ -168,14 +193,17 @@
       justify-content: center;
       align-items: center;
     }
+
     .flyer-overlay.active {
       display: flex;
     }
+
     .flyer-overlay img {
       max-width: 90%;
       max-height: 90%;
       object-fit: contain;
     }
+
     .flyer-overlay .close-btn {
       position: absolute;
       top: 20px;
@@ -184,17 +212,34 @@
       font-size: 2rem;
       cursor: pointer;
     }
+
     @keyframes colorCycle {
-      0% { color: #ffeb3b; }
-      33% { color: #40c4ff; }
-      66% { color: #ff4081; }
-      100% { color: #ffeb3b; }
+      0% {
+        color: #ffeb3b;
+      }
+      33% {
+        color: #40c4ff;
+      }
+      66% {
+        color: #ff4081;
+      }
+      100% {
+        color: #ffeb3b;
+      }
     }
+
     @keyframes colorPulse {
-      0% { text-shadow: 0 0 10px rgba(255, 107, 97, 0.8); }
-      50% { text-shadow: 0 0 15px rgba(64, 196, 255, 0.8); }
-      100% { text-shadow: 0 0 10px rgba(255, 107, 97, 0.8); }
+      0% {
+        text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
+      }
+      50% {
+        text-shadow: 0 0 15px rgba(64, 196, 255, 0.8);
+      }
+      100% {
+        text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
+      }
     }
+
     /* Responsive Design */
     @media (max-width: 768px) {
       .events {
@@ -202,21 +247,27 @@
         min-height: calc(100vh - 120px);
         padding: 10px;
       }
+
       .events h2 {
         font-size: 1.5rem;
       }
+
       .event h3 {
         font-size: 1.3rem;
       }
+
       .event p {
         font-size: 0.9rem;
       }
+
       .event .flyer-thumbnail {
         max-width: 120px;
       }
+
       .header {
         left: 10px;
       }
+
       .site-title {
         font-size: 1.2rem;
       }
@@ -248,22 +299,13 @@
     <div class="events">
       <h2>Upcoming Parties</h2>
       <div class="event">
-        <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
-        <p>Date: May 31, 2025</p>
-        <p>Address: 1838 East Everglade Ave, Fresno, CA 93720</p>
-        <p>RSVP Text: (559)549-3882</p>
-        <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
-        <br/>
-        <img src="images/pool_party_thumb.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="flyer-thumbnail" onclick="showFlyer('images/pool_party.jpg')"/>
-      </div>
-      <div class="event">
-        <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
+        <h3>Sunday Funday Pool Party</h3>
         <p>Date: July 20, 2025</p>
         <p>Address: 1838 East Everglade Ave, Fresno, CA 93720</p>
-        <p>RSVP Text: (559)549-3882</p>
+        <p>RSVP Phone: (559)549-3882</p>
         <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
-        <br/>
-        <img src="images/sunday_funday_thumb.jpg" alt="Sunday Funday Pool Party Thumbnail" class="flyer-thumbnail" onclick="showFlyer('images/sunday_funday.jpg')"/>
+        <br />
+        <img src="images/pool_party2.jpg" alt="Sunday Funday Pool Party Thumbnail" class="flyer-thumbnail" onclick="showFlyer('images/event2.jpg')" />
       </div>
       <div class="event">
         <h3>I'm almost there</h3>
@@ -272,26 +314,27 @@
         <p>Address: 1234 Event Street, Las Vegas, NV 89110</p>
         <p>RSVP Phone: (559)549-3882</p>
         <a href="https://www.swinglifestyle.com" target="_blank">View on SLS</a>
-        <br/>
-        <img src="images/event3_thumb.jpg" alt="I'm almost there Thumbnail" class="flyer-thumbnail" onclick="showFlyer('images/event3.jpg')"/>
+        <!-- No thumbnail for this event -->
       </div>
+    </div>
 
+    <div class="events" style="margin-top: 40px;">
       <h2>Past Events</h2>
       <div class="event">
-        <h3>Skinny Dipping Pool Party - Past</h3>
+        <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
         <p>Date: May 31, 2024</p>
         <p>Address: 1838 East Everglade Ave, Fresno, CA 93720</p>
         <p>RSVP Text: (559)549-3882</p>
         <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
-        <br/>
-        <img src="images/pool_party_thumb.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="flyer-thumbnail" onclick="showFlyer('images/pool_party.jpg')"/>
+        <br />
+        <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="flyer-thumbnail" onclick="showFlyer('images/pool_party.jpg')" />
       </div>
     </div>
   </div>
 
   <div class="flyer-overlay" id="flyerOverlay">
     <span class="close-btn" onclick="hideFlyer()">&times;</span>
-    <img id="fullFlyer" src="" alt="Full Flyer"/>
+    <img id="fullFlyer" src="" alt="Full Flyer" />
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
@@ -300,6 +343,7 @@
     function toggleMenu() {
       document.getElementById('menu').classList.toggle('active');
     }
+
     // Flyer Overlay Functions
     function showFlyer(imageSrc) {
       const overlay = document.getElementById('flyerOverlay');
@@ -307,16 +351,19 @@
       fullFlyer.src = imageSrc;
       overlay.classList.add('active');
     }
+
     function hideFlyer() {
       const overlay = document.getElementById('flyerOverlay');
       overlay.classList.remove('active');
     }
+
     // Three.js Smoke Effect
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
     camera.position.z = 1;
     const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('smokeCanvas'), alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
+
     function generateNoiseTexture(width, height) {
       const canvas = document.createElement('canvas');
       canvas.width = width;
@@ -333,9 +380,12 @@
       ctx.putImageData(imageData, 0, 0);
       return new THREE.CanvasTexture(canvas);
     }
+
     const noiseTexture = generateNoiseTexture(256, 256);
     noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
+
     const geometry = new THREE.PlaneGeometry(2, 2);
+
     const vertexShader = `
       varying vec2 vUv;
       void main() {
@@ -343,6 +393,7 @@
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
     `;
+
     const fragmentShader = `
       uniform sampler2D noiseTexture;
       uniform float time;
@@ -361,24 +412,28 @@
         gl_FragColor = vec4(color, alpha);
       }
     `;
+
     const material = new THREE.ShaderMaterial({
       vertexShader,
       fragmentShader,
       uniforms: {
         noiseTexture: { value: noiseTexture },
-        time: { value: 0.0 }
+        time: { value: 0.0 },
       },
       transparent: true,
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
     });
+
     const plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
+
     function animate(time) {
       requestAnimationFrame(animate);
       material.uniforms.time.value = time * 0.001;
       renderer.render(scene, camera);
     }
     animate(0);
+
     window.addEventListener('resize', () => {
       renderer.setSize(window.innerWidth, window.innerHeight);
       camera.left = -window.innerWidth / window.innerHeight;
