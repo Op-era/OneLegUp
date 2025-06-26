@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>One Leg Up Swingers Club</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
   <style>
     * {
       margin: 0;
@@ -16,81 +19,81 @@
       font-family: 'Poppins', sans-serif;
       background: #000;
       color: #fff;
+      position: relative;
       min-height: 100vh;
       overflow-x: hidden;
     }
 
     .container {
       display: flex;
-      min-height: 100vh;
+      justify-content: space-between;
+      padding: 20px;
       max-width: 1200px;
       margin: 0 auto;
-      padding: 20px;
-      gap: 20px;
+      height: 100vh;
+      position: relative;
+      z-index: 1;
     }
 
     /* Left Column */
     .left-column {
-      flex: 1;
-      background: #111;
-      padding: 20px;
-      border-radius: 10px;
-      /* Put your original left column content here or leave blank */
+      width: 25%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 20px;
     }
 
     /* Middle Column */
     .middle-column {
-      flex: 1.5;
+      width: 50%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      padding: 10px;
     }
 
-    .main-flyer {
+    .middle-column img {
       max-width: 100%;
       border-radius: 10px;
-      box-shadow: 0 0 20px #ff6b61;
+      box-shadow: 0 0 15px rgba(255, 107, 97, 0.7);
     }
 
     /* Right Column */
     .right-column {
-      flex: 1;
+      width: 25%;
       display: flex;
       flex-direction: column;
       gap: 40px;
       overflow-y: auto;
-      max-height: 90vh;
-      padding: 10px;
-      background: #111;
-      border-radius: 10px;
+      padding-left: 20px;
+      max-height: 100vh;
     }
 
-    h2.section-title {
-      font-size: 1.8rem;
+    h2 {
+      font-size: 1.6rem;
       color: #ffeb3b;
+      margin-bottom: 10px;
       text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
-      margin-bottom: 15px;
       animation: colorCycle 5s ease infinite;
     }
 
     .event {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.3);
       padding: 15px;
-      margin-bottom: 15px;
+      border-radius: 8px;
       transition: transform 0.3s ease;
     }
 
     .event:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 10px #ff6b61;
+      transform: scale(1.02);
     }
 
     .event h3 {
       font-size: 1.3rem;
       color: #ffeb3b;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       animation: colorCycle 5s ease infinite;
     }
 
@@ -113,8 +116,8 @@
 
     .event a {
       color: #00e5ff;
-      font-weight: 600;
       text-decoration: none;
+      font-weight: 600;
       transition: color 0.3s;
     }
 
@@ -123,14 +126,57 @@
       text-decoration: underline;
     }
 
-    .event img {
+    .flyer-thumbnail {
       margin-top: 10px;
+      cursor: pointer;
       max-width: 150px;
       border-radius: 5px;
-      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+      transition: box-shadow 0.3s ease;
     }
 
-    /* Animations */
+    .flyer-thumbnail:hover {
+      box-shadow: 0 0 15px rgba(255, 64, 129, 0.9);
+    }
+
+    /* Flyer Overlay */
+    .flyer-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .flyer-overlay.active {
+      display: flex;
+    }
+
+    .flyer-overlay img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 0 25px rgba(255, 107, 97, 0.9);
+    }
+
+    .flyer-overlay .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: #fff;
+      font-size: 3rem;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 900;
+      text-shadow: 0 0 10px #ff4081;
+    }
+
     @keyframes colorCycle {
       0% {
         color: #ffeb3b;
@@ -147,46 +193,50 @@
     }
 
     /* Responsive */
-    @media (max-width: 900px) {
+    @media (max-width: 992px) {
       .container {
         flex-direction: column;
-        max-width: 100%;
-        padding: 10px;
+        height: auto;
       }
-
       .left-column,
       .middle-column,
       .right-column {
-        flex: unset;
+        width: 100%;
         max-height: none;
+        padding: 0;
       }
-
-      .main-flyer {
-        max-width: 90vw;
+      .right-column {
+        padding-left: 0;
+        gap: 30px;
+        margin-top: 30px;
       }
     }
   </style>
 </head>
 <body>
+  <canvas id="smokeCanvas"></canvas>
+
   <div class="container">
+    <!-- Left Column: Could be navigation or ads, you said keep as is, so blank here -->
     <div class="left-column">
-      <!-- Original left column content here if any -->
+      <!-- Placeholder or content if originally present -->
     </div>
 
+    <!-- Middle Column: Main Flyer -->
     <div class="middle-column">
-      <img
-        src="images/pool_party2.jpg"
-        alt="Main Flyer - Skinny Dipping Pool Party"
-        class="main-flyer"
-      />
+      <img src="images/pool_party2.jpg" alt="Main Flyer: Sunday Funday Pool Party" />
     </div>
 
+    <!-- Right Column: Upcoming Parties & Past Events -->
     <div class="right-column">
-      <section>
-        <h2 class="section-title">Upcoming Parties</h2>
+      <!-- Upcoming Parties -->
+      <section class="upcoming-parties">
+        <h2>Upcoming Parties</h2>
 
         <div class="event">
-          <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
+          <h3>
+            <a href="payment.html">Sunday Funday Pool Party</a>
+          </h3>
           <p>Date: July 20, 2025</p>
           <p>Location: Fresno, CA</p>
           <p>Address: 1838 East Everglade Ave, Fresno, CA 93720</p>
@@ -213,11 +263,14 @@
         </div>
       </section>
 
-      <section>
-        <h2 class="section-title">Past Events</h2>
+      <!-- Past Events -->
+      <section class="past-events" style="margin-top: 40px;">
+        <h2>Past Events</h2>
 
         <div class="event">
-          <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
+          <h3>
+            <a href="payment.html">Skinny Dipping Pool Party</a>
+          </h3>
           <p>Date: May 31, 2025</p>
           <p>Location: Fresno, CA</p>
           <p>Address: 1838 East Everglade Ave, Fresno, CA 93720</p>
@@ -230,10 +283,117 @@
           <img
             src="images/pool_party.jpg"
             alt="Skinny Dipping Pool Party Thumbnail"
+            class="flyer-thumbnail"
+            onclick="showFlyer('images/pool_party.jpg')"
           />
         </div>
       </section>
     </div>
   </div>
+
+  <div class="flyer-overlay" id="flyerOverlay">
+    <span class="close-btn" onclick="hideFlyer()">&times;</span>
+    <img id="fullFlyer" src="" alt="Full Flyer" />
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script>
+    // Flyer Overlay Functions
+    function showFlyer(imageSrc) {
+      const overlay = document.getElementById('flyerOverlay');
+      const fullFlyer = document.getElementById('fullFlyer');
+      fullFlyer.src = imageSrc;
+      overlay.classList.add('active');
+    }
+
+    function hideFlyer() {
+      const overlay = document.getElementById('flyerOverlay');
+      overlay.classList.remove('active');
+    }
+
+    // Three.js Smoke Effect
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+    camera.position.z = 1;
+    const renderer = new THREE.WebGLRenderer({
+      canvas: document.getElementById('smokeCanvas'),
+      alpha: true,
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    function generateNoiseTexture(width, height) {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      const imageData = ctx.createImageData(width, height);
+      for (let i = 0; i < imageData.data.length; i += 4) {
+        const value = Math.random() * 255;
+        imageData.data[i] = value;
+        imageData.data[i + 1] = value;
+        imageData.data[i + 2] = value;
+        imageData.data[i + 3] = 255;
+      }
+      ctx.putImageData(imageData, 0, 0);
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    const noiseTexture = generateNoiseTexture(256, 256);
+    noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
+
+    const geometry = new THREE.PlaneGeometry(2, 2);
+
+    const vertexShader = `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+
+    const fragmentShader = `
+      uniform sampler2D noiseTexture;
+      uniform float time;
+      varying vec2 vUv;
+      void main() {
+        vec2 uv = vUv + vec2(-time * 0.1, time * 0.05);
+        float noise = texture2D(noiseTexture, uv * 0.5).r;
+        float noise2 = texture2D(noiseTexture, uv * 0.2 + vec2(time * 0.05, -time * 0.03)).r;
+        float smoke = noise * noise2;
+        float alpha = smoothstep(0.5, 1.0, vUv.x) * smoke * 0.7;
+        vec3 color = vec3(
+          abs(sin(time * 0.7 + vUv.x)),
+          abs(sin(time * 0.8 + vUv.y)),
+          abs(sin(time * 0.9 + vUv.x + vUv.y))
+        );
+        gl_FragColor = vec4(color, alpha);
+      }
+    `;
+
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms: {
+        noiseTexture: { value: noiseTexture },
+        time: { value: 0.0 },
+      },
+      transparent: true,
+      side: THREE.DoubleSide,
+    });
+
+    const plane = new THREE.Mesh(geometry, material);
+    scene.add(plane);
+
+    function animate(time) {
+      requestAnimationFrame(animate);
+      material.uniforms.time.value = time * 0.001;
+      renderer.render(scene, camera);
+    }
+    animate(0);
+
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
 </body>
 </html>
