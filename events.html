@@ -11,99 +11,12 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Poppins', sans-serif;
       background: #000;
       color: #fff;
       padding: 20px;
-      position: relative;
     }
-
-    /* Hamburger menu styles same as index */
-    .header {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      display: flex;
-      align-items: center;
-      z-index: 1000;
-      height: 60px;
-    }
-
-    .hamburger {
-      cursor: pointer;
-      margin-right: 15px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
-    }
-
-    .hamburger div {
-      width: 30px;
-      height: 3px;
-      background: #fff;
-      transition: all 0.3s ease;
-    }
-
-    .hamburger.active div:nth-child(1) {
-      transform: rotate(45deg) translate(5px, 5px);
-    }
-
-    .hamburger.active div:nth-child(2) {
-      opacity: 0;
-    }
-
-    .hamburger.active div:nth-child(3) {
-      transform: rotate(-45deg) translate(6px, -6px);
-    }
-
-    .site-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #ffeb3b;
-      text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
-      animation: colorCycle 5s ease infinite;
-      user-select: none;
-    }
-
-    .menu {
-      position: fixed;
-      top: 0;
-      left: -250px;
-      width: 250px;
-      height: 100%;
-      background: #1a1a1a;
-      transition: left 0.3s ease;
-      z-index: 999;
-      padding-top: 60px;
-    }
-
-    .menu.active {
-      left: 0;
-    }
-
-    .menu ul {
-      list-style: none;
-      padding: 0 20px;
-    }
-
-    .menu ul li {
-      margin: 20px 0;
-    }
-
-    .menu ul li a {
-      color: #fff;
-      text-decoration: none;
-      font-size: 1.2rem;
-      transition: color 0.3s;
-    }
-
-    .menu ul li a:hover {
-      color: #ff6f61;
-    }
-
     h1 {
       font-size: 2rem;
       color: #ffeb3b;
@@ -111,59 +24,50 @@
       text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
       text-align: center;
     }
-
+    .events-container {
+      max-width: 900px;
+      margin: 0 auto 40px;
+    }
+    h2.section-title {
+      color: #ffeb3b;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      text-align: center;
+    }
     .event {
       margin-bottom: 30px;
       padding: 15px;
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.05);
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
     }
-
     .event h2 {
       font-size: 1.5rem;
       color: #40c4ff;
     }
-
     .event h2 a {
       color: #40c4ff;
       text-decoration: none;
     }
-
     .event h2 a:hover {
       text-decoration: underline;
     }
-
     .event p, .event a {
       font-size: 1rem;
       color: #e0e0e0;
     }
-
     .event a {
       color: #00e5ff;
       text-decoration: none;
     }
-
     .event a:hover {
       color: #ff4081;
       text-decoration: underline;
     }
-
     .event img {
       margin-top: 10px;
       max-width: 150px;
       border-radius: 5px;
     }
-
-    h2.section-title {
-      margin-top: 20px;
-      color: #ffeb3b;
-      font-size: 1.8rem;
-      text-align: center;
-    }
-
     .payment-options {
       margin-top: 10px;
       display: flex;
@@ -171,149 +75,204 @@
       flex-wrap: wrap;
       gap: 20px;
     }
-
     .pay-group {
       flex: 1 1 45%;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
     }
-
     .pay-group p {
       font-weight: bold;
       margin-bottom: 5px;
-      color: #00e5ff;
-      text-align: center;
-      text-shadow: 0 0 5px #00e5ff;
     }
-
     .pay-button {
       display: inline-block;
-      margin: 0 auto;
+      margin: 5px 0;
       padding: 10px 15px;
       background: #00e5ff;
       color: #000;
       font-weight: bold;
       text-decoration: none;
       border-radius: 5px;
-      transition: background 0.3s, color 0.3s;
-      text-align: center;
-      user-select: none;
-      min-width: 180px;
+      transition: background 0.3s;
     }
-
     .pay-button:hover {
       background: #ff4081;
       color: #fff;
     }
-
     .note {
       margin-top: 10px;
       font-size: 0.9rem;
       color: #ffeb3b;
-      text-align: center;
-    }
-
-    @keyframes colorCycle {
-      0% { color: #ffeb3b; }
-      33% { color: #40c4ff; }
-      66% { color: #ff4081; }
-      100% { color: #ffeb3b; }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-    <h1 class="site-title">One Leg Up</h1>
+  <h1>Upcoming Events</h1>
+  <div id="upcoming-events" class="events-container">
+    <!-- Upcoming events go here -->
   </div>
 
-  <nav class="menu" id="menu">
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="events.html">Upcoming Events</a></li>
-      <li><a href="about.html">About Us</a></li>
-      <li><a href="contact.html">Contact Us</a></li>
-    </ul>
-  </nav>
-
-  <h1>Upcoming Events</h1>
-
-  <section class="event" data-date="2025-07-20">
-    <h2>Sunday Funday Pool Party</h2>
-    <p>Date: July 20, 2025</p>
-    <p>Location: 1838 East Everglade Ave, Fresno, CA 93720</p>
-    <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
-    <div class="payment-options">
-      <div class="pay-group">
-        <p>Couples ($40):</p>
-        <a class="pay-button" href="https://paypal.me/0neLegUp/40" target="_blank">Pay $40 with PayPal</a>
-        <a class="pay-button" href="https://cash.app/$0neLegUp?amount=40" target="_blank">Pay $40 with Cash App</a>
-        <a class="pay-button" href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=40&note=Sunday%20Funday%20Couples" target="_blank">Pay $40 with Venmo</a>
-      </div>
-      <div class="pay-group">
-        <p>Single Male ($80):</p>
-        <a class="pay-button" href="https://paypal.me/0neLegUp/80" target="_blank">Pay $80 with PayPal</a>
-        <a class="pay-button" href="https://cash.app/$0neLegUp?amount=80" target="_blank">Pay $80 with Cash App</a>
-        <a class="pay-button" href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=80&note=Sunday%20Funday%20Single%20Male" target="_blank">Pay $80 with Venmo</a>
-      </div>
-    </div>
-    <p class="note">Please make sure to enter the exact amount. Incorrect payments may result in denied entry to the event.</p>
-  </section>
-
-  <section class="event" data-date="2025-09-10">
-    <h2>I'm almost there</h2>
-    <p>Date: To Be Determined</p>
-    <p>Location: 1838 East Everglade Ave, Fresno, CA 93720</p>
-    <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
-  </section>
-
   <h2 class="section-title">Past Events</h2>
-  <section id="pastEventsContainer">
-    <section class="event" data-date="2025-05-31">
-      <h2><a href="payment.html">Skinny Dipping Pool Party</a></h2>
-      <p>Date: May 31, 2026</p>
-      <p>Location: 1838 East Everglade Ave, Fresno, CA 93720</p>
-      <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
-      <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party" />
-    </section>
-  </section>
+  <div id="past-events" class="events-container">
+    <!-- Past events go here -->
+  </div>
 
   <script>
-    // Hamburger menu toggle
-    const hamburger = document.getElementById('hamburger');
-    const menu = document.getElementById('menu');
-    function toggleMenu() {
-      hamburger.classList.toggle('active');
-      menu.classList.toggle('active');
-    }
+    // Event data (simulate from HTML or API)
+    const eventsData = [
+      {
+        title: 'Sunday Funday Pool Party',
+        date: '2025-07-20',
+        location: '1838 East Everglade Ave, Fresno, CA 93720',
+        link: 'https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723',
+        payments: {
+          couples: [
+            { label: 'Pay $40 with PayPal', url: 'https://paypal.me/0neLegUp/40' },
+            { label: 'Pay $40 with Cash App', url: 'https://cash.app/$0neLegUp?amount=40' },
+            { label: 'Pay $40 with Venmo', url: 'https://venmo.com/u/One_Leg_Up?txn=pay&amount=40&note=Sunday%20Funday%20Couples' }
+          ],
+          singleMale: [
+            { label: 'Pay $80 with PayPal', url: 'https://paypal.me/0neLegUp/80' },
+            { label: 'Pay $80 with Cash App', url: 'https://cash.app/$0neLegUp?amount=80' },
+            { label: 'Pay $80 with Venmo', url: 'https://venmo.com/u/One_Leg_Up?txn=pay&amount=80&note=Sunday%20Funday%20Single%20Male' }
+          ]
+        },
+        note: 'Please make sure to enter the exact amount. Incorrect payments may result in denied entry to the event.'
+      },
+      {
+        title: "I'm almost there",
+        date: '2025-09-10',
+        location: '1838 East Everglade Ave, Fresno, CA 93720',
+        link: 'https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723',
+        payments: null,
+        note: null
+      },
+      {
+        title: 'Skinny Dipping Pool Party',
+        date: '2025-05-31',
+        location: '1838 East Everglade Ave, Fresno, CA 93720',
+        link: 'https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639',
+        payments: null,
+        note: null,
+        isPast: true
+      }
+    ];
 
-    // Auto move events between Upcoming and Past based on date
-    function sortEvents() {
-      const now = new Date();
-      const upcomingEvents = Array.from(document.querySelectorAll('section.event[data-date]'));
-      const pastContainer = document.getElementById('pastEventsContainer');
+    // Containers
+    const upcomingContainer = document.getElementById('upcoming-events');
+    const pastContainer = document.getElementById('past-events');
 
-      upcomingEvents.forEach(event => {
-        const dateStr = event.getAttribute('data-date');
-        const eventDate = new Date(dateStr);
+    // Helper: create event element
+    function createEventElement(event) {
+      const section = document.createElement('section');
+      section.className = 'event';
+      section.dataset.date = event.date;
 
-        if (eventDate < now) {
-          pastContainer.appendChild(event);
+      const h2 = document.createElement('h2');
+      if (event.link) {
+        const a = document.createElement('a');
+        a.href = event.link;
+        a.target = '_blank';
+        a.textContent = event.title;
+        h2.appendChild(a);
+      } else {
+        h2.textContent = event.title;
+      }
+      section.appendChild(h2);
+
+      const dateP = document.createElement('p');
+      dateP.textContent = 'Date: ' + (event.date || 'TBD');
+      section.appendChild(dateP);
+
+      const locP = document.createElement('p');
+      locP.textContent = 'Location: ' + (event.location || '');
+      section.appendChild(locP);
+
+      if (event.payments) {
+        const payDiv = document.createElement('div');
+        payDiv.className = 'payment-options';
+
+        if (event.payments.couples) {
+          const couplesDiv = document.createElement('div');
+          couplesDiv.className = 'pay-group';
+          const couplesP = document.createElement('p');
+          couplesP.textContent = 'Couples ($40):';
+          couplesDiv.appendChild(couplesP);
+
+          event.payments.couples.forEach(pay => {
+            const a = document.createElement('a');
+            a.className = 'pay-button';
+            a.href = pay.url;
+            a.target = '_blank';
+            a.textContent = pay.label;
+            couplesDiv.appendChild(a);
+          });
+          payDiv.appendChild(couplesDiv);
         }
-      });
 
-      // Sort past events chronologically ascending by date
-      const pastEvents = Array.from(pastContainer.querySelectorAll('section.event'));
-      pastEvents.sort((a, b) => new Date(a.getAttribute('data-date')) - new Date(b.getAttribute('data-date')));
-      pastEvents.forEach(event => pastContainer.appendChild(event));
+        if (event.payments.singleMale) {
+          const singleDiv = document.createElement('div');
+          singleDiv.className = 'pay-group';
+          const singleP = document.createElement('p');
+          singleP.textContent = 'Single Male ($80):';
+          singleDiv.appendChild(singleP);
+
+          event.payments.singleMale.forEach(pay => {
+            const a = document.createElement('a');
+            a.className = 'pay-button';
+            a.href = pay.url;
+            a.target = '_blank';
+            a.textContent = pay.label;
+            singleDiv.appendChild(a);
+          });
+          payDiv.appendChild(singleDiv);
+        }
+        section.appendChild(payDiv);
+      }
+
+      if (event.note) {
+        const noteP = document.createElement('p');
+        noteP.className = 'note';
+        noteP.textContent = event.note;
+        section.appendChild(noteP);
+      }
+
+      return section;
     }
 
-    sortEvents();
+    // Sort function (ascending date)
+    function sortByDateAsc(a, b) {
+      return new Date(a.dataset.date) - new Date(b.dataset.date);
+    }
+
+    // Clear containers
+    upcomingContainer.innerHTML = '';
+    pastContainer.innerHTML = '';
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // normalize to midnight
+
+    // Process and distribute events
+    eventsData.forEach(event => {
+      const eventDate = new Date(event.date);
+      eventDate.setHours(0, 0, 0, 0);
+
+      const eventEl = createEventElement(event);
+
+      if (eventDate >= today) {
+        upcomingContainer.appendChild(eventEl);
+      } else {
+        pastContainer.appendChild(eventEl);
+      }
+    });
+
+    // Sort each container
+    function sortContainer(container) {
+      const events = Array.from(container.children);
+      events.sort(sortByDateAsc);
+      events.forEach(event => container.appendChild(event));
+    }
+
+    sortContainer(upcomingContainer);
+    sortContainer(pastContainer);
   </script>
 </body>
 </html>
