@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>One Leg Up - Upcoming Events</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events - One Leg Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -16,140 +16,49 @@
       font-family: 'Poppins', sans-serif;
       background: #000;
       color: #fff;
-      position: relative;
-    }
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      position: relative;
-      z-index: 1;
       padding: 20px;
-      padding-top: 150px;
     }
 
-    /* Canvas for Smoke */
-    #smokeCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
-
-    /* Header with Hamburger and Title */
-    .header {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      display: flex;
-      align-items: center;
-      z-index: 1000;
-      height: 60px;
-    }
-
-    .hamburger {
-      cursor: pointer;
-      margin-right: 15px;
-    }
-
-    .hamburger div {
-      width: 30px;
-      height: 3px;
-      background: #fff;
-      margin: 5px 0;
-      transition: all 0.3s ease;
-    }
-
-    .site-title {
-      font-size: 1.5rem;
-      font-weight: 600;
+    h1 {
+      font-size: 2rem;
       color: #ffeb3b;
+      margin-bottom: 20px;
       text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
-      animation: colorCycle 5s ease infinite;
-    }
-
-    .menu {
-      position: fixed;
-      top: 0;
-      left: -250px;
-      width: 250px;
-      height: 100%;
-      background: #1a1a1a;
-      transition: left 0.3s ease;
-      z-index: 999;
-      padding-top: 60px;
-    }
-
-    .menu.active {
-      left: 0;
-    }
-
-    .menu ul {
-      list-style: none;
-      padding: 0 20px;
-    }
-
-    .menu ul li {
-      margin: 20px 0;
-    }
-
-    .menu ul li a {
-      color: #fff;
-      text-decoration: none;
-      font-size: 1.2rem;
-      transition: color 0.3s;
-    }
-
-    .menu ul li a:hover {
-      color: #ff6f61;
-    }
-
-    /* Event Content Layout */
-    .events {
-      max-width: 900px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
+      text-align: center;
     }
 
     .event {
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      margin-bottom: 30px;
+      padding: 15px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .event h2, .event h3 {
-      color: #ffeb3b;
-      animation: colorCycle 5s ease infinite;
+    .event h2 {
+      font-size: 1.5rem;
+      color: #40c4ff;
     }
 
-    .event h3 a {
-      color: #ffeb3b;
+    .event h2 a {
+      color: #40c4ff;
       text-decoration: none;
-      transition: color 0.3s;
     }
 
-    .event h3 a:hover {
-      color: #ff4081;
+    .event h2 a:hover {
       text-decoration: underline;
     }
 
-    .event p {
-      color: #e0e0e0;
-      margin-bottom: 10px;
+    .event p, .event a {
       font-size: 1rem;
+      color: #e0e0e0;
     }
 
     .event a {
       color: #00e5ff;
       text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s;
     }
 
     .event a:hover {
@@ -157,218 +66,98 @@
       text-decoration: underline;
     }
 
-    .payment-buttons {
+    .event img {
+      margin-top: 10px;
+      max-width: 150px;
+      border-radius: 5px;
+    }
+
+    h2.section-title {
+      margin-top: 20px;
+      color: #ffeb3b;
+      font-size: 1.8rem;
+      text-align: center;
+    }
+
+    .payment-options {
+      margin-top: 10px;
       display: flex;
       justify-content: space-between;
-      gap: 40px;
-      max-width: 600px;
-      margin-top: 20px;
+      flex-wrap: wrap;
+      gap: 20px;
     }
 
     .pay-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      flex: 1;
+      flex: 1 1 45%;
     }
 
-    .pay-group.single-male {
-      align-items: flex-end;
+    .pay-group p {
+      font-weight: bold;
+      margin-bottom: 5px;
     }
 
     .pay-button {
       display: inline-block;
-      padding: 10px 20px;
+      margin: 5px 0;
+      padding: 10px 15px;
       background: #00e5ff;
-      color: #000; /* fixed text visibility */
-      font-size: 1rem;
-      font-weight: 600;
+      color: #000 !important;
+      font-weight: bold;
       text-decoration: none;
       border-radius: 5px;
-      transition: background 0.3s, color 0.3s;
-      text-align: center;
+      transition: background 0.3s;
     }
 
     .pay-button:hover {
       background: #ff4081;
-      color: #fff;
+      color: #fff !important;
     }
 
-    @keyframes colorCycle {
-      0% { color: #ffeb3b; }
-      33% { color: #40c4ff; }
-      66% { color: #ff4081; }
-      100% { color: #ffeb3b; }
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .container {
-        padding-top: 120px;
-      }
-
-      .payment-buttons {
-        flex-direction: column;
-        gap: 10px;
-        max-width: 100%;
-      }
-
-      .pay-group.single-male {
-        align-items: center;
-      }
-
-      .pay-button {
-        width: 80%;
-        text-align: center;
-      }
+    .note {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #ffeb3b;
     }
   </style>
 </head>
 <body>
-  <canvas id="smokeCanvas"></canvas>
-
-  <div class="header">
-    <div class="hamburger" onclick="toggleMenu()">
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-    <h1 class="site-title">One Leg Up</h1>
-  </div>
-
-  <div class="menu" id="menu">
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="events.html">Upcoming Events</a></li>
-      <li><a href="about.html">About Us</a></li>
-      <li><a href="contact.html">Contact Us</a></li>
-    </ul>
-  </div>
-
-  <div class="container">
-    <div class="events">
-      <h2>Upcoming Events</h2>
-
-      <div class="event">
-        <h3>Sunday Funday Pool Party</h3>
-        <p>Date: July 20, 2025<br />Location: Fresno, CA</p>
-        <p>Join us for a Sunday funday! Full of wet play time for adults!</p>
-        <p>Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
-        <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
-
-        <div class="payment-buttons">
-          <div class="pay-group couples">
-            <a href="https://paypal.me/0neLegUp/40" target="_blank" class="pay-button">Pay $40 with PayPal (Couples)</a>
-            <a href="https://cash.app/$0neLegUp?amount=40" target="_blank" class="pay-button">Pay $40 with Cash App (Couples)</a>
-            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=40&note=Skinny%20Dipping%20Couples" target="_blank" class="pay-button">Pay $40 with Venmo (Couples)</a>
-          </div>
-          <div class="pay-group single-male">
-            <a href="https://paypal.me/0neLegUp/80" target="_blank" class="pay-button">Pay $80 with PayPal (Single Male)</a>
-            <a href="https://cash.app/$0neLegUp?amount=80" target="_blank" class="pay-button">Pay $80 with Cash App (Single Male)</a>
-            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=80&note=Skinny%20Dipping%20Single%20Male" target="_blank" class="pay-button">Pay $80 with Venmo (Single Male)</a>
-          </div>
-        </div>
+  <h1>Upcoming Events</h1>
+  <section class="event">
+    <h2>Sunday Funday Pool Party</h2>
+    <p>Date: July 20, 2025</p>
+    <p>Location: 1838 East Everglade Ave, Fresno, CA 93720</p>
+    <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
+    <div class="payment-options">
+      <div class="pay-group">
+        <p>Couples ($40):</p>
+        <a class="pay-button" href="https://paypal.me/0neLegUp/40" target="_blank">Pay $40 with PayPal</a>
+        <a class="pay-button" href="https://cash.app/$0neLegUp?amount=40" target="_blank">Pay $40 with Cash App</a>
+        <a class="pay-button" href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=40&note=Sunday%20Funday%20Couples" target="_blank">Pay $40 with Venmo</a>
       </div>
-
-      <div class="event">
-        <h3>I'm almost there</h3>
-        <p>Date: September 10, 2025<br>Location: Private Venue, CA</p>
-        <a href="https://www.swinglifestyle.com" target="_blank">View on SLS</a>
+      <div class="pay-group">
+        <p>Single Male ($80):</p>
+        <a class="pay-button" href="https://paypal.me/0neLegUp/80" target="_blank">Pay $80 with PayPal</a>
+        <a class="pay-button" href="https://cash.app/$0neLegUp?amount=80" target="_blank">Pay $80 with Cash App</a>
+        <a class="pay-button" href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=80&note=Sunday%20Funday%20Single%20Male" target="_blank">Pay $80 with Venmo</a>
       </div>
-
     </div>
-  </div>
+    <p class="note">Please make sure to enter the exact amount. Incorrect payments may result in denied entry to the event.</p>
+  </section>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-  <script>
-    // Hamburger Menu Toggle
-    function toggleMenu() {
-      document.getElementById('menu').classList.toggle('active');
-    }
+  <section class="event">
+    <h2>I'm almost there</h2>
+    <p>Date: To Be Determined</p>
+    <p>Location: 1838 East Everglade Ave, Fresno, CA 93720</p>
+    <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
+  </section>
 
-    // Three.js Smoke Effect (same as index.html)
-    const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
-    camera.position.z = 1;
-    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('smokeCanvas'), alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-    function generateNoiseTexture(width, height) {
-      const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext('2d');
-      const imageData = ctx.createImageData(width, height);
-      for (let i = 0; i < imageData.data.length; i += 4) {
-        const value = Math.random() * 255;
-        imageData.data[i] = value;
-        imageData.data[i + 1] = value;
-        imageData.data[i + 2] = value;
-        imageData.data[i + 3] = 255;
-      }
-      ctx.putImageData(imageData, 0, 0);
-      return new THREE.CanvasTexture(canvas);
-    }
-
-    const noiseTexture = generateNoiseTexture(256, 256);
-    noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
-
-    const geometry = new THREE.PlaneGeometry(2, 2);
-
-    const vertexShader = `
-      varying vec2 vUv;
-      void main() {
-        vUv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `;
-
-    const fragmentShader = `
-      uniform sampler2D noiseTexture;
-      uniform float time;
-      varying vec2 vUv;
-      void main() {
-        vec2 uv = vUv + vec2(-time * 0.1, time * 0.05);
-        float noise = texture2D(noiseTexture, uv * 0.5).r;
-        float noise2 = texture2D(noiseTexture, uv * 0.2 + vec2(time * 0.05, -time * 0.03)).r;
-        float smoke = noise * noise2;
-        float alpha = smoothstep(0.5, 1.0, vUv.x) * smoke * 0.7;
-        vec3 color = vec3(
-          abs(sin(time * 0.7 + vUv.x)),
-          abs(sin(time * 0.8 + vUv.y)),
-          abs(sin(time * 0.9 + vUv.x + vUv.y))
-        );
-        gl_FragColor = vec4(color, alpha);
-      }
-    `;
-
-    const material = new THREE.ShaderMaterial({
-      vertexShader,
-      fragmentShader,
-      uniforms: {
-        noiseTexture: { value: noiseTexture },
-        time: { value: 0.0 }
-      },
-      transparent: true,
-      side: THREE.DoubleSide
-    });
-
-    const plane = new THREE.Mesh(geometry, material);
-    scene.add(plane);
-
-    function animate(time) {
-      requestAnimationFrame(animate);
-      material.uniforms.time.value = time * 0.001;
-      renderer.render(scene, camera);
-    }
-    animate(0);
-
-    window.addEventListener('resize', () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      camera.left = -window.innerWidth / window.innerHeight;
-      camera.right = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-    });
-  </script>
+  <h2 class="section-title">Past Events</h2>
+  <section class="event">
+    <h2><a href="payment.html">Skinny Dipping Pool Party</a></h2>
+    <p>Date: May 31, 2025</p>
+    <p>Location: 1838 East Everglade Ave, Fresno, CA 93720</p>
+    <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
+    <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party">
+  </section>
 </body>
 </html>
