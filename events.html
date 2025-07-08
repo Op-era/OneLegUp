@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Events - One Leg Up</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
     body {
       font-family: 'Poppins', sans-serif;
       background: #000;
       color: #fff;
       padding: 20px;
     }
+
     h1 {
       font-size: 2rem;
       color: #ffeb3b;
@@ -24,50 +26,61 @@
       text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
       text-align: center;
     }
+
     .events-container {
       max-width: 900px;
       margin: 0 auto 40px;
     }
+
     h2.section-title {
       color: #ffeb3b;
       font-size: 1.8rem;
       margin-bottom: 15px;
       text-align: center;
     }
+
     .event {
       margin-bottom: 30px;
       padding: 15px;
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.05);
     }
+
     .event h2 {
       font-size: 1.5rem;
       color: #40c4ff;
     }
+
     .event h2 a {
       color: #40c4ff;
       text-decoration: none;
     }
+
     .event h2 a:hover {
       text-decoration: underline;
     }
+
     .event p, .event a {
       font-size: 1rem;
       color: #e0e0e0;
     }
+
     .event a {
       color: #00e5ff;
       text-decoration: none;
     }
+
     .event a:hover {
       color: #ff4081;
       text-decoration: underline;
     }
+
     .event img {
       margin-top: 10px;
       max-width: 150px;
       border-radius: 5px;
     }
+
     .payment-options {
       margin-top: 10px;
       display: flex;
@@ -75,13 +88,16 @@
       flex-wrap: wrap;
       gap: 20px;
     }
+
     .pay-group {
       flex: 1 1 45%;
     }
+
     .pay-group p {
       font-weight: bold;
       margin-bottom: 5px;
     }
+
     .pay-button {
       display: inline-block;
       margin: 5px 0;
@@ -93,10 +109,12 @@
       border-radius: 5px;
       transition: background 0.3s;
     }
+
     .pay-button:hover {
       background: #ff4081;
       color: #fff;
     }
+
     .note {
       margin-top: 10px;
       font-size: 0.9rem;
@@ -106,17 +124,12 @@
 </head>
 <body>
   <h1>Upcoming Events</h1>
-  <div id="upcoming-events" class="events-container">
-    <!-- Upcoming events go here -->
-  </div>
+  <div id="upcoming-events" class="events-container"></div>
 
   <h2 class="section-title">Past Events</h2>
-  <div id="past-events" class="events-container">
-    <!-- Past events go here -->
-  </div>
+  <div id="past-events" class="events-container"></div>
 
   <script>
-    // Event data (simulate from HTML or API)
     const eventsData = [
       {
         title: 'Sunday Funday Pool Party',
@@ -141,134 +154,123 @@
         title: "I'm almost there",
         date: '2025-09-10',
         location: '1838 East Everglade Ave, Fresno, CA 93720',
-        link: 'https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723',
-        payments: null,
-        note: null
+        link: 'https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723'
       },
       {
         title: 'Skinny Dipping Pool Party',
-        date: '2026-05-31',
+        date: '2025-05-31',
         location: '1838 East Everglade Ave, Fresno, CA 93720',
-        link: 'https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639',
-        payments: null,
-        note: null,
-        isPast: true
+        link: 'https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639'
       }
     ];
 
-    // Containers
     const upcomingContainer = document.getElementById('upcoming-events');
     const pastContainer = document.getElementById('past-events');
 
-    // Helper: create event element
     function createEventElement(event) {
       const section = document.createElement('section');
       section.className = 'event';
       section.dataset.date = event.date;
 
       const h2 = document.createElement('h2');
-      if (event.link) {
-        const a = document.createElement('a');
-        a.href = event.link;
-        a.target = '_blank';
-        a.textContent = event.title;
-        h2.appendChild(a);
-      } else {
-        h2.textContent = event.title;
-      }
+      const a = document.createElement('a');
+      a.href = event.link;
+      a.target = '_blank';
+      a.textContent = event.title;
+      h2.appendChild(a);
       section.appendChild(h2);
 
       const dateP = document.createElement('p');
-      dateP.textContent = 'Date: ' + (event.date || 'TBD');
+      dateP.textContent = 'Date: ' + event.date;
       section.appendChild(dateP);
 
       const locP = document.createElement('p');
-      locP.textContent = 'Location: ' + (event.location || '');
+      locP.textContent = 'Location: ' + event.location;
       section.appendChild(locP);
 
+      if (event.link) {
+        const viewLink = document.createElement('a');
+        viewLink.href = event.link;
+        viewLink.target = '_blank';
+        viewLink.textContent = 'View on SLS';
+        section.appendChild(viewLink);
+      }
+
       if (event.payments) {
-        const payDiv = document.createElement('div');
-        payDiv.className = 'payment-options';
+        const paymentDiv = document.createElement('div');
+        paymentDiv.className = 'payment-options';
 
         if (event.payments.couples) {
-          const couplesDiv = document.createElement('div');
-          couplesDiv.className = 'pay-group';
-          const couplesP = document.createElement('p');
-          couplesP.textContent = 'Couples ($40):';
-          couplesDiv.appendChild(couplesP);
+          const group = document.createElement('div');
+          group.className = 'pay-group';
+          const label = document.createElement('p');
+          label.textContent = 'Couples ($40):';
+          group.appendChild(label);
 
-          event.payments.couples.forEach(pay => {
-            const a = document.createElement('a');
-            a.className = 'pay-button';
-            a.href = pay.url;
-            a.target = '_blank';
-            a.textContent = pay.label;
-            couplesDiv.appendChild(a);
+          event.payments.couples.forEach(p => {
+            const btn = document.createElement('a');
+            btn.className = 'pay-button';
+            btn.href = p.url;
+            btn.target = '_blank';
+            btn.textContent = p.label;
+            group.appendChild(btn);
           });
-          payDiv.appendChild(couplesDiv);
+          paymentDiv.appendChild(group);
         }
 
         if (event.payments.singleMale) {
-          const singleDiv = document.createElement('div');
-          singleDiv.className = 'pay-group';
-          const singleP = document.createElement('p');
-          singleP.textContent = 'Single Male ($80):';
-          singleDiv.appendChild(singleP);
+          const group = document.createElement('div');
+          group.className = 'pay-group';
+          const label = document.createElement('p');
+          label.textContent = 'Single Male ($80):';
+          group.appendChild(label);
 
-          event.payments.singleMale.forEach(pay => {
-            const a = document.createElement('a');
-            a.className = 'pay-button';
-            a.href = pay.url;
-            a.target = '_blank';
-            a.textContent = pay.label;
-            singleDiv.appendChild(a);
+          event.payments.singleMale.forEach(p => {
+            const btn = document.createElement('a');
+            btn.className = 'pay-button';
+            btn.href = p.url;
+            btn.target = '_blank';
+            btn.textContent = p.label;
+            group.appendChild(btn);
           });
-          payDiv.appendChild(singleDiv);
+          paymentDiv.appendChild(group);
         }
-        section.appendChild(payDiv);
+
+        section.appendChild(paymentDiv);
       }
 
       if (event.note) {
-        const noteP = document.createElement('p');
-        noteP.className = 'note';
-        noteP.textContent = event.note;
-        section.appendChild(noteP);
+        const note = document.createElement('p');
+        note.className = 'note';
+        note.textContent = event.note;
+        section.appendChild(note);
       }
 
       return section;
     }
 
-    // Sort function (ascending date)
     function sortByDateAsc(a, b) {
       return new Date(a.dataset.date) - new Date(b.dataset.date);
     }
 
-    // Clear containers
-    upcomingContainer.innerHTML = '';
-    pastContainer.innerHTML = '';
-
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // normalize to midnight
+    today.setHours(0, 0, 0, 0);
 
-    // Process and distribute events
     eventsData.forEach(event => {
       const eventDate = new Date(event.date);
       eventDate.setHours(0, 0, 0, 0);
-
-      const eventEl = createEventElement(event);
-
+      const element = createEventElement(event);
       if (eventDate >= today) {
-        upcomingContainer.appendChild(eventEl);
+        upcomingContainer.appendChild(element);
       } else {
-        pastContainer.appendChild(eventEl);
+        pastContainer.appendChild(element);
       }
     });
 
-    // Sort each container
     function sortContainer(container) {
-      const events = Array.from(container.children);
-      events.sort(sortByDateAsc);
-      events.forEach(event => container.appendChild(event));
+      const items = Array.from(container.children);
+      items.sort(sortByDateAsc);
+      items.forEach(item => container.appendChild(item));
     }
 
     sortContainer(upcomingContainer);
