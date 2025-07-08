@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Upcoming Events - One Leg Up</title>
+  <title>One Leg Up - Upcoming Events</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     * {
@@ -25,10 +25,11 @@
       min-height: 100vh;
       position: relative;
       z-index: 1;
-      align-items: center;
+      padding: 20px;
       padding-top: 150px;
     }
 
+    /* Canvas for Smoke */
     #smokeCanvas {
       position: fixed;
       top: 0;
@@ -38,6 +39,7 @@
       z-index: 0;
     }
 
+    /* Header with Hamburger and Title */
     .header {
       position: fixed;
       top: 20px;
@@ -105,53 +107,25 @@
       color: #ff6f61;
     }
 
+    /* Event Content Layout */
     .events {
-      width: 100%;
-      max-width: 600px;
-      padding: 20px 20px 0 20px;
-      min-height: auto;
-      overflow-y: visible;
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .events + .events {
-      margin-top: 10px;
-    }
-
-    .events h2 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      color: #fff;
-      text-align: center;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-      animation: colorPulse 3s ease infinite;
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
     }
 
     .event {
-      margin-bottom: 30px;
-      padding: 15px;
-      border-radius: 8px;
+      padding: 20px;
       background: rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s ease;
-      display: inline-block;
-      text-align: left;
-      width: 100%;
-      max-width: 500px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
     }
 
-    .event:hover {
-      transform: scale(1.02);
-    }
-
-    .event h3 {
-      font-size: 1.6rem;
+    .event h2, .event h3 {
       color: #ffeb3b;
       animation: colorCycle 5s ease infinite;
-      margin-bottom: 10px;
     }
 
     .event h3 a {
@@ -166,9 +140,9 @@
     }
 
     .event p {
-      font-size: 1rem;
       color: #e0e0e0;
-      margin-bottom: 5px;
+      margin-bottom: 10px;
+      font-size: 1rem;
     }
 
     .event a {
@@ -183,118 +157,69 @@
       text-decoration: underline;
     }
 
-    .event .flyer-thumbnail {
-      margin-top: 10px;
-      cursor: pointer;
-      max-width: 150px;
-      border-radius: 5px;
-      display: block;
+    .payment-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 40px;
+      max-width: 600px;
+      margin-top: 20px;
     }
 
-    .payment-options {
-      margin-top: 10px;
-      text-align: left;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
     .pay-group {
-      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
     }
-    .pay-group p {
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #ffeb3b;
+
+    .pay-group.single-male {
+      align-items: flex-end;
     }
+
     .pay-button {
-      display: block;
-      margin: 5px 0;
-      padding: 10px 15px;
+      display: inline-block;
+      padding: 10px 20px;
       background: #00e5ff;
-      color: #000;
-      font-weight: bold;
+      color: #000; /* fixed text visibility */
+      font-size: 1rem;
+      font-weight: 600;
       text-decoration: none;
       border-radius: 5px;
-      width: fit-content;
-      transition: background 0.3s;
+      transition: background 0.3s, color 0.3s;
+      text-align: center;
     }
+
     .pay-button:hover {
       background: #ff4081;
       color: #fff;
     }
-    .note {
-      margin-top: 10px;
-      font-size: 0.9rem;
-      color: #ffeb3b;
-      text-align: center;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
 
     @keyframes colorCycle {
-      0% {
-        color: #ffeb3b;
-      }
-      33% {
-        color: #40c4ff;
-      }
-      66% {
-        color: #ff4081;
-      }
-      100% {
-        color: #ffeb3b;
-      }
+      0% { color: #ffeb3b; }
+      33% { color: #40c4ff; }
+      66% { color: #ff4081; }
+      100% { color: #ffeb3b; }
     }
 
-    @keyframes colorPulse {
-      0% {
-        text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
-      }
-      50% {
-        text-shadow: 0 0 15px rgba(64, 196, 255, 0.8);
-      }
-      100% {
-        text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
-      }
-    }
-
+    /* Responsive Design */
     @media (max-width: 768px) {
       .container {
         padding-top: 120px;
       }
 
-      .events {
+      .payment-buttons {
+        flex-direction: column;
+        gap: 10px;
         max-width: 100%;
-        padding: 10px 10px 0 10px;
       }
 
-      .events + .events {
-        margin-top: 10px;
+      .pay-group.single-male {
+        align-items: center;
       }
 
-      .events h2 {
-        font-size: 1.5rem;
-      }
-
-      .event h3 {
-        font-size: 1.3rem;
-      }
-
-      .event p {
-        font-size: 0.9rem;
-      }
-
-      .event .flyer-thumbnail {
-        max-width: 120px;
-      }
-
-      .header {
-        left: 10px;
-      }
-
-      .site-title {
-        font-size: 1.2rem;
+      .pay-button {
+        width: 80%;
+        text-align: center;
       }
     }
   </style>
@@ -322,78 +247,46 @@
 
   <div class="container">
     <div class="events">
-      <h2>Upcoming Parties</h2>
+      <h2>Upcoming Events</h2>
+
       <div class="event">
         <h3>Sunday Funday Pool Party</h3>
-        <p>Date: July 20, 2025</p>
-        <p>Address: 1838 East Everglade Ave, Fresno, CA 93720</p>
-        <p>RSVP Phone: (559)549-3882</p>
+        <p>Date: July 20, 2025<br />Location: Fresno, CA</p>
+        <p>Join us for a Sunday funday! Full of wet play time for adults!</p>
+        <p>Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
         <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
-        <br />
-        <img src="images/pool_party2.jpg" alt="Sunday Funday Pool Party Thumbnail" class="flyer-thumbnail" onclick="showFlyer('images/event2.jpg')" />
-        <div class="payment-options">
-          <div class="pay-group">
-            <p>Single Male ($80):</p>
-            <a href="https://paypal.me/0neLegUp/80" target="_blank" class="pay-button">Pay $80 with PayPal</a>
-            <a href="https://cash.app/$0neLegUp?amount=80" target="_blank" class="pay-button">Pay $80 with Cash App</a>
-            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=80&note=Sunday%20Funday%20Single%20Male" target="_blank" class="pay-button">Pay $80 with Venmo</a>
+
+        <div class="payment-buttons">
+          <div class="pay-group couples">
+            <a href="https://paypal.me/0neLegUp/40" target="_blank" class="pay-button">Pay $40 with PayPal (Couples)</a>
+            <a href="https://cash.app/$0neLegUp?amount=40" target="_blank" class="pay-button">Pay $40 with Cash App (Couples)</a>
+            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=40&note=Skinny%20Dipping%20Couples" target="_blank" class="pay-button">Pay $40 with Venmo (Couples)</a>
           </div>
-          <div class="pay-group">
-            <p>Couples ($40):</p>
-            <a href="https://paypal.me/0neLegUp/40" target="_blank" class="pay-button">Pay $40 with PayPal</a>
-            <a href="https://cash.app/$0neLegUp?amount=40" target="_blank" class="pay-button">Pay $40 with Cash App</a>
-            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=40&note=Sunday%20Funday%20Couples" target="_blank" class="pay-button">Pay $40 with Venmo</a>
+          <div class="pay-group single-male">
+            <a href="https://paypal.me/0neLegUp/80" target="_blank" class="pay-button">Pay $80 with PayPal (Single Male)</a>
+            <a href="https://cash.app/$0neLegUp?amount=80" target="_blank" class="pay-button">Pay $80 with Cash App (Single Male)</a>
+            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=80&note=Skinny%20Dipping%20Single%20Male" target="_blank" class="pay-button">Pay $80 with Venmo (Single Male)</a>
           </div>
-          <p class="note">Please make sure to enter the exact amount. Incorrect payments may result in denied entry to the event.</p>
         </div>
       </div>
+
       <div class="event">
         <h3>I'm almost there</h3>
-        <p>Date: TBD</p>
-        <p>Location: Las Vegas, NV</p>
-        <p>Address: 1234 Event Street, Las Vegas, NV 89110</p>
-        <p>RSVP Phone: (559)549-3882</p>
+        <p>Date: September 10, 2025<br>Location: Private Venue, CA</p>
         <a href="https://www.swinglifestyle.com" target="_blank">View on SLS</a>
       </div>
-    </div>
 
-    <div class="events">
-      <h2>Past Events</h2>
-      <div class="event">
-        <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
-        <p>Date: May 31, 2024</p>
-        <p>Address: 1838 East Everglade Ave, Fresno, CA 93720</p>
-        <p>RSVP Text: (559)549-3882</p>
-        <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
-        <br />
-        <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="flyer-thumbnail" onclick="showFlyer('images/pool_party.jpg')" />
-      </div>
     </div>
-  </div>
-
-  <div class="flyer-overlay" id="flyerOverlay">
-    <span class="close-btn" onclick="hideFlyer()">&times;</span>
-    <img id="fullFlyer" src="" alt="Full Flyer" />
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script>
+    // Hamburger Menu Toggle
     function toggleMenu() {
       document.getElementById('menu').classList.toggle('active');
     }
 
-    function showFlyer(imageSrc) {
-      const overlay = document.getElementById('flyerOverlay');
-      const fullFlyer = document.getElementById('fullFlyer');
-      fullFlyer.src = imageSrc;
-      overlay.classList.add('active');
-    }
-
-    function hideFlyer() {
-      const overlay = document.getElementById('flyerOverlay');
-      overlay.classList.remove('active');
-    }
-
+    // Three.js Smoke Effect (same as index.html)
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
     camera.position.z = 1;
@@ -454,10 +347,10 @@
       fragmentShader,
       uniforms: {
         noiseTexture: { value: noiseTexture },
-        time: { value: 0.0 },
+        time: { value: 0.0 }
       },
       transparent: true,
-      side: THREE.DoubleSide,
+      side: THREE.DoubleSide
     });
 
     const plane = new THREE.Mesh(geometry, material);
