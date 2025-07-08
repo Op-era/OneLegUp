@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Events - One Leg Up</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     * {
       margin: 0;
@@ -17,6 +17,91 @@
       background: #000;
       color: #fff;
       padding: 20px;
+      position: relative;
+    }
+
+    /* Hamburger menu styles same as index */
+    .header {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      z-index: 1000;
+      height: 60px;
+    }
+
+    .hamburger {
+      cursor: pointer;
+      margin-right: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .hamburger div {
+      width: 30px;
+      height: 3px;
+      background: #fff;
+      transition: all 0.3s ease;
+    }
+
+    .hamburger.active div:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active div:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active div:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    .site-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #ffeb3b;
+      text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
+      animation: colorCycle 5s ease infinite;
+      user-select: none;
+    }
+
+    .menu {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: #1a1a1a;
+      transition: left 0.3s ease;
+      z-index: 999;
+      padding-top: 60px;
+    }
+
+    .menu.active {
+      left: 0;
+    }
+
+    .menu ul {
+      list-style: none;
+      padding: 0 20px;
+    }
+
+    .menu ul li {
+      margin: 20px 0;
+    }
+
+    .menu ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+
+    .menu ul li a:hover {
+      color: #ff6f61;
     }
 
     h1 {
@@ -89,40 +174,76 @@
 
     .pay-group {
       flex: 1 1 45%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .pay-group p {
       font-weight: bold;
       margin-bottom: 5px;
+      color: #00e5ff;
+      text-align: center;
+      text-shadow: 0 0 5px #00e5ff;
     }
 
     .pay-button {
       display: inline-block;
-      margin: 5px 0;
+      margin: 0 auto;
       padding: 10px 15px;
       background: #00e5ff;
-      color: #000 !important;
+      color: #000;
       font-weight: bold;
       text-decoration: none;
       border-radius: 5px;
-      transition: background 0.3s;
+      transition: background 0.3s, color 0.3s;
+      text-align: center;
+      user-select: none;
+      min-width: 180px;
     }
 
     .pay-button:hover {
       background: #ff4081;
-      color: #fff !important;
+      color: #fff;
     }
 
     .note {
       margin-top: 10px;
       font-size: 0.9rem;
       color: #ffeb3b;
+      text-align: center;
+    }
+
+    @keyframes colorCycle {
+      0% { color: #ffeb3b; }
+      33% { color: #40c4ff; }
+      66% { color: #ff4081; }
+      100% { color: #ffeb3b; }
     }
   </style>
 </head>
 <body>
+  <div class="header">
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <h1 class="site-title">One Leg Up</h1>
+  </div>
+
+  <nav class="menu" id="menu">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="events.html">Upcoming Events</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+  </nav>
+
   <h1>Upcoming Events</h1>
-  <section class="event">
+
+  <section class="event" data-date="2025-07-20">
     <h2>Sunday Funday Pool Party</h2>
     <p>Date: July 20, 2025</p>
     <p>Location: 1838 East Everglade Ave, Fresno, CA 93720</p>
@@ -144,7 +265,7 @@
     <p class="note">Please make sure to enter the exact amount. Incorrect payments may result in denied entry to the event.</p>
   </section>
 
-  <section class="event">
+  <section class="event" data-date="2025-09-10">
     <h2>I'm almost there</h2>
     <p>Date: To Be Determined</p>
     <p>Location: 1838 East Everglade Ave, Fresno, CA 93720</p>
@@ -152,12 +273,47 @@
   </section>
 
   <h2 class="section-title">Past Events</h2>
-  <section class="event">
-    <h2><a href="payment.html">Skinny Dipping Pool Party</a></h2>
-    <p>Date: May 31, 2025</p>
-    <p>Location: 1838 East Everglade Ave, Fresno, CA 93720</p>
-    <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
-    <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party">
+  <section id="pastEventsContainer">
+    <section class="event" data-date="2025-05-31">
+      <h2><a href="payment.html">Skinny Dipping Pool Party</a></h2>
+      <p>Date: May 31, 2025</p>
+      <p>Location: 1838 East Everglade Ave, Fresno, CA 93720</p>
+      <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
+      <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party" />
+    </section>
   </section>
+
+  <script>
+    // Hamburger menu toggle
+    const hamburger = document.getElementById('hamburger');
+    const menu = document.getElementById('menu');
+    function toggleMenu() {
+      hamburger.classList.toggle('active');
+      menu.classList.toggle('active');
+    }
+
+    // Auto move events between Upcoming and Past based on date
+    function sortEvents() {
+      const now = new Date();
+      const upcomingEvents = Array.from(document.querySelectorAll('section.event[data-date]'));
+      const pastContainer = document.getElementById('pastEventsContainer');
+
+      upcomingEvents.forEach(event => {
+        const dateStr = event.getAttribute('data-date');
+        const eventDate = new Date(dateStr);
+
+        if (eventDate < now) {
+          pastContainer.appendChild(event);
+        }
+      });
+
+      // Sort past events chronologically ascending by date
+      const pastEvents = Array.from(pastContainer.querySelectorAll('section.event'));
+      pastEvents.sort((a, b) => new Date(a.getAttribute('data-date')) - new Date(b.getAttribute('data-date')));
+      pastEvents.forEach(event => pastContainer.appendChild(event));
+    }
+
+    sortEvents();
+  </script>
 </body>
 </html>
