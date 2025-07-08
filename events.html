@@ -25,11 +25,10 @@
       min-height: 100vh;
       position: relative;
       z-index: 1;
-      align-items: center; /* Center container content horizontally */
-      padding-top: 150px; /* Push container down from top */
+      align-items: center;
+      padding-top: 150px;
     }
 
-    /* Canvas for Smoke */
     #smokeCanvas {
       position: fixed;
       top: 0;
@@ -39,7 +38,6 @@
       z-index: 0;
     }
 
-    /* Header with Hamburger and Title */
     .header {
       position: fixed;
       top: 20px;
@@ -107,22 +105,21 @@
       color: #ff6f61;
     }
 
-    /* Events Section */
     .events {
       width: 100%;
-      max-width: 600px; /* Limit width for better centering */
-      padding: 20px 20px 0 20px; /* Remove top padding to reduce space */
+      max-width: 600px;
+      padding: 20px 20px 0 20px;
       min-height: auto;
       overflow-y: visible;
       position: relative;
       z-index: 1;
-      text-align: center; /* Center all text inside events */
+      text-align: center;
       margin-left: auto;
       margin-right: auto;
     }
 
     .events + .events {
-      margin-top: 10px; /* Very small space between Upcoming and Past */
+      margin-top: 10px;
     }
 
     .events h2 {
@@ -140,10 +137,10 @@
       border-radius: 8px;
       background: rgba(0, 0, 0, 0.3);
       transition: transform 0.3s ease;
-      display: inline-block; /* Allow events to shrink and center */
-      text-align: left; /* Align text left inside each event block */
-      width: 100%; /* Full width inside max-width container */
-      max-width: 500px; /* Limit event block width */
+      display: inline-block;
+      text-align: left;
+      width: 100%;
+      max-width: 500px;
     }
 
     .event:hover {
@@ -194,37 +191,45 @@
       display: block;
     }
 
-    /* Flyer Overlay */
-    .flyer-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
+    .payment-options {
+      margin-top: 10px;
+      text-align: left;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
     }
-
-    .flyer-overlay.active {
-      display: flex;
+    .pay-group {
+      margin-bottom: 15px;
     }
-
-    .flyer-overlay img {
-      max-width: 90%;
-      max-height: 90%;
-      object-fit: contain;
+    .pay-group p {
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #ffeb3b;
     }
-
-    .flyer-overlay .close-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
+    .pay-button {
+      display: block;
+      margin: 5px 0;
+      padding: 10px 15px;
+      background: #00e5ff;
+      color: #000;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 5px;
+      width: fit-content;
+      transition: background 0.3s;
+    }
+    .pay-button:hover {
+      background: #ff4081;
       color: #fff;
-      font-size: 2rem;
-      cursor: pointer;
+    }
+    .note {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #ffeb3b;
+      text-align: center;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     @keyframes colorCycle {
@@ -254,7 +259,6 @@
       }
     }
 
-    /* Responsive Design */
     @media (max-width: 768px) {
       .container {
         padding-top: 120px;
@@ -327,6 +331,21 @@
         <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
         <br />
         <img src="images/pool_party2.jpg" alt="Sunday Funday Pool Party Thumbnail" class="flyer-thumbnail" onclick="showFlyer('images/event2.jpg')" />
+        <div class="payment-options">
+          <div class="pay-group">
+            <p>Single Male ($80):</p>
+            <a href="https://paypal.me/0neLegUp/80" target="_blank" class="pay-button">Pay $80 with PayPal</a>
+            <a href="https://cash.app/$0neLegUp?amount=80" target="_blank" class="pay-button">Pay $80 with Cash App</a>
+            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=80&note=Sunday%20Funday%20Single%20Male" target="_blank" class="pay-button">Pay $80 with Venmo</a>
+          </div>
+          <div class="pay-group">
+            <p>Couples ($40):</p>
+            <a href="https://paypal.me/0neLegUp/40" target="_blank" class="pay-button">Pay $40 with PayPal</a>
+            <a href="https://cash.app/$0neLegUp?amount=40" target="_blank" class="pay-button">Pay $40 with Cash App</a>
+            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=40&note=Sunday%20Funday%20Couples" target="_blank" class="pay-button">Pay $40 with Venmo</a>
+          </div>
+          <p class="note">Please make sure to enter the exact amount. Incorrect payments may result in denied entry to the event.</p>
+        </div>
       </div>
       <div class="event">
         <h3>I'm almost there</h3>
@@ -335,7 +354,6 @@
         <p>Address: 1234 Event Street, Las Vegas, NV 89110</p>
         <p>RSVP Phone: (559)549-3882</p>
         <a href="https://www.swinglifestyle.com" target="_blank">View on SLS</a>
-        <!-- No thumbnail for this event -->
       </div>
     </div>
 
@@ -360,12 +378,10 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script>
-    // Hamburger Menu Toggle
     function toggleMenu() {
       document.getElementById('menu').classList.toggle('active');
     }
 
-    // Flyer Overlay Functions
     function showFlyer(imageSrc) {
       const overlay = document.getElementById('flyerOverlay');
       const fullFlyer = document.getElementById('fullFlyer');
@@ -378,7 +394,6 @@
       overlay.classList.remove('active');
     }
 
-    // Three.js Smoke Effect
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
     camera.position.z = 1;
