@@ -154,19 +154,15 @@
       color: #e0e0e0;
       font-size: 1rem;
     }
-
-    /* NOTICE BANNER - FIXED */
     .notice-banner {
       text-align: center;
-      font-size: 1.3rem;
       font-weight: bold;
       color: #ff4081;
-      text-shadow: 0 0 6px #ff4081;
-      margin: 0 auto;
-      padding: 20px 0;
-      width: 100%;
-      z-index: 2;
+      font-size: 1.2rem;
+      text-shadow: 0 0 5px #ff4081;
+      margin: 40px 0 0 0;
       position: relative;
+      z-index: 2;
     }
 
     /* Payment buttons container fixed: two columns side by side */
@@ -221,8 +217,82 @@
       z-index: 1;
     }
 
-    /* ... rest of your event and keyframe CSS unchanged ... */
+    .events h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      animation: colorPulse 3s ease infinite;
+    }
 
+    .event {
+      margin-bottom: 20px;
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+      cursor: default;
+    }
+
+    .event:hover {
+      transform: scale(1.05);
+    }
+
+    .event h3 {
+      font-size: 1.4rem;
+      color: #ffeb3b;
+      animation: colorCycle 5s ease infinite;
+    }
+
+    .event h3 a {
+      color: #ffeb3b;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .event h3 a:hover {
+      color: #ff4081;
+      text-decoration: underline;
+    }
+
+    .event p {
+      font-size: 0.9rem;
+      color: #e0e0e0;
+      margin-bottom: 8px;
+    }
+
+    .event a {
+      color: #00e5ff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .event a:hover {
+      color: #ff4081;
+      text-decoration: underline;
+    }
+
+    .thumbnail {
+      max-width: 100px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    @keyframes colorCycle {
+      0% { color: #ffeb3b; }
+      33% { color: #40c4ff; }
+      66% { color: #ff4081; }
+      100% { color: #ffeb3b; }
+    }
+
+    @keyframes colorPulse {
+      0% { text-shadow: 0 0 10px rgba(255, 107, 97, 0.8); }
+      50% { text-shadow: 0 0 15px rgba(64, 196, 255, 0.8); }
+      100% { text-shadow: 0 0 10px rgba(255, 107, 97, 0.8); }
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
       .content {
         flex-direction: column;
@@ -230,22 +300,59 @@
         min-height: calc(100vh - 120px);
       }
 
-      .image-area,
-      .events {
+      .image-area, .events {
         width: 100%;
       }
 
-      /* ... other responsive rules unchanged ... */
+      .image-area {
+        padding: 10px;
+        padding-top: 10px;
+      }
+
+      .image-area img {
+        max-width: 90%;
+        max-height: 25%;
+        margin-top: 10px;
+      }
+
+      .image-text {
+        font-size: 0.9rem;
+      }
+
+      .payment-buttons {
+        flex-direction: column;
+        gap: 10px;
+        max-width: none;
+      }
+
+      .pay-group {
+        flex: none;
+        width: 100%;
+      }
+
+      .pay-button {
+        width: 80%;
+        text-align: center;
+        margin: 0 auto;
+      }
+
+      .events {
+        height: auto;
+        padding: 10px;
+      }
+
+      .header {
+        left: 10px;
+      }
+
+      .site-title {
+        font-size: 1.2rem;
+      }
     }
   </style>
 </head>
 <body>
   <canvas id="smokeCanvas"></canvas>
-
-  <!-- NOTICE BANNER (moved out of image-area) -->
-  <div class="notice-banner">
-    ALL SINGLE MALES MUST PAY IN ADVANCE OR THEY WILL NOT BE ADMITTED!
-  </div>
 
   <div class="header">
     <div class="hamburger" id="hamburger" onclick="toggleMenu()">
@@ -267,6 +374,7 @@
 
   <div class="container">
     <div class="content">
+      <div class="notice-banner">ALL SINGLE MALES MUST PAY IN ADVANCE OR THEY WILL NOT BE ADMITTED!</div>
       <div class="image-area">
         <img src="images/pool_party2.jpg" alt="Sunday Funday Pool Party" />
         <div class="image-text">
@@ -297,6 +405,7 @@
           <p>Join us for a Sunday funday! Full of wet play time for adults!</p>
           <p>Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
           <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
+          <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="thumbnail" />
         </div>
         <div class="event" data-date="2025-09-10">
           <h3>I'm almost there</h3>
@@ -319,6 +428,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script>
+    // Hamburger Menu Toggle with proper active class toggle
     const hamburger = document.getElementById('hamburger');
     const menu = document.getElementById('menu');
     function toggleMenu() {
@@ -326,6 +436,7 @@
       menu.classList.toggle('active');
     }
 
+    // Three.js Smoke Effect (unchanged)
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
     camera.position.z = 1;
@@ -334,16 +445,16 @@
 
     function generateNoiseTexture(width, height) {
       const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
       canvas.width = width;
       canvas.height = height;
+      const ctx = canvas.getContext('2d');
       const imageData = ctx.createImageData(width, height);
       for (let i = 0; i < imageData.data.length; i += 4) {
-        const v = Math.random() * 255;
-        imageData.data[i] = v;
-        imageData.data[i+1] = v;
-        imageData.data[i+2] = v;
-        imageData.data[i+3] = 255;
+        const value = Math.random() * 255;
+        imageData.data[i] = value;
+        imageData.data[i + 1] = value;
+        imageData.data[i + 2] = value;
+        imageData.data[i + 3] = 255;
       }
       ctx.putImageData(imageData, 0, 0);
       return new THREE.CanvasTexture(canvas);
@@ -352,14 +463,50 @@
     const noiseTexture = generateNoiseTexture(256, 256);
     noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
 
-    const geometry = new THREE.PlaneGeometry(2,2);
-    const vertexShader = `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`;
-    const fragmentShader = `uniform sampler2D noiseTexture; uniform float time; varying vec2 vUv; void main(){ vec2 uv = vUv + vec2(-time*0.1, time*0.05); float n1 = texture2D(noiseTexture, uv*0.5).r; float n2 = texture2D(noiseTexture, uv*0.2+vec2(time*0.05,-time*0.03)).r; float smoke = n1*n2; float a = smoothstep(0.5,1.0,vUv.x)*smoke*0.7; vec3 c = vec3(abs(sin(time*0.7+vUv.x)), abs(sin(time*0.8+vUv.y)), abs(sin(time*0.9+vUv.x+vUv.y))); gl_FragColor = vec4(c, a); }`;
-    const material = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms:{ noiseTexture:{ value: noiseTexture }, time:{ value:0 } }, transparent:true, side: THREE.DoubleSide });
+    const geometry = new THREE.PlaneGeometry(2, 2);
+
+    const vertexShader = `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+
+    const fragmentShader = `
+      uniform sampler2D noiseTexture;
+      uniform float time;
+      varying vec2 vUv;
+      void main() {
+        vec2 uv = vUv + vec2(-time * 0.1, time * 0.05);
+        float noise = texture2D(noiseTexture, uv * 0.5).r;
+        float noise2 = texture2D(noiseTexture, uv * 0.2 + vec2(time * 0.05, -time * 0.03)).r;
+        float smoke = noise * noise2;
+        float alpha = smoothstep(0.5, 1.0, vUv.x) * smoke * 0.7;
+        vec3 color = vec3(
+          abs(sin(time * 0.7 + vUv.x)),
+          abs(sin(time * 0.8 + vUv.y)),
+          abs(sin(time * 0.9 + vUv.x + vUv.y))
+        );
+        gl_FragColor = vec4(color, alpha);
+      }
+    `;
+
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms: {
+        noiseTexture: { value: noiseTexture },
+        time: { value: 0.0 }
+      },
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+
     const plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
 
-    function animate(time){
+    function animate(time) {
       requestAnimationFrame(animate);
       material.uniforms.time.value = time * 0.001;
       renderer.render(scene, camera);
@@ -373,25 +520,11 @@
       camera.updateProjectionMatrix();
     });
 
+    // Auto move events between Upcoming and Past based on current date
     function sortEvents() {
       const now = new Date();
       const eventsContainer = document.getElementById('eventsContainer');
       const pastEventsContainer = document.getElementById('pastEvents');
-      const all = Array.from(eventsContainer.querySelectorAll('.event[data-date]'));
-      const upcoming = [], past = [];
-      all.forEach(e => {
-        const d = new Date(e.getAttribute('data-date'));
-        (d >= now ? upcoming : past).push(e);
-      });
-      all.forEach(e => e.remove());
-      upcoming.sort((a,b)=> new Date(a.getAttribute('data-date')) - new Date(b.getAttribute('data-date')));
-      past.sort((a,b)=> new Date(a.getAttribute('data-date')) - new Date(b.getAttribute('data-date')));
-      const header = eventsContainer.querySelector('h2');
-      upcoming.forEach(e=> eventsContainer.insertBefore(e, header.nextSibling));
-      pastEventsContainer.innerHTML = '';
-      past.forEach(e=> pastEventsContainer.appendChild(e));
-    }
-    sortEvents();
-  </script>
-</body>
-</html>
+
+      // Get all event divs with data-date
+      const allEvents = Array
