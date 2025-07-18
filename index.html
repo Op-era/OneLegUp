@@ -160,9 +160,9 @@
       color: #ff4081;
       font-size: 1.2rem;
       text-shadow: 0 0 5px #ff4081;
-      margin: 40px 0 0 0;
-      position: relative;
+      margin-bottom: 20px;
       z-index: 2;
+      position: relative;
     }
 
     /* Payment buttons container fixed: two columns side by side */
@@ -372,13 +372,14 @@
     </ul>
   </nav>
 
-  <div class="content">
-  <div class="image-area">
-    <div class="notice-banner">ALL SINGLE MALES MUST PAY IN ADVANCE OR THEY WILL NOT BE ADMITTED!</div>
-    <img src="images/pool_party2.jpg" alt="Sunday Funday Pool Party" />
-    <div class="image-text">
-      <p>Join us for an unforgettable night at the Skinny Dipping Pool Party! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.</p>
-    </div>
+  <div class="container">
+    <div class="content">
+      <div class="image-area">
+        <div class="notice-banner">ALL SINGLE MALES MUST PAY IN ADVANCE OR THEY WILL NOT BE ADMITTED!</div>
+        <img src="images/pool_party2.jpg" alt="Sunday Funday Pool Party" />
+        <div class="image-text">
+          <p>Join us for an unforgettable night at the Skinny Dipping Pool Party! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.</p>
+        </div>
 
         <div class="payment-buttons" id="paymentButtons">
           <div class="pay-group">
@@ -404,7 +405,6 @@
           <p>Join us for a Sunday funday! Full of wet play time for adults!</p>
           <p>Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
           <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
-          <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="thumbnail" />
         </div>
         <div class="event" data-date="2025-09-10">
           <h3>I'm almost there</h3>
@@ -526,4 +526,42 @@
       const pastEventsContainer = document.getElementById('pastEvents');
 
       // Get all event divs with data-date
-      const allEvents = Array
+      const allEvents = Array.from(eventsContainer.querySelectorAll('.event[data-date]'));
+
+      const upcomingEvents = [];
+      const pastEvents = [];
+
+      allEvents.forEach(event => {
+        const eventDate = new Date(event.getAttribute('data-date'));
+        if (eventDate >= now) {
+          upcomingEvents.push(event);
+        } else {
+          pastEvents.push(event);
+        }
+      });
+
+      // Clear current events except the pastEvents container content
+      // Remove all event divs from eventsContainer
+      allEvents.forEach(event => event.remove());
+
+      // Sort both arrays by date ascending
+      upcomingEvents.sort((a, b) => new Date(a.getAttribute('data-date')) - new Date(b.getAttribute('data-date')));
+      pastEvents.sort((a, b) => new Date(a.getAttribute('data-date')) - new Date(b.getAttribute('data-date')));
+
+      // Insert upcoming events before the pastEvents heading
+      // Find the heading "Upcoming Parties"
+      const upcomingHeading = eventsContainer.querySelector('h2');
+
+      upcomingEvents.forEach(event => {
+        eventsContainer.insertBefore(event, upcomingHeading.nextSibling);
+      });
+
+      // Clear pastEventsContainer and append past events
+      pastEventsContainer.innerHTML = '';
+      pastEvents.forEach(event => pastEventsContainer.appendChild(event));
+    }
+
+    sortEvents();
+  </script>
+</body>
+</html>
