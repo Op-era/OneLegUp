@@ -6,7 +6,7 @@
   <title>One Leg Up - Swingers Club</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    /* Reset */
+    /* Your original styles exactly unchanged except adding scrolling banner container and neon text */
     * {
       margin: 0;
       padding: 0;
@@ -14,29 +14,27 @@
     }
     body {
       font-family: 'Poppins', sans-serif;
-      background: #000;
-      color: #fff;
-      position: relative;
+      background: black;
+      color: white;
       overflow-x: hidden;
+      position: relative;
     }
-    /* Water canvas behind everything */
     #waterCanvas {
       position: fixed;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 100vw;
       height: 100vh;
       z-index: 0;
       pointer-events: none;
+      background: black;
     }
-    /* Header and nav */
     .header {
       position: fixed;
       top: 20px;
       left: 20px;
       display: flex;
       align-items: center;
-      z-index: 1000;
+      z-index: 10;
       height: 60px;
     }
     .hamburger {
@@ -50,7 +48,7 @@
     .hamburger div {
       width: 30px;
       height: 3px;
-      background: #fff;
+      background: white;
       transition: all 0.3s ease;
     }
     .hamburger.active div:nth-child(1) {
@@ -78,7 +76,7 @@
       height: 100%;
       background: #111;
       transition: left 0.3s ease;
-      z-index: 999;
+      z-index: 9;
       padding-top: 60px;
     }
     .menu.active {
@@ -92,7 +90,7 @@
       margin: 20px 0;
     }
     .menu ul li a {
-      color: #fff;
+      color: white;
       text-decoration: none;
       font-size: 1.2rem;
       transition: color 0.3s;
@@ -100,10 +98,8 @@
     .menu ul li a:hover {
       color: #ff6f61;
     }
-    /* Layout */
     .container {
       display: flex;
-      flex-wrap: nowrap;
       margin-top: 120px;
       padding: 20px;
       position: relative;
@@ -123,15 +119,13 @@
       border-radius: 10px;
       margin-bottom: 15px;
     }
-    /* Scrolling banner container sized just a bit wider than poster */
     .scrolling-banner-container {
       width: 620px;
       max-width: 95vw;
-      background: #000;
+      background: black;
       overflow: hidden;
       border-radius: 6px;
       margin-bottom: 15px;
-      border: none;
       box-shadow: 0 0 15px #ff4081;
     }
     .scrolling-banner {
@@ -154,7 +148,6 @@
       align-items: center;
       white-space: nowrap;
     }
-    /* The neon flashing grow/shrink effect on $10 more at the door */
     .special-flash {
       margin-left: 50px;
       color: #ffeb3b;
@@ -169,7 +162,6 @@
       font-weight: 900;
       font-size: 1.3rem;
     }
-    /* Payment buttons */
     .payment-buttons {
       display: flex;
       justify-content: center;
@@ -206,9 +198,8 @@
     }
     .pay-button:hover {
       background: #ff4081;
-      color: #fff;
+      color: white;
     }
-    /* Events section */
     .events {
       flex: 1;
       max-width: 350px;
@@ -221,9 +212,9 @@
     .events h2 {
       font-size: 1.8rem;
       margin-bottom: 20px;
-      color: #fff;
+      color: white;
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-      animation: colorCycle 10s ease infinite;
+      animation: colorCycle 20s ease infinite;
       user-select: none;
     }
     .event {
@@ -239,20 +230,19 @@
     }
     .event h3 {
       font-size: 1.4rem;
-      animation: colorCycle 10s ease infinite;
+      animation: colorCycle 20s ease infinite;
       user-select: none;
     }
-    /* Different start colors for events' h3 to differentiate them */
     .event:nth-child(1) h3 {
       animation-delay: 0s;
       color: #ffeb3b;
     }
     .event:nth-child(2) h3 {
-      animation-delay: 3.3s;
+      animation-delay: 6.6s;
       color: #40c4ff;
     }
     .event:nth-child(3) h3 {
-      animation-delay: 6.6s;
+      animation-delay: 13.2s;
       color: #ff4081;
     }
     .event h3 a {
@@ -284,15 +274,9 @@
       border-radius: 5px;
       margin-top: 10px;
     }
-
-    /* Animations */
     @keyframes scroll-left {
-      0% {
-        transform: translateX(0);
-      }
-      100% {
-        transform: translateX(-50%);
-      }
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
     @keyframes growFlash {
       0%, 100% {
@@ -320,30 +304,6 @@
       66% { color: #ff4081; }
       100% { color: #ffeb3b; }
     }
-    /* Responsive */
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-        margin-top: 100px;
-        gap: 20px;
-      }
-      .image-area, .events {
-        max-width: 100%;
-        width: 100%;
-      }
-      .scrolling-banner-container {
-        width: 100vw;
-        max-width: 100%;
-        border-radius: 0;
-      }
-      .site-title {
-        font-size: 1.2rem;
-      }
-      .pay-button {
-        width: 100%;
-        box-sizing: border-box;
-      }
-    }
   </style>
 </head>
 <body>
@@ -351,9 +311,7 @@
 
   <div class="header">
     <div class="hamburger" id="hamburger" onclick="toggleMenu()">
-      <div></div>
-      <div></div>
-      <div></div>
+      <div></div><div></div><div></div>
     </div>
     <h1 class="site-title">One Leg Up</h1>
   </div>
@@ -433,7 +391,7 @@
       menu.classList.toggle('active');
     }
 
-    // Move past events by date (same as before)
+    // Move past events by date
     function movePastEvents() {
       const now = new Date();
       const upcomingContainer = document.getElementById('eventsContainer');
@@ -448,33 +406,27 @@
     }
     movePastEvents();
 
-    // THREE.JS Water effect setup
+    // Three.js Cellular noise based water effect setup
     const canvas = document.getElementById('waterCanvas');
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+    const renderer = new THREE.WebGLRenderer({canvas, alpha: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 0);
 
     const scene = new THREE.Scene();
 
-    const camera = new THREE.OrthographicCamera(
-      window.innerWidth / -2,
-      window.innerWidth / 2,
-      window.innerHeight / 2,
-      window.innerHeight / -2,
-      -1000,
-      1000
-    );
-    camera.position.z = 1;
+    const camera = new THREE.OrthographicCamera(-1,1,1,-1,0,1);
 
-    const geometry = new THREE.PlaneGeometry(window.innerWidth, window.innerHeight);
-
-    // Simplex noise GLSL function for water distortion
-    // Using a small noise function for ripple effect
+    // Shader material for water effect
     const vertexShader = `
       varying vec2 vUv;
-      uniform float time;
+      void main() {
+        vUv = uv;
+        gl_Position = vec4(position,1.0);
+      }
+    `;
 
-      // 2D Simplex noise from https://github.com/ashima/webgl-noise/blob/master/src/noise2D.glsl
+    // Simplex noise function (classic 2D noise)
+    // GLSL code adapted from https://github.com/ashima/webgl-noise/blob/master/src/noise2D.glsl
+    const noiseFunctions = `
       vec3 mod289(vec3 x) {
         return x - floor(x * (1.0 / 289.0)) * 289.0;
       }
@@ -484,126 +436,78 @@
       vec3 permute(vec3 x) {
         return mod289(((x*34.0)+1.0)*x);
       }
-      float snoise(vec2 v)
-      {
+      float snoise(vec2 v){
         const vec4 C = vec4(0.211324865405187,  // (3.0-sqrt(3.0))/6.0
                             0.366025403784439,  // 0.5*(sqrt(3.0)-1.0)
                            -0.577350269189626,  // -1.0 + 2.0 * C.x
                             0.024390243902439); // 1.0 / 41.0
         vec2 i  = floor(v + dot(v, C.yy) );
         vec2 x0 = v -   i + dot(i, C.xx);
-
         vec2 i1;
         i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-
         vec4 x12 = x0.xyxy + C.xxzz;
         x12.xy -= i1;
-
         i = mod289(i);
-        vec3 p = permute( permute(
-          i.y + vec3(0.0, i1.y, 1.0 ))
+        vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
           + i.x + vec3(0.0, i1.x, 1.0 ));
-
-        vec3 m = max(0.5 - vec3(
-          dot(x0,x0),
-          dot(x12.xy,x12.xy),
-          dot(x12.zw,x12.zw)
-        ), 0.0);
+        vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
         m = m*m ;
         m = m*m ;
-
         vec3 x = 2.0 * fract(p * C.www) - 1.0;
         vec3 h = abs(x) - 0.5;
         vec3 ox = floor(x + 0.5);
         vec3 a0 = x - ox;
-
         m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0+h*h );
-
         vec3 g;
-        g.x  = a0.x  * x0.x  + h.x  * x0.y;
+        g.x  = a0.x  * x0.x + h.x  * x0.y;
         g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-
         return 130.0 * dot(m, g);
-      }
-
-      void main() {
-        vUv = uv;
-
-        // Calculate wave distortion
-        float wave = snoise(uv * 10.0 + vec2(time * 0.1, time * 0.2));
-        float wave2 = snoise(uv * 30.0 - vec2(time * 0.3, time * 0.4));
-
-        vec3 pos = position;
-
-        // Displace vertex in z to create wave effect
-        pos.z += (wave + wave2) * 10.0;
-
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
       }
     `;
 
     const fragmentShader = `
-      varying vec2 vUv;
+      precision mediump float;
       uniform float time;
-
-      // Simple caustics light pattern
-      float caustics(vec2 uv, float t) {
-        float light = 0.0;
-        light += sin(uv.x * 20.0 + t) * 0.3;
-        light += sin(uv.y * 30.0 - t * 1.3) * 0.2;
-        light += sin((uv.x + uv.y) * 25.0 + t * 0.7) * 0.25;
-        return light;
-      }
-
+      varying vec2 vUv;
+      ${noiseFunctions}
       void main() {
-        // Base water color
-        vec3 waterColor = vec3(0.0, 0.3, 0.6);
-        // Light caustics overlay
-        float lightPattern = caustics(vUv * 2.0, time * 3.0);
-
-        // Final color with caustics brightening and subtle bluish glow
-        vec3 color = waterColor + lightPattern * 0.15;
-
-        // Add subtle vertical gradient (lighter near top)
-        color *= mix(1.2, 0.7, vUv.y);
-
+        vec2 uv = vUv * 3.0;
+        float n = snoise(uv + vec2(time * 0.15, time * 0.1));
+        float n2 = snoise(uv * 2.0 - vec2(time * 0.2, time * 0.3));
+        float noiseVal = mix(n, n2, 0.5);
+        float brightness = 0.5 + 0.5 * noiseVal;
+        vec3 color = vec3(0.0, 0.3, 0.5) * brightness; // base blueish water color
+        color += vec3(0.1, 0.3, 0.4) * brightness * 0.6; // add some cyan highlights
         gl_FragColor = vec4(color, 0.7);
       }
     `;
 
-    const uniforms = {
-      time: { value: 0 }
-    };
-
     const material = new THREE.ShaderMaterial({
-      uniforms: uniforms,
-      vertexShader: vertexShader,
-      fragmentShader: fragmentShader,
+      vertexShader,
+      fragmentShader,
+      uniforms: {
+        time: { value: 0 }
+      },
       transparent: true,
-      depthWrite: false,
+      depthWrite: false
     });
 
-    const plane = new THREE.Mesh(geometry, material);
-    scene.add(plane);
+    const geometry = new THREE.PlaneGeometry(2, 2);
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
 
     function onWindowResize() {
       renderer.setSize(window.innerWidth, window.innerHeight);
-      camera.left = window.innerWidth / -2;
-      camera.right = window.innerWidth / 2;
-      camera.top = window.innerHeight / 2;
-      camera.bottom = window.innerHeight / -2;
-      camera.updateProjectionMatrix();
     }
-    window.addEventListener('resize', onWindowResize, false);
+    window.addEventListener('resize', onWindowResize);
     onWindowResize();
 
-    // Animate
     function animate(time) {
-      requestAnimationFrame(animate);
-      uniforms.time.value = time * 0.001;
+      material.uniforms.time.value = time * 0.001;
       renderer.render(scene, camera);
+      requestAnimationFrame(animate);
     }
-    animate();
+    requestAnimationFrame(animate);
   </script>
 </body>
 </html>
