@@ -20,18 +20,24 @@
       overflow-x: hidden;
     }
 
-    /* Fullscreen canvas for Three.js smoke effect */
+    .container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Canvas for Smoke */
     #smokeCanvas {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       z-index: 0;
-      pointer-events: none; /* so it doesn't block clicks */
     }
 
-    /* Header with Hamburger and Title */
     .header {
       position: fixed;
       top: 20px;
@@ -74,7 +80,7 @@
       font-size: 1.5rem;
       font-weight: 600;
       color: #ffeb3b;
-      text-shadow: 0 0 15px #ffeb3b, 0 0 30px #ffeb3b;
+      text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
       animation: colorCycle 5s ease infinite;
       user-select: none;
     }
@@ -115,21 +121,11 @@
       color: #ff6f61;
     }
 
-    /* Content Layout */
-    .container {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      position: relative;
-      z-index: 1;
-    }
-
     .content {
       display: flex;
       flex: 1;
       margin-top: 150px;
       min-height: calc(100vh - 150px);
-      z-index: 10;
     }
 
     .image-area {
@@ -140,6 +136,7 @@
       justify-content: flex-start;
       padding: 20px;
       padding-top: 20px;
+      position: relative;
     }
 
     .image-area img {
@@ -148,8 +145,6 @@
       object-fit: contain;
       margin-top: 20px;
       border-radius: 10px;
-      z-index: 10;
-      position: relative;
     }
 
     .image-text {
@@ -158,18 +153,16 @@
       text-align: center;
       color: #e0e0e0;
       font-size: 1rem;
-      z-index: 10;
-      position: relative;
     }
 
-    /* Scrolling banner */
+    /* Scrolling banner container limited width and neon style */
     .notice-banner {
       position: relative;
-      width: 100%;
+      width: 80%;
+      max-width: 450px;
+      height: 50px;
       overflow: hidden;
       white-space: nowrap;
-      box-sizing: border-box;
-      padding: 10px 0;
       margin-bottom: 20px;
       font-weight: bold;
       font-size: 1.2rem;
@@ -179,9 +172,13 @@
         0 0 10px #0ff,
         0 0 20px #0ff,
         0 0 40px #0ff;
-      background: transparent; /* NO border or background */
+      background: transparent;
+      display: flex;
+      align-items: center;
+      user-select: none;
     }
 
+    /* Scrolling text */
     .scrolling-text {
       display: inline-block;
       padding-left: 100%;
@@ -194,11 +191,17 @@
         0 0 20px #0ff,
         0 0 40px #0ff;
       font-weight: 700;
+      white-space: nowrap;
+      will-change: transform, opacity;
+      flex-shrink: 0;
     }
 
+    /* Flashing $10 more text */
     .flash-text {
-      display: inline-block;
-      margin-left: 50px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
       font-weight: 900;
       font-size: 2rem;
       color: #0ff;
@@ -209,50 +212,22 @@
         0 0 40px #0ff,
         0 0 50px #0ff;
       opacity: 0;
-      position: absolute;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
       user-select: none;
-    }
-
-    @keyframes scrollLeft {
-      0% {
-        transform: translateX(0%);
-        opacity: 1;
-      }
-      100% {
-        transform: translateX(-100%);
-        opacity: 1;
-      }
-    }
-
-    @keyframes flashGrow {
-      0% {
-        opacity: 1;
-        transform: scale(1);
-      }
-      50% {
-        opacity: 0.5;
-        transform: scale(1.4);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 10;
+      will-change: opacity, transform;
     }
 
     .sub-notice {
       text-align: center;
       font-weight: bold;
-      color: #0ff;
+      color: #ff4081;
       font-size: 1rem;
-      text-shadow: 0 0 10px #0ff;
+      text-shadow: 0 0 4px #ff4081;
       margin-bottom: 20px;
-      user-select: none;
     }
 
-    /* Payment buttons container fixed: two columns side by side */
     .payment-buttons {
       display: flex;
       justify-content: center;
@@ -260,8 +235,6 @@
       margin-top: 20px;
       width: 100%;
       max-width: 500px;
-      z-index: 10;
-      position: relative;
     }
 
     .pay-group {
@@ -277,7 +250,6 @@
       text-align: center;
       margin-bottom: 8px;
       text-shadow: 0 0 5px #00e5ff;
-      user-select: none;
     }
 
     .pay-button {
@@ -304,7 +276,7 @@
       padding: 20px;
       overflow-y: auto;
       position: relative;
-      z-index: 10;
+      z-index: 1;
     }
 
     .events h2 {
@@ -313,7 +285,6 @@
       color: #fff;
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
       animation: colorPulse 3s ease infinite;
-      user-select: none;
     }
 
     .event {
@@ -333,7 +304,6 @@
       font-size: 1.4rem;
       color: #ffeb3b;
       animation: colorCycle 5s ease infinite;
-      user-select: none;
     }
 
     .event h3 a {
@@ -351,7 +321,6 @@
       font-size: 0.9rem;
       color: #e0e0e0;
       margin-bottom: 8px;
-      user-select: none;
     }
 
     .event a {
@@ -370,7 +339,6 @@
       max-width: 100px;
       border-radius: 5px;
       margin-top: 10px;
-      user-select: none;
     }
 
     @keyframes colorCycle {
@@ -386,7 +354,27 @@
       100% { text-shadow: 0 0 10px rgba(255, 107, 97, 0.8); }
     }
 
-    /* Responsive Design */
+    @keyframes scrollLeft {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+    @keyframes flashGrow {
+      0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0.8;
+      }
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
       .content {
         flex-direction: column;
@@ -407,10 +395,6 @@
         max-width: 90%;
         max-height: 25%;
         margin-top: 10px;
-      }
-
-      .image-text {
-        font-size: 0.9rem;
       }
 
       .payment-buttons {
@@ -527,7 +511,6 @@
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script>
     // Hamburger Menu Toggle
     const hamburger = document.getElementById('hamburger');
@@ -537,67 +520,87 @@
       menu.classList.toggle('active');
     }
 
-    // Three.js Smoke Effect (restored original shader with noise texture)
-    const canvas = document.getElementById('smokeCanvas');
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 0);
-
+    // Three.js Smoke Effect setup (as you had it)
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
     camera.position.z = 1;
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('smokeCanvas'), alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Create plane geometry
-    const geometry = new THREE.PlaneGeometry(2, 2);
+    function generateNoiseTexture(width, height) {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      const imageData = ctx.createImageData(width, height);
+      for (let i = 0; i < imageData.data.length; i += 4) {
+        const val = Math.random() * 255;
+        imageData.data[i] = val;
+        imageData.data[i + 1] = val;
+        imageData.data[i + 2] = val;
+        imageData.data[i + 3] = 255;
+      }
+      ctx.putImageData(imageData, 0, 0);
+      return new THREE.CanvasTexture(canvas);
+    }
 
-    // Load noise texture for smoke effect
-    const loader = new THREE.TextureLoader();
-    const noiseTexture = loader.load('images/noise.png'); // Make sure this file exists in your images folder
+    const noiseTexture = generateNoiseTexture(256, 256);
+
+    const uniforms = {
+      time: { value: 0 },
+      noiseTexture: { value: noiseTexture },
+      resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+    };
 
     const vertexShader = `
       varying vec2 vUv;
       void main() {
         vUv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        gl_Position = vec4(position, 1.0);
       }
     `;
 
     const fragmentShader = `
-      uniform sampler2D noiseTexture;
       uniform float time;
+      uniform sampler2D noiseTexture;
+      uniform vec2 resolution;
       varying vec2 vUv;
+
+      float rand(vec2 co){
+        return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+      }
+
       void main() {
         vec2 uv = vUv;
-        uv.y += time * 0.05;
-        float noise = texture2D(noiseTexture, uv).r;
-        float alpha = smoothstep(0.3, 0.7, noise);
-        gl_FragColor = vec4(vec3(1.0), alpha * 0.4);
+        float n = texture2D(noiseTexture, uv * 3.0 + vec2(time * 0.05, time * 0.1)).r;
+        float brightness = smoothstep(0.4, 0.7, n);
+        vec3 color = vec3(0.0, 0.8, 1.0) * brightness;
+        gl_FragColor = vec4(color, brightness);
       }
     `;
 
     const material = new THREE.ShaderMaterial({
-      uniforms: {
-        noiseTexture: { value: noiseTexture },
-        time: { value: 0 },
-      },
-      vertexShader,
-      fragmentShader,
+      uniforms: uniforms,
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
       transparent: true,
-      depthWrite: false,
     });
 
-    const plane = new THREE.Mesh(geometry, material);
-    scene.add(plane);
+    const geometry = new THREE.PlaneGeometry(2, 2);
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
 
     function animate(time) {
-      requestAnimationFrame(animate);
-      material.uniforms.time.value = time * 0.001;
+      uniforms.time.value = time * 0.001;
+      renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.render(scene, camera);
+      requestAnimationFrame(animate);
     }
 
     animate();
 
     window.addEventListener('resize', () => {
+      uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
