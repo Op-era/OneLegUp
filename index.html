@@ -17,24 +17,18 @@
       background: #000;
       color: #fff;
       position: relative;
+      overflow-x: hidden;
     }
 
-    .container {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Canvas for Smoke */
+    /* Fullscreen canvas for Three.js smoke effect */
     #smokeCanvas {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       z-index: 0;
+      pointer-events: none; /* so it doesn't block clicks */
     }
 
     /* Header with Hamburger and Title */
@@ -80,7 +74,7 @@
       font-size: 1.5rem;
       font-weight: 600;
       color: #ffeb3b;
-      text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
+      text-shadow: 0 0 15px #ffeb3b, 0 0 30px #ffeb3b;
       animation: colorCycle 5s ease infinite;
       user-select: none;
     }
@@ -122,11 +116,20 @@
     }
 
     /* Content Layout */
+    .container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
     .content {
       display: flex;
       flex: 1;
       margin-top: 150px;
       min-height: calc(100vh - 150px);
+      z-index: 10;
     }
 
     .image-area {
@@ -145,6 +148,8 @@
       object-fit: contain;
       margin-top: 20px;
       border-radius: 10px;
+      z-index: 10;
+      position: relative;
     }
 
     .image-text {
@@ -153,6 +158,8 @@
       text-align: center;
       color: #e0e0e0;
       font-size: 1rem;
+      z-index: 10;
+      position: relative;
     }
 
     /* Scrolling banner */
@@ -162,14 +169,17 @@
       overflow: hidden;
       white-space: nowrap;
       box-sizing: border-box;
-      background-color: #111;
-      border: 2px solid #ff4081;
       padding: 10px 0;
       margin-bottom: 20px;
       font-weight: bold;
-      color: #ff4081;
       font-size: 1.2rem;
-      text-shadow: 0 0 5px #ff4081;
+      color: #0ff;
+      text-shadow:
+        0 0 5px #0ff,
+        0 0 10px #0ff,
+        0 0 20px #0ff,
+        0 0 40px #0ff;
+      background: transparent; /* NO border or background */
     }
 
     .scrolling-text {
@@ -177,6 +187,13 @@
       padding-left: 100%;
       animation: scrollLeft 20s linear forwards;
       opacity: 1;
+      color: #0ff;
+      text-shadow:
+        0 0 5px #0ff,
+        0 0 10px #0ff,
+        0 0 20px #0ff,
+        0 0 40px #0ff;
+      font-weight: 700;
     }
 
     .flash-text {
@@ -184,13 +201,19 @@
       margin-left: 50px;
       font-weight: 900;
       font-size: 2rem;
-      color: #ff4081;
-      text-shadow: 0 0 10px #ff4081;
+      color: #0ff;
+      text-shadow:
+        0 0 10px #0ff,
+        0 0 20px #0ff,
+        0 0 30px #0ff,
+        0 0 40px #0ff,
+        0 0 50px #0ff;
       opacity: 0;
       position: absolute;
       right: 20px;
       top: 50%;
       transform: translateY(-50%);
+      user-select: none;
     }
 
     @keyframes scrollLeft {
@@ -222,10 +245,11 @@
     .sub-notice {
       text-align: center;
       font-weight: bold;
-      color: #ff4081;
+      color: #0ff;
       font-size: 1rem;
-      text-shadow: 0 0 4px #ff4081;
+      text-shadow: 0 0 10px #0ff;
       margin-bottom: 20px;
+      user-select: none;
     }
 
     /* Payment buttons container fixed: two columns side by side */
@@ -236,6 +260,8 @@
       margin-top: 20px;
       width: 100%;
       max-width: 500px;
+      z-index: 10;
+      position: relative;
     }
 
     .pay-group {
@@ -251,6 +277,7 @@
       text-align: center;
       margin-bottom: 8px;
       text-shadow: 0 0 5px #00e5ff;
+      user-select: none;
     }
 
     .pay-button {
@@ -277,7 +304,7 @@
       padding: 20px;
       overflow-y: auto;
       position: relative;
-      z-index: 1;
+      z-index: 10;
     }
 
     .events h2 {
@@ -286,6 +313,7 @@
       color: #fff;
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
       animation: colorPulse 3s ease infinite;
+      user-select: none;
     }
 
     .event {
@@ -305,6 +333,7 @@
       font-size: 1.4rem;
       color: #ffeb3b;
       animation: colorCycle 5s ease infinite;
+      user-select: none;
     }
 
     .event h3 a {
@@ -322,6 +351,7 @@
       font-size: 0.9rem;
       color: #e0e0e0;
       margin-bottom: 8px;
+      user-select: none;
     }
 
     .event a {
@@ -340,6 +370,7 @@
       max-width: 100px;
       border-radius: 5px;
       margin-top: 10px;
+      user-select: none;
     }
 
     @keyframes colorCycle {
@@ -498,7 +529,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script>
-    // Hamburger Menu Toggle with proper active class toggle
+    // Hamburger Menu Toggle
     const hamburger = document.getElementById('hamburger');
     const menu = document.getElementById('menu');
     function toggleMenu() {
@@ -506,34 +537,22 @@
       menu.classList.toggle('active');
     }
 
-    // Three.js Smoke Effect (unchanged)
+    // Three.js Smoke Effect (restored original shader with noise texture)
+    const canvas = document.getElementById('smokeCanvas');
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000, 0);
+
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
     camera.position.z = 1;
-    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('smokeCanvas'), alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
 
-    function generateNoiseTexture(width, height) {
-      const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext('2d');
-      const imageData = ctx.createImageData(width, height);
-      for (let i = 0; i < imageData.data.length; i += 4) {
-        const value = Math.random() * 255;
-        imageData.data[i] = value;
-        imageData.data[i + 1] = value;
-        imageData.data[i + 2] = value;
-        imageData.data[i + 3] = 255;
-      }
-      ctx.putImageData(imageData, 0, 0);
-      return new THREE.CanvasTexture(canvas);
-    }
-
-    const noiseTexture = generateNoiseTexture(256, 256);
-    noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
-
+    // Create plane geometry
     const geometry = new THREE.PlaneGeometry(2, 2);
+
+    // Load noise texture for smoke effect
+    const loader = new THREE.TextureLoader();
+    const noiseTexture = loader.load('images/noise.png'); // Make sure this file exists in your images folder
 
     const vertexShader = `
       varying vec2 vUv;
@@ -549,10 +568,10 @@
       varying vec2 vUv;
       void main() {
         vec2 uv = vUv;
-        uv.y += time * 0.1;
+        uv.y += time * 0.05;
         float noise = texture2D(noiseTexture, uv).r;
-        float alpha = smoothstep(0.4, 0.6, noise);
-        gl_FragColor = vec4(vec3(1.0), alpha * 0.5);
+        float alpha = smoothstep(0.3, 0.7, noise);
+        gl_FragColor = vec4(vec3(1.0), alpha * 0.4);
       }
     `;
 
@@ -578,24 +597,33 @@
 
     animate();
 
-    // Banner animation logic
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Banner scrolling and flashing logic
     const scrollingText = document.getElementById('scrollingText');
     const flashText = document.getElementById('flashText');
 
     function runBannerCycle() {
+      // Show flash text, animate flashGrow
       flashText.style.opacity = '1';
       flashText.style.animation = 'flashGrow 2s ease-in-out forwards';
 
+      // Pause scrolling text and hide it
       scrollingText.style.animationPlayState = 'paused';
       scrollingText.style.opacity = '0';
 
       setTimeout(() => {
+        // Hide flash text and reset animation
         flashText.style.opacity = '0';
         flashText.style.animation = '';
 
+        // Show scrolling text and restart scroll animation
         scrollingText.style.opacity = '1';
         scrollingText.style.animation = 'scrollLeft 20s linear forwards';
 
+        // After scroll ends, restart cycle
         setTimeout(() => {
           scrollingText.style.animation = '';
           runBannerCycle();
@@ -607,11 +635,6 @@
       flashText.style.opacity = '0';
       scrollingText.style.animation = '';
       runBannerCycle();
-    });
-
-    // Adjust canvas size on resize
-    window.addEventListener('resize', () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
     });
   </script>
 </body>
