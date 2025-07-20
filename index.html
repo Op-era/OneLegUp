@@ -6,12 +6,12 @@
   <title>One Leg Up - Swingers Club</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
+    /* Reset */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Poppins', sans-serif;
       background: #000;
@@ -19,26 +19,17 @@
       position: relative;
       overflow-x: hidden;
     }
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Canvas for Smoke */
-    #smokeCanvas {
+    /* Water canvas behind everything */
+    #waterCanvas {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       z-index: 0;
+      pointer-events: none;
     }
-
-    /* Header with Hamburger and Title */
+    /* Header and nav */
     .header {
       position: fixed;
       top: 20px;
@@ -48,7 +39,6 @@
       z-index: 1000;
       height: 60px;
     }
-
     .hamburger {
       cursor: pointer;
       margin-right: 15px;
@@ -57,198 +47,143 @@
       justify-content: center;
       gap: 5px;
     }
-
     .hamburger div {
       width: 30px;
       height: 3px;
       background: #fff;
       transition: all 0.3s ease;
     }
-
     .hamburger.active div:nth-child(1) {
       transform: rotate(45deg) translate(5px, 5px);
     }
-
     .hamburger.active div:nth-child(2) {
       opacity: 0;
     }
-
     .hamburger.active div:nth-child(3) {
       transform: rotate(-45deg) translate(6px, -6px);
     }
-
     .site-title {
       font-size: 1.5rem;
       font-weight: 600;
       color: #ffeb3b;
       text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
-      animation: colorCycle 5s ease infinite;
+      animation: colorCycle 10s ease infinite;
       user-select: none;
     }
-
     .menu {
       position: fixed;
       top: 0;
       left: -250px;
       width: 250px;
       height: 100%;
-      background: #1a1a1a;
+      background: #111;
       transition: left 0.3s ease;
       z-index: 999;
       padding-top: 60px;
     }
-
     .menu.active {
       left: 0;
     }
-
     .menu ul {
       list-style: none;
       padding: 0 20px;
     }
-
     .menu ul li {
       margin: 20px 0;
     }
-
     .menu ul li a {
       color: #fff;
       text-decoration: none;
       font-size: 1.2rem;
       transition: color 0.3s;
     }
-
     .menu ul li a:hover {
       color: #ff6f61;
     }
-
-    /* Scrolling & Flashing Banner */
-    .scrolling-banner {
-      position: fixed;
-      top: 90px;
-      width: 100%;
-      background: #ff4081;
-      color: #fff;
-      font-weight: bold;
-      font-size: 1.3rem;
-      text-align: center;
-      padding: 10px 0;
-      z-index: 1100;
-      text-shadow: 0 0 8px #ff4081;
-      overflow: hidden;
-      white-space: nowrap;
-      user-select: none;
-      animation: flash 2s linear infinite;
-    }
-
-    .scrolling-banner span {
-      display: inline-block;
-      padding-left: 100%;
-      animation: scroll-left 30s linear infinite;
-    }
-
-    /* Grow and flash effect on the special phrase */
-    .special-flash {
-      display: inline-block;
-      margin-left: 6px;
-      animation: growFlash 2s ease-in-out infinite;
-      color: #ffff00;
-      text-shadow:
-        0 0 5px #ffff00,
-        0 0 10px #ffeb3b,
-        0 0 20px #ffeb3b,
-        0 0 30px #ff4081;
-      font-weight: 900;
-    }
-
-    @keyframes scroll-left {
-      0% {
-        transform: translateX(0);
-      }
-      100% {
-        transform: translateX(-100%);
-      }
-    }
-
-    @keyframes flash {
-      0%, 50%, 100% {
-        opacity: 1;
-      }
-      25%, 75% {
-        opacity: 0.5;
-      }
-    }
-
-    @keyframes growFlash {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-      50% {
-        transform: scale(1.3);
-        opacity: 0.6;
-      }
-    }
-
-    /* Content Layout */
-    .content {
+    /* Layout */
+    .container {
       display: flex;
-      flex: 1;
-      margin-top: 140px; /* room for banner and header */
-      min-height: calc(100vh - 140px);
+      flex-wrap: nowrap;
+      margin-top: 120px;
+      padding: 20px;
+      position: relative;
+      z-index: 10;
+      gap: 20px;
     }
-
     .image-area {
-      width: 66.66%;
+      flex: 2;
+      max-width: 600px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: 20px;
-      padding-top: 20px;
     }
-
     .image-area img {
-      max-width: 80%;
-      max-height: 40%;
-      object-fit: contain;
-      margin-top: 20px;
+      max-width: 100%;
       border-radius: 10px;
+      margin-bottom: 15px;
     }
-
-    .image-text {
-      margin-top: 20px;
-      padding: 10px;
-      text-align: center;
-      color: #e0e0e0;
-      font-size: 1rem;
+    /* Scrolling banner container sized just a bit wider than poster */
+    .scrolling-banner-container {
+      width: 620px;
+      max-width: 95vw;
+      background: #000;
+      overflow: hidden;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      border: none;
+      box-shadow: 0 0 15px #ff4081;
     }
-
-    .notice-banner {
-      display: none; /* replaced by scrolling banner */
+    .scrolling-banner {
+      display: flex;
+      white-space: nowrap;
+      animation: scroll-left 15s linear infinite;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #ff4081;
+      text-shadow:
+        0 0 8px #ff4081,
+        0 0 15px #ff6f91,
+        0 0 25px #ff4081,
+        0 0 40px #ff6f91;
+      align-items: center;
+      height: 40px;
     }
-    
-    .sub-notice {
-      display: none; /* removed as requested */
+    .scrolling-banner > span {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
     }
-
-    /* Payment buttons container fixed: two columns side by side */
+    /* The neon flashing grow/shrink effect on $10 more at the door */
+    .special-flash {
+      margin-left: 50px;
+      color: #ffeb3b;
+      text-shadow:
+        0 0 8px #ffff00,
+        0 0 20px #ffeb3b,
+        0 0 30px #ffeb3b,
+        0 0 40px #ff4081;
+      animation: growFlash 2.5s ease-in-out infinite;
+      transform-origin: center;
+      white-space: nowrap;
+      font-weight: 900;
+      font-size: 1.3rem;
+    }
+    /* Payment buttons */
     .payment-buttons {
       display: flex;
       justify-content: center;
-      gap: 40px;
+      gap: 30px;
       margin-top: 20px;
       width: 100%;
-      max-width: 500px;
+      max-width: 600px;
     }
-
     .pay-group {
       display: flex;
       flex-direction: column;
       gap: 10px;
       flex: 1;
     }
-
     .pay-group p {
       font-weight: 700;
       color: #00e5ff;
@@ -256,7 +191,6 @@
       margin-bottom: 8px;
       text-shadow: 0 0 5px #00e5ff;
     }
-
     .pay-button {
       display: inline-block;
       padding: 10px 20px;
@@ -270,169 +204,150 @@
       text-align: center;
       user-select: none;
     }
-
     .pay-button:hover {
       background: #ff4081;
       color: #fff;
     }
-
+    /* Events section */
     .events {
-      width: 33.33%;
-      padding: 20px;
+      flex: 1;
+      max-width: 350px;
       overflow-y: auto;
-      position: relative;
-      z-index: 1;
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(10, 10, 10, 0.8);
+      box-shadow: 0 0 10px #ff4081;
     }
-
     .events h2 {
       font-size: 1.8rem;
       margin-bottom: 20px;
       color: #fff;
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-      animation: colorPulse 6s ease infinite; /* slowed from 3s to 6s */
+      animation: colorCycle 10s ease infinite;
+      user-select: none;
     }
-
     .event {
       margin-bottom: 20px;
       padding: 10px;
       border-radius: 8px;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.5);
       transition: transform 0.3s ease;
       cursor: default;
     }
-
     .event:hover {
       transform: scale(1.05);
     }
-
-    /* All event titles share same animation speed and easing */
     .event h3 {
       font-size: 1.4rem;
-      animation: colorCycle 10s ease infinite; /* slowed from 5s to 10s */
+      animation: colorCycle 10s ease infinite;
+      user-select: none;
     }
-
-    /* Staggered start times via animation-delay */
-    .event.sunday-funday h3 {
+    /* Different start colors for events' h3 to differentiate them */
+    .event:nth-child(1) h3 {
       animation-delay: 0s;
+      color: #ffeb3b;
     }
-
-    .event.skinny-dipping h3 {
-      animation-delay: 3.33s; /* 10s / 3 offset */
+    .event:nth-child(2) h3 {
+      animation-delay: 3.3s;
+      color: #40c4ff;
     }
-
-    .event.almost-there h3 {
-      animation-delay: 6.66s; /* 10s * 2/3 offset */
+    .event:nth-child(3) h3 {
+      animation-delay: 6.6s;
+      color: #ff4081;
     }
-
     .event h3 a {
       color: inherit;
       text-decoration: none;
       transition: color 0.3s;
     }
-
     .event h3 a:hover {
-      color: #ff4081;
+      color: #ff6f61;
       text-decoration: underline;
     }
-
     .event p {
       font-size: 0.9rem;
       color: #e0e0e0;
       margin-bottom: 8px;
     }
-
     .event a {
       color: #00e5ff;
       text-decoration: none;
       font-weight: 600;
       transition: color 0.3s;
     }
-
     .event a:hover {
       color: #ff4081;
       text-decoration: underline;
     }
-
     .thumbnail {
       max-width: 100px;
       border-radius: 5px;
       margin-top: 10px;
     }
 
+    /* Animations */
+    @keyframes scroll-left {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+    @keyframes growFlash {
+      0%, 100% {
+        transform: scale(1);
+        text-shadow:
+          0 0 5px #ffff00,
+          0 0 10px #ffeb3b,
+          0 0 20px #ffeb3b,
+          0 0 30px #ff4081;
+        color: #ffff00;
+      }
+      50% {
+        transform: scale(1.3);
+        text-shadow:
+          0 0 15px #ffff00,
+          0 0 25px #ffeb3b,
+          0 0 40px #ffeb3b,
+          0 0 60px #ff4081;
+        color: #fff176;
+      }
+    }
     @keyframes colorCycle {
       0% { color: #ffeb3b; }
       33% { color: #40c4ff; }
       66% { color: #ff4081; }
       100% { color: #ffeb3b; }
     }
-
-    @keyframes colorPulse {
-      0% { text-shadow: 0 0 10px rgba(255, 107, 97, 0.8); }
-      50% { text-shadow: 0 0 15px rgba(64, 196, 255, 0.8); }
-      100% { text-shadow: 0 0 10px rgba(255, 107, 97, 0.8); }
-    }
-
-    /* Responsive Design */
+    /* Responsive */
     @media (max-width: 768px) {
-      .content {
+      .container {
         flex-direction: column;
-        margin-top: 120px;
-        min-height: calc(100vh - 120px);
+        margin-top: 100px;
+        gap: 20px;
       }
-
       .image-area, .events {
+        max-width: 100%;
         width: 100%;
       }
-
-      .image-area {
-        padding: 10px;
-        padding-top: 10px;
+      .scrolling-banner-container {
+        width: 100vw;
+        max-width: 100%;
+        border-radius: 0;
       }
-
-      .image-area img {
-        max-width: 90%;
-        max-height: 25%;
-        margin-top: 10px;
-      }
-
-      .image-text {
-        font-size: 0.9rem;
-      }
-
-      .payment-buttons {
-        flex-direction: column;
-        gap: 10px;
-        max-width: none;
-      }
-
-      .pay-group {
-        flex: none;
-        width: 100%;
-      }
-
-      .pay-button {
-        width: 80%;
-        text-align: center;
-        margin: 0 auto;
-      }
-
-      .events {
-        height: auto;
-        padding: 10px;
-      }
-
-      .header {
-        left: 10px;
-      }
-
       .site-title {
         font-size: 1.2rem;
+      }
+      .pay-button {
+        width: 100%;
+        box-sizing: border-box;
       }
     }
   </style>
 </head>
 <body>
-  <canvas id="smokeCanvas"></canvas>
+  <canvas id="waterCanvas"></canvas>
 
   <div class="header">
     <div class="hamburger" id="hamburger" onclick="toggleMenu()">
@@ -452,69 +367,63 @@
     </ul>
   </nav>
 
-  <div class="scrolling-banner" aria-live="polite" role="region">
-    <span>
-      ALL SINGLE MALES MUST PAY IN ADVANCE OR THEY WILL NOT BE ADMITTED!
-      <span class="special-flash">$10 more at the door!</span>
-      &nbsp;&nbsp;&nbsp;
-    </span>
-  </div>
-
   <div class="container">
-    <div class="content">
-      <div class="image-area">
-        <img src="images/pool_party2.jpg" alt="Sunday Funday Pool Party" />
-        <div class="image-text">
-          <p>Join us for an unforgettable night at the Skinny Dipping Pool Party! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.</p>
-        </div>
-
-        <div class="payment-buttons" id="paymentButtons">
-          <div class="pay-group">
-            <p>Couples ($40):</p>
-            <a href="https://paypal.me/0neLegUp/40" target="_blank" class="pay-button">Pay $40 with PayPal</a>
-            <a href="https://cash.app/$0neLegUp?amount=40" target="_blank" class="pay-button">Pay $40 with Cash App</a>
-            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=40&note=Couples" target="_blank" class="pay-button">Pay $40 with Venmo</a>
-          </div>
-          <div class="pay-group">
-            <p>Single Male ($80):</p>
-            <a href="https://paypal.me/0neLegUp/80" target="_blank" class="pay-button">Pay $80 with PayPal</a>
-            <a href="https://cash.app/$0neLegUp?amount=80" target="_blank" class="pay-button">Pay $80 with Cash App</a>
-            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=80&note=Single%20Male" target="_blank" class="pay-button">Pay $80 with Venmo</a>
-          </div>
+    <div class="image-area">
+      <div class="scrolling-banner-container" aria-label="Important notice scrolling banner">
+        <div class="scrolling-banner" aria-live="polite" role="marquee">
+          <span>
+            ALL SINGLE MALES MUST PAY IN ADVANCE OR THEY WILL NOT BE ADMITTED!
+            <span class="special-flash">$10 more at the door!</span>
+          </span>
+          <span>
+            ALL SINGLE MALES MUST PAY IN ADVANCE OR THEY WILL NOT BE ADMITTED!
+            <span class="special-flash">$10 more at the door!</span>
+          </span>
         </div>
       </div>
 
-      <div class="events" id="eventsContainer">
-        <h2>Upcoming Parties</h2>
-        <div id="upcomingEvents">
-          <div class="event sunday-funday" data-date="2025-07-20">
-            <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
-            <p>Date: July 20, 2025<br />Location: Fresno, CA</p>
-            <p>Join us for a Sunday funday! Full of wet play time for adults!</p>
-            <p>Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
-            <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
-          </div>
-          <div class="event almost-there" data-date="2025-09-10">
-            <h3><a href="payment.html">I'm Almost There</a></h3>
-            <p>Date: Sept 10, 2025<br>Location: Fresno, CA</p>
-            <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=396000" target="_blank">View on SLS</a>
-          </div>
-        </div>
+      <img src="images/pool_party2.jpg" alt="Sunday Funday Pool Party" />
+      <div class="image-text">
+        <p>Join us for an unforgettable night at the Skinny Dipping Pool Party! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.</p>
+      </div>
 
-        <h2 style="margin-top: 40px;">Past Events</h2>
-        <div id="pastEvents">
-          <div class="event skinny-dipping" data-date="2025-05-31">
-            <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
-            <p>Date: May 31, 2025<br>Location: Fresno, CA</p>
-            <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
-            <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="thumbnail" />
-          </div>
+      <div class="payment-buttons" id="paymentButtons">
+        <div class="pay-group">
+          <p>Couples ($40):</p>
+          <a href="https://paypal.me/0neLegUp/40" target="_blank" class="pay-button">Pay $40 with PayPal</a>
+          <a href="https://cash.app/$0neLegUp?amount=40" target="_blank" class="pay-button">Pay $40 with Cash App</a>
+          <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=40&note=Couples" target="_blank" class="pay-button">Pay $40 with Venmo</a>
+        </div>
+        <div class="pay-group">
+          <p>Single Male ($80):</p>
+          <a href="https://paypal.me/0neLegUp/80" target="_blank" class="pay-button">Pay $80 with PayPal</a>
+          <a href="https://cash.app/$0neLegUp?amount=80" target="_blank" class="pay-button">Pay $80 with Cash App</a>
+          <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=80&note=Single%20Male" target="_blank" class="pay-button">Pay $80 with Venmo</a>
         </div>
       </div>
     </div>
+
+    <div class="events" id="eventsContainer">
+      <h2>Upcoming Parties</h2>
+      <div class="event" data-date="2025-07-20">
+        <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
+        <p>Date: July 20, 2025<br />Location: Fresno, CA</p>
+        <p>Join us for a Sunday funday! Full of wet play time for adults!</p>
+        <p>Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
+        <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
+      </div>
+      <div class="event" data-date="2025-09-10">
+        <h3>I'm almost there</h3>
+        <p>Date: September 10, 2025<br>Location: Private Venue, CA</p>
+        <a href="https://www.swinglifestyle.com" target="_blank">View on SLS</a>
+      </div>
+
+      <h2 style="margin-top: 40px;">Past Events</h2>
+      <div id="pastEvents"></div>
+    </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
   <script>
     // Hamburger Menu Toggle
     const hamburger = document.getElementById('hamburger');
@@ -524,111 +433,177 @@
       menu.classList.toggle('active');
     }
 
-    // Three.js Smoke Effect (fixed from your original)
-    const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
-    camera.position.z = 1;
-    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('smokeCanvas'), alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-    function generateNoiseTexture(width, height) {
-      const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext('2d');
-      const imageData = ctx.createImageData(width, height);
-      for (let i = 0; i < imageData.data.length; i += 4) {
-        const value = Math.random() * 255;
-        imageData.data[i] = value;
-        imageData.data[i + 1] = value;
-        imageData.data[i + 2] = value;
-        imageData.data[i + 3] = 255;
-      }
-      ctx.putImageData(imageData, 0, 0);
-      return new THREE.CanvasTexture(canvas);
+    // Move past events by date (same as before)
+    function movePastEvents() {
+      const now = new Date();
+      const upcomingContainer = document.getElementById('eventsContainer');
+      const pastContainer = document.getElementById('pastEvents');
+      const events = [...upcomingContainer.querySelectorAll('.event[data-date]')];
+      events.forEach(event => {
+        const eventDate = new Date(event.getAttribute('data-date'));
+        if (eventDate < now) {
+          pastContainer.appendChild(event);
+        }
+      });
     }
+    movePastEvents();
 
-    const noiseTexture = generateNoiseTexture(256, 256);
-    noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
+    // THREE.JS Water effect setup
+    const canvas = document.getElementById('waterCanvas');
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000, 0);
 
-    const geometry = new THREE.PlaneGeometry(2, 2);
+    const scene = new THREE.Scene();
 
+    const camera = new THREE.OrthographicCamera(
+      window.innerWidth / -2,
+      window.innerWidth / 2,
+      window.innerHeight / 2,
+      window.innerHeight / -2,
+      -1000,
+      1000
+    );
+    camera.position.z = 1;
+
+    const geometry = new THREE.PlaneGeometry(window.innerWidth, window.innerHeight);
+
+    // Simplex noise GLSL function for water distortion
+    // Using a small noise function for ripple effect
     const vertexShader = `
       varying vec2 vUv;
+      uniform float time;
+
+      // 2D Simplex noise from https://github.com/ashima/webgl-noise/blob/master/src/noise2D.glsl
+      vec3 mod289(vec3 x) {
+        return x - floor(x * (1.0 / 289.0)) * 289.0;
+      }
+      vec2 mod289(vec2 x) {
+        return x - floor(x * (1.0 / 289.0)) * 289.0;
+      }
+      vec3 permute(vec3 x) {
+        return mod289(((x*34.0)+1.0)*x);
+      }
+      float snoise(vec2 v)
+      {
+        const vec4 C = vec4(0.211324865405187,  // (3.0-sqrt(3.0))/6.0
+                            0.366025403784439,  // 0.5*(sqrt(3.0)-1.0)
+                           -0.577350269189626,  // -1.0 + 2.0 * C.x
+                            0.024390243902439); // 1.0 / 41.0
+        vec2 i  = floor(v + dot(v, C.yy) );
+        vec2 x0 = v -   i + dot(i, C.xx);
+
+        vec2 i1;
+        i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+
+        vec4 x12 = x0.xyxy + C.xxzz;
+        x12.xy -= i1;
+
+        i = mod289(i);
+        vec3 p = permute( permute(
+          i.y + vec3(0.0, i1.y, 1.0 ))
+          + i.x + vec3(0.0, i1.x, 1.0 ));
+
+        vec3 m = max(0.5 - vec3(
+          dot(x0,x0),
+          dot(x12.xy,x12.xy),
+          dot(x12.zw,x12.zw)
+        ), 0.0);
+        m = m*m ;
+        m = m*m ;
+
+        vec3 x = 2.0 * fract(p * C.www) - 1.0;
+        vec3 h = abs(x) - 0.5;
+        vec3 ox = floor(x + 0.5);
+        vec3 a0 = x - ox;
+
+        m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0+h*h );
+
+        vec3 g;
+        g.x  = a0.x  * x0.x  + h.x  * x0.y;
+        g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+
+        return 130.0 * dot(m, g);
+      }
+
       void main() {
         vUv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+        // Calculate wave distortion
+        float wave = snoise(uv * 10.0 + vec2(time * 0.1, time * 0.2));
+        float wave2 = snoise(uv * 30.0 - vec2(time * 0.3, time * 0.4));
+
+        vec3 pos = position;
+
+        // Displace vertex in z to create wave effect
+        pos.z += (wave + wave2) * 10.0;
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
       }
     `;
 
     const fragmentShader = `
-      uniform sampler2D noiseTexture;
-      uniform float time;
       varying vec2 vUv;
+      uniform float time;
+
+      // Simple caustics light pattern
+      float caustics(vec2 uv, float t) {
+        float light = 0.0;
+        light += sin(uv.x * 20.0 + t) * 0.3;
+        light += sin(uv.y * 30.0 - t * 1.3) * 0.2;
+        light += sin((uv.x + uv.y) * 25.0 + t * 0.7) * 0.25;
+        return light;
+      }
+
       void main() {
-        vec2 uv = vUv + vec2(-time * 0.1, time * 0.05);
-        float noise = texture2D(noiseTexture, uv * 0.5).r;
-        float noise2 = texture2D(noiseTexture, uv * 0.2 + vec2(time * 0.05, -time * 0.03)).r;
-        float smoke = noise * noise2;
-        float alpha = smoothstep(0.5, 1.0, vUv.x) * smoke * 0.7;
-        vec3 color = vec3(
-          abs(sin(time * 0.7 + vUv.x)),
-          abs(sin(time * 0.8 + vUv.y)),
-          abs(sin(time * 0.9 + vUv.x + vUv.y))
-        );
-        gl_FragColor = vec4(color, alpha);
+        // Base water color
+        vec3 waterColor = vec3(0.0, 0.3, 0.6);
+        // Light caustics overlay
+        float lightPattern = caustics(vUv * 2.0, time * 3.0);
+
+        // Final color with caustics brightening and subtle bluish glow
+        vec3 color = waterColor + lightPattern * 0.15;
+
+        // Add subtle vertical gradient (lighter near top)
+        color *= mix(1.2, 0.7, vUv.y);
+
+        gl_FragColor = vec4(color, 0.7);
       }
     `;
 
+    const uniforms = {
+      time: { value: 0 }
+    };
+
     const material = new THREE.ShaderMaterial({
-      vertexShader,
-      fragmentShader,
-      uniforms: {
-        noiseTexture: { value: noiseTexture },
-        time: { value: 0.0 }
-      },
+      uniforms: uniforms,
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
       transparent: true,
-      side: THREE.DoubleSide
+      depthWrite: false,
     });
 
     const plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
 
+    function onWindowResize() {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.left = window.innerWidth / -2;
+      camera.right = window.innerWidth / 2;
+      camera.top = window.innerHeight / 2;
+      camera.bottom = window.innerHeight / -2;
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', onWindowResize, false);
+    onWindowResize();
+
+    // Animate
     function animate(time) {
       requestAnimationFrame(animate);
-      material.uniforms.time.value = time * 0.001;
+      uniforms.time.value = time * 0.001;
       renderer.render(scene, camera);
     }
-    animate(0);
-
-    window.addEventListener('resize', () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    // Event sorting and moving past events to "Past Events" section
-    function movePastEvents() {
-      const now = new Date();
-      const upcomingContainer = document.getElementById('upcomingEvents');
-      const pastContainer = document.getElementById('pastEvents');
-
-      // Collect all upcoming events
-      const events = Array.from(upcomingContainer.children);
-      events.forEach(event => {
-        const dateStr = event.getAttribute('data-date');
-        if (!dateStr) return;
-
-        const eventDate = new Date(dateStr + 'T23:59:59'); // consider event as ended at end of day
-        if (eventDate < now) {
-          // Move to past events
-          pastContainer.appendChild(event);
-        }
-      });
-    }
-
-    // Run once on load and then every minute to keep updated
-    movePastEvents();
-    setInterval(movePastEvents, 60000);
-
+    animate();
   </script>
 </body>
 </html>
