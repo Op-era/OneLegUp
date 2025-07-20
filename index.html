@@ -2,208 +2,496 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>One Leg Up - Event Hosting</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>One Leg Up - Swingers Club</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    body {
+    * {
       margin: 0;
-      background-color: #000;
-      font-family: sans-serif;
-      color: white;
+      padding: 0;
+      box-sizing: border-box;
     }
-
-    .main-container {
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #000;
+      color: #fff;
+      position: relative;
+      overflow-x: hidden;
+    }
+    #smokeCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      display: block;
+    }
+    .container {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: 0 20px 40px 20px;
+    }
+    .header {
+      position: fixed;
+      top: 20px;
+      left: 20px;
       display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 20px;
-      padding: 10px;
+      align-items: center;
+      z-index: 1000;
+      height: 60px;
     }
-
-    .left-column, .right-column {
+    .hamburger {
+      cursor: pointer;
+      margin-right: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+    }
+    .hamburger div {
+      width: 30px;
+      height: 3px;
+      background: #fff;
+      transition: all 0.3s ease;
+    }
+    .hamburger.active div:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .hamburger.active div:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger.active div:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+    .site-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #ffeb3b;
+      text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
+      animation: colorCycle 5s ease infinite;
+      user-select: none;
+    }
+    .menu {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: #1a1a1a;
+      transition: left 0.3s ease;
+      z-index: 999;
+      padding-top: 60px;
+    }
+    .menu.active {
+      left: 0;
+    }
+    .menu ul {
+      list-style: none;
+      padding: 0 20px;
+    }
+    .menu ul li {
+      margin: 20px 0;
+    }
+    .menu ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+    .menu ul li a:hover {
+      color: #ff6f61;
+    }
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 150px;
+      min-height: calc(100vh - 150px);
+    }
+    .image-area {
+      flex: 2 1 60%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+    }
+    .image-area img {
+      max-width: 80%;
+      max-height: 40%;
+      object-fit: contain;
+      margin-top: 20px;
+      border-radius: 10px;
+    }
+    .notice-banner {
+      text-align: center;
+      font-weight: bold;
+      color: #0ff;
+      font-size: 1.2rem;
+      text-shadow:
+        0 0 5px #0ff,
+        0 0 10px #0ff,
+        0 0 20px #0ff,
+        0 0 30px #0ff,
+        0 0 40px #0ff;
+      margin-bottom: 20px;
+      position: relative;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .payment-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 20px;
+      width: 100%;
+      max-width: 500px;
+    }
+    .pay-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
       flex: 1;
     }
-
-    .center-column {
-      flex: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .scrolling-banner {
-      width: 110%;
-      background: black;
-      border: 2px solid #0ff;
-      padding: 10px;
-      margin-bottom: 20px;
-      transform: translateX(-5%);
-    }
-
-    .highlight {
-      color: #0ff;
-      text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
-    }
-
-    .flash {
-      color: #f0f;
-      font-size: 1.2em;
-      text-shadow: 0 0 5px #f0f, 0 0 10px #f0f;
-      animation: flash 1s infinite alternate, growShrink 1.2s infinite alternate;
-      margin-left: 20px;
-    }
-
-    @keyframes flash {
-      from { opacity: 1; }
-      to { opacity: 0.3; }
-    }
-
-    @keyframes growShrink {
-      from { transform: scale(1); }
-      to { transform: scale(1.3); }
-    }
-
-    .events {
+    .pay-group p {
+      font-weight: 700;
+      color: #00e5ff;
       text-align: center;
+      margin-bottom: 8px;
+      text-shadow: 0 0 5px #00e5ff;
     }
-
+    .pay-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #00e5ff;
+      color: #000;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+      text-align: center;
+      user-select: none;
+    }
+    .pay-button:hover {
+      background: #ff4081;
+      color: #fff;
+    }
+    .events {
+      flex: 1 1 35%;
+      padding: 20px;
+      overflow-y: auto;
+      position: relative;
+      z-index: 1;
+      max-height: 70vh;
+    }
+    .events h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      animation: colorPulse 8s ease infinite;
+    }
     .event {
       margin-bottom: 20px;
-      animation: colorCycle 10s infinite linear;
-    }
-
-    @keyframes colorCycle {
-      0% { color: #0ff; }
-      25% { color: #f0f; }
-      50% { color: #0f0; }
-      75% { color: #ff0; }
-      100% { color: #0ff; }
-    }
-
-    .thumbnail-img {
-      width: 200px;
-      height: auto;
-      border: 2px solid #fff;
-    }
-
-    .poster-img {
-      max-width: 100%;
-      display: block;
-      margin: auto;
-    }
-
-    #threeCanvas {
-      width: 100%;
-      height: 500px;
-      display: block;
-    }
-
-    .payment-buttons button {
-      margin: 5px;
       padding: 10px;
-      font-size: 1em;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+      cursor: default;
     }
-
-    .image-area {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    .event:hover {
+      transform: scale(1.05);
     }
-
-    .poster-with-banner {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    .event h3 {
+      font-size: 1.4rem;
+      color: #ffeb3b;
+      animation: colorCycle 10s ease infinite;
+      user-select: text;
+    }
+    .event h3.color1 {
+      animation-delay: 0s;
+      color: #ffeb3b;
+    }
+    .event h3.color2 {
+      animation-delay: 3s;
+      color: #40c4ff;
+    }
+    .event h3.color3 {
+      animation-delay: 6s;
+      color: #ff4081;
+    }
+    .event h3 a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .event h3 a:hover {
+      color: #ff4081;
+      text-decoration: underline;
+    }
+    .event p {
+      font-size: 0.9rem;
+      color: #e0e0e0;
+      margin-bottom: 8px;
+      user-select: text;
+    }
+    .event a {
+      color: #00e5ff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+    .event a:hover {
+      color: #ff4081;
+      text-decoration: underline;
+    }
+    .thumbnail {
+      max-width: 100px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    @keyframes colorCycle {
+      0%, 100% { color: #ffeb3b; text-shadow: 0 0 10px #ffeb3b; }
+      33% { color: #40c4ff; text-shadow: 0 0 10px #40c4ff; }
+      66% { color: #ff4081; text-shadow: 0 0 10px #ff4081; }
+    }
+    @keyframes colorPulse {
+      0%, 100% { text-shadow: 0 0 10px rgba(255, 107, 97, 0.8); }
+      50% { text-shadow: 0 0 15px rgba(64, 196, 255, 0.8); }
+    }
+    @keyframes flashGrow {
+      0%, 100% { opacity: 1; transform: scale(1); text-shadow: 0 0 10px #0ff, 0 0 20px #0ff; }
+      50% { opacity: 0.5; transform: scale(1.3); text-shadow: 0 0 30px #0ff, 0 0 40px #0ff; }
+    }
+    .flashing-text {
+      animation: flashGrow 2s ease-in-out infinite;
+      color: #0ff;
+      font-weight: bold;
+      text-align: center;
+      margin: 0 auto 20px auto;
+      width: fit-content;
+      user-select: none;
+      text-shadow:
+        0 0 10px #0ff,
+        0 0 20px #0ff,
+        0 0 30px #0ff,
+        0 0 40px #0ff,
+        0 0 50px #0ff;
+    }
+    @media (max-width: 768px) {
+      .content {
+        flex-direction: column;
+        margin-top: 120px;
+        min-height: calc(100vh - 120px);
+      }
+      .image-area, .events {
+        width: 100%;
+        max-height: none;
+      }
+      .image-area img {
+        max-width: 90%;
+        max-height: 25%;
+        margin-top: 10px;
+      }
+      .payment-buttons {
+        flex-direction: column;
+        gap: 10px;
+        max-width: none;
+      }
+      .pay-group {
+        flex: none;
+        width: 100%;
+      }
+      .pay-button {
+        width: 80%;
+        text-align: center;
+        margin: 0 auto;
+      }
+      .header {
+        left: 10px;
+      }
+      .site-title {
+        font-size: 1.2rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="main-container">
-    <div class="left-column">
-      <!-- Three.js visual effects canvas -->
-      <canvas id="threeCanvas"></canvas>
+  <canvas id="smokeCanvas"></canvas>
+
+  <div class="header">
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <div></div><div></div><div></div>
+    </div>
+    <h1 class="site-title">One Leg Up</h1>
+  </div>
+
+  <nav class="menu" id="menu">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="events.html">Upcoming Events</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div class="notice-banner" style="max-width: 500px; margin-left:auto; margin-right:auto; margin-bottom: 10px;">
+      <marquee behavior="scroll" direction="left" scrollamount="5" style="width:100%; color:#0ff; text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff;">
+        ALL SINGLE MALES MUST PAY IN ADVANCE OR THEY WILL NOT BE ADMITTED! 
+        <span class="flashing-text">$10 more at the door!</span>
+      </marquee>
     </div>
 
-    <div class="center-column">
-      <div class="poster-with-banner">
-        <div class="scrolling-banner">
-          <marquee behavior="scroll" direction="left" scrollamount="6">
-            <span class="highlight">ALL SINGLE MALES MUST CONFIRM WITH HOSTS. Confirm by paying below. Message 559freakycouple on SLS your username and the email or account associated with your payment. Put your Swinglifestyle username in when making payments or message me when you pay!</span>
-            <span class="flash">$10 more at the door!</span>
-          </marquee>
-        </div>
-        <img src="images/party_poster.jpg" alt="Event Poster" class="poster-img" />
+    <div class="content">
+      <div class="image-area">
+        <img src="images/pool_party2.jpg" alt="Sunday Funday Pool Party" />
         <div class="payment-buttons" id="paymentButtons">
-          <button onclick="window.open('https://venmo.com/u/yourvenmo', '_blank')">Pay with Venmo</button>
-          <button onclick="window.open('https://cash.app/$yourcashapp', '_blank')">Pay with Cash App</button>
-          <button onclick="window.open('https://www.paypal.me/yourpaypal', '_blank')">Pay with PayPal</button>
+          <div class="pay-group">
+            <p>Couples ($40):</p>
+            <a href="https://paypal.me/0neLegUp/40" target="_blank" class="pay-button">Pay $40 with PayPal</a>
+            <a href="https://cash.app/$0neLegUp?amount=40" target="_blank" class="pay-button">Pay $40 with Cash App</a>
+            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=40&note=Couples" target="_blank" class="pay-button">Pay $40 with Venmo</a>
+          </div>
+          <div class="pay-group">
+            <p>Single Male ($80):</p>
+            <a href="https://paypal.me/0neLegUp/80" target="_blank" class="pay-button">Pay $80 with PayPal</a>
+            <a href="https://cash.app/$0neLegUp?amount=80" target="_blank" class="pay-button">Pay $80 with Cash App</a>
+            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=80&note=Single%20Male" target="_blank" class="pay-button">Pay $80 with Venmo</a>
+          </div>
         </div>
       </div>
 
       <div class="events" id="eventsContainer">
         <h2>Upcoming Parties</h2>
-        <div class="event" data-date="2025-08-01">
-          <div>Skinny Dip Kickoff</div>
-          <img src="images/thumb_kickoff.jpg" class="thumbnail-img" />
+        <div class="event" data-date="2025-07-20">
+          <h3 class="color1"><a href="payment.html">Sunday Funday Pool Party</a></h3>
+          <p>Date: July 20, 2025<br />Location: Fresno, CA</p>
+          <p>Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
+          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
         </div>
-        <div class="event" data-date="2025-08-15">
-          <div>Back to School Bash</div>
-          <img src="images/thumb_schoolbash.jpg" class="thumbnail-img" />
-        </div>
-        <div class="event" data-date="2025-09-01">
-          <div>Labor Day Blowout</div>
-          <img src="images/thumb_labor.jpg" class="thumbnail-img" />
+        <div class="event" data-date="2025-09-10">
+          <h3 class="color2">I'm almost there</h3>
+          <p>Date: September 10, 2025<br>Location: Private Venue, CA</p>
+          <a href="https://www.swinglifestyle.com" target="_blank">View on SLS</a>
         </div>
 
-        <div id="pastEventsContainer">
-          <h2>Past Parties</h2>
+        <h2 style="margin-top: 40px;">Past Events</h2>
+        <div id="pastEvents">
+          <div class="event" data-date="2025-05-31">
+            <h3 class="color3"><a href="payment.html">Skinny Dipping Pool Party</a></h3>
+            <p>Date: May 31, 2025<br>Location: Fresno, CA</p>
+            <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
+            <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="thumbnail" />
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="right-column"></div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js"></script>
   <script>
-    // Move past events based on date
-    document.addEventListener("DOMContentLoaded", () => {
-      const now = new Date();
-      const events = document.querySelectorAll(".event");
-      const pastContainer = document.getElementById("pastEventsContainer");
-      events.forEach((event) => {
-        const dateStr = event.getAttribute("data-date");
-        const eventDate = new Date(dateStr);
-        if (eventDate < now) {
-          pastContainer.appendChild(event);
+    // Hamburger Menu Toggle
+    const hamburger = document.getElementById('hamburger');
+    const menu = document.getElementById('menu');
+    function toggleMenu() {
+      hamburger.classList.toggle('active');
+      menu.classList.toggle('active');
+    }
+
+    // Water effect using Three.js
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 4, 0.01); // Slightly offset to avoid z-fighting
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('smokeCanvas'), alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Plane geometry for water surface
+    const geometry = new THREE.PlaneGeometry(20, 20, 64, 64);
+    geometry.rotateX(-Math.PI / 2);
+
+    // Shader material for water
+    const material = new THREE.ShaderMaterial({
+      vertexShader: `
+        uniform float time;
+        varying vec2 vUv;
+        varying vec3 vNormal;
+
+        void main() {
+          vUv = uv;
+          vec3 pos = position;
+
+          // Gentle multi-layered waves
+          float wave1 = 0.1 * sin(pos.x * 2.0 + time) * cos(pos.z * 1.5 + time * 0.8);
+          float wave2 = 0.05 * cos(pos.z * 3.0 + time * 1.2) * sin(pos.x * 1.5 + time * 0.6);
+          pos.y += wave1 + wave2;
+
+          // Compute normal for lighting
+          vec3 dx = vec3(1.0, 0.0, 0.0);
+          vec3 dz = vec3(0.0, 0.0, 1.0);
+          float dy_dx = 0.2 * cos(pos.x * 2.0 + time) * cos(pos.z * 1.5 + time * 0.8) +
+                        0.075 * cos(pos.z * 3.0 + time * 1.2) * cos(pos.x * 1.5 + time * 0.6);
+          float dy_dz = -0.15 * sin(pos.x * 2.0 + time) * sin(pos.z * 1.5 + time * 0.8) +
+                        -0.09 * sin(pos.z * 3.0 + time * 1.2) * sin(pos.x * 1.5 + time * 0.6);
+          vNormal = normalize(vec3(-dy_dx, 1.0, -dy_dz));
+
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
         }
-      });
+      `,
+      fragmentShader: `
+        uniform float time;
+        varying vec2 vUv;
+        varying vec3 vNormal;
+
+        void main() {
+          vec3 poolColor = vec3(0.1, 0.4, 0.7); // Pool blue
+          vec3 lightColor = vec3(0.9, 0.95, 1.0); // Light for caustics
+          vec3 lightDir = normalize(vec3(0.5, 1.0, 0.3));
+
+          // Simple caustic effect
+          vec2 uv = vUv * 8.0 + vec2(time * 0.1, time * 0.15);
+          float caustic = sin(uv.x + sin(uv.y + time * 0.2)) * cos(uv.y + cos(uv.x + time * 0.3));
+          caustic = smoothstep(0.3, 0.7, caustic) * 0.4;
+
+          // Pool bottom texture
+          float tilePattern = 0.95 + 0.05 * sin(vUv.x * 50.0) * sin(vUv.y * 50.0);
+          vec3 baseColor = poolColor * tilePattern;
+
+          // Lighting with normal
+          float diffuse = max(dot(vNormal, lightDir), 0.0);
+          vec3 color = baseColor + caustic * lightColor * diffuse;
+
+          // Add subtle glint
+          float glint = pow(diffuse, 10.0) * 0.2;
+          color += vec3(glint) * lightColor;
+
+          gl_FragColor = vec4(color, 0.6); // Slightly transparent water
+        }
+      `,
+      uniforms: {
+        time: { value: 0 }
+      },
+      transparent: true,
+      side: THREE.DoubleSide,
     });
 
-    // Basic procedural water-like background using Three.js and fractal noise
-    let scene = new THREE.Scene();
-    let camera = new THREE.PerspectiveCamera(75, window.innerWidth / 500, 0.1, 1000);
-    let renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("threeCanvas"), antialias: true });
-    renderer.setSize(window.innerWidth / 3, 500);
+    const water = new THREE.Mesh(geometry, material);
+    scene.add(water);
 
-    let geometry = new THREE.PlaneGeometry(10, 10, 100, 100);
-    let material = new THREE.MeshBasicMaterial({
-      color: 0x00aaff,
-      wireframe: true
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
     });
-    let plane = new THREE.Mesh(geometry, material);
-    scene.add(plane);
 
-    camera.position.z = 5;
-
-    function animate(time) {
+    function animate() {
       requestAnimationFrame(animate);
-      geometry.verticesNeedUpdate = true;
-      geometry.vertices.forEach(v => {
-        v.z = 0.2 * Math.sin(v.x * 2 + time * 0.002) + 0.2 * Math.cos(v.y * 2 + time * 0.002);
-      });
+      material.uniforms.time.value += 0.02;
       renderer.render(scene, camera);
     }
     animate();
