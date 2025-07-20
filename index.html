@@ -203,7 +203,7 @@
     }
     .event h3 {
       font-size: 1.4rem;
-      color: #ffeb3b !important; /* Initial color */
+      color: #ffeb3b !important;
       animation: colorCycle 10s ease infinite 3s !important;
       user-select: text;
     }
@@ -340,13 +340,13 @@
             <p>Couples ($40):</p>
             <a href="https://paypal.me/0neLegUp/40" target="_blank" class="pay-button">Pay $40 with PayPal</a>
             <a href="https://cash.app/$0neLegUp?amount=40" target="_blank" class="pay-button">Pay $40 with Cash App</a>
-            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=40&note=Couples" target="_blank" class="pay-button">Pay $40 with Venmo</a>
+            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=40¬e=Couples" target="_blank" class="pay-button">Pay $40 with Venmo</a>
           </div>
           <div class="pay-group">
             <p>Single Male ($80):</p>
             <a href="https://paypal.me/0neLegUp/80" target="_blank" class="pay-button">Pay $80 with PayPal</a>
             <a href="https://cash.app/$0neLegUp?amount=80" target="_blank" class="pay-button">Pay $80 with Cash App</a>
-            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=80&note=Single%20Male" target="_blank" class="pay-button">Pay $80 with Venmo</a>
+            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=80¬e=Single%20Male" target="_blank" class="pay-button">Pay $80 with Venmo</a>
           </div>
         </div>
       </div>
@@ -436,35 +436,35 @@
         varying vec3 vNormal;
 
         void main() {
-          // Vibrant pool blue based on provided palette
-          vec3 poolColor = vec3(0.0, 0.894, 1.0); // Approx #00e4ff
-          vec3 lightColor = vec3(0.9, 1.0, 0.95); // Light for caustics
+          // Base pool color (clean blue #0D78AA)
+          vec3 poolColor = vec3(0.051, 0.471, 0.667);
+          vec3 lightColor = vec3(0.95, 0.98, 1.0); // Light for caustics
           vec3 lightDir = normalize(vec3(0.5, 1.0, 0.3));
 
-          // Dynamic color variation from palette
-          float t = sin(time * 0.2) * 0.5 + 0.5;
-          vec3 color1 = vec3(0.337, 0.631, 1.0); // #56a1ff
-          vec3 color2 = vec3(0.0, 1.0, 0.953); // #00fff3
-          vec3 color3 = vec3(0.0, 0.341, 1.0); // #0057ff
-          vec3 color4 = vec3(0.063, 0.0, 1.0); // #1000ff
-          vec3 dynamicColor = mix(mix(color1, color2, t), mix(color3, color4, t), t * 0.5);
-          vec3 baseColor = mix(poolColor, dynamicColor, 0.3);
+          // Dynamic color variation using provided palette
+          float t = sin(time * 0.3) * 0.5 + 0.5;
+          vec3 color1 = vec3(0.89, 0.98, 1.0); // #E3FAFF
+          vec3 color2 = vec3(0.788, 0.98, 0.996); // #C9FAFE
+          vec3 color3 = vec3(0.643, 0.957, 0.973); // #A4F4F8
+          vec3 color4 = vec3(0.008, 0.729, 0.839); // #02BAD6
+          vec3 dynamicColor = mix(mix(color1, color2, t), mix(color3, color4, t), t * 0.3);
+          vec3 baseColor = mix(poolColor, dynamicColor, 0.25); // Subtle variation
 
-          // Simple caustic effect
-          vec2 uv = vUv * 8.0 + vec2(time * 0.1, time * 0.15);
-          float caustic = sin(uv.x + sin(uv.y + time * 0.2)) * cos(uv.y + cos(uv.x + time * 0.3));
-          caustic = smoothstep(0.3, 0.7, caustic) * 0.5;
+          // Enhanced caustic effect for sparkling look
+          vec2 uv = vUv * 10.0 + vec2(time * 0.15, time * 0.2);
+          float caustic = sin(uv.x + sin(uv.y + time * 0.3)) * cos(uv.y + cos(uv.x + time * 0.4));
+          caustic = smoothstep(0.2, 0.8, caustic) * 0.65;
 
           // Pool bottom texture
-          float tilePattern = 0.95 + 0.05 * sin(vUv.x * 50.0) * sin(vUv.y * 50.0);
+          float tilePattern = 0.95 + 0.05 * sin(vUv.x * 60.0) * sin(vUv.y * 60.0);
           baseColor *= tilePattern;
 
           // Lighting with normal
           float diffuse = max(dot(vNormal, lightDir), 0.0);
           vec3 color = baseColor + caustic * lightColor * diffuse;
 
-          // Add subtle glint
-          float glint = pow(diffuse, 10.0) * 0.25;
+          // Enhanced glint for sparkling effect
+          float glint = pow(diffuse, 12.0) * 0.4;
           color += vec3(glint) * lightColor;
 
           gl_FragColor = vec4(color, 0.5); // Slightly transparent water
