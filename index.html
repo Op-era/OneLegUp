@@ -229,12 +229,7 @@
     }
     
     .sub-notice {
-      text-align: center;
-      font-weight: bold;
-      color: #ff4081;
-      font-size: 1rem;
-      text-shadow: 0 0 4px #ff4081;
-      margin-bottom: 20px;
+      display: none; /* removed as requested */
     }
 
     /* Payment buttons container fixed: two columns side by side */
@@ -294,7 +289,7 @@
       margin-bottom: 20px;
       color: #fff;
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-      animation: colorPulse 3s ease infinite;
+      animation: colorPulse 6s ease infinite; /* slowed from 3s to 6s */
     }
 
     .event {
@@ -313,7 +308,7 @@
     /* All event titles share same animation speed and easing */
     .event h3 {
       font-size: 1.4rem;
-      animation: colorCycle 5s ease infinite;
+      animation: colorCycle 10s ease infinite; /* slowed from 5s to 10s */
     }
 
     /* Staggered start times via animation-delay */
@@ -322,11 +317,11 @@
     }
 
     .event.skinny-dipping h3 {
-      animation-delay: 1.67s; /* 5s / 3 offset */
+      animation-delay: 3.33s; /* 10s / 3 offset */
     }
 
     .event.almost-there h3 {
-      animation-delay: 3.33s; /* 5s * 2/3 offset */
+      animation-delay: 6.66s; /* 10s * 2/3 offset */
     }
 
     .event h3 a {
@@ -468,11 +463,7 @@
   <div class="container">
     <div class="content">
       <div class="image-area">
-        <!-- Notice banner removed, replaced by scrolling banner above -->
-        <div class="sub-notice">
-          *Confirm by paying below. Message <strong>559freakycouple</strong> on SLS your username and the email or account associated with your payment.<br />
-          <em>*Pay Early – it’s $10 more at the door!</em>
-        </div>
+        <!-- Removed sub-notice text as requested -->
         <img src="images/pool_party2.jpg" alt="Sunday Funday Pool Party" />
         <div class="image-text">
           <p>Join us for an unforgettable night at the Skinny Dipping Pool Party! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.</p>
