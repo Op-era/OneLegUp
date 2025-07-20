@@ -370,7 +370,7 @@
         <div class="event" data-date="2025-07-20">
           <h3 class="color1"><a href="payment.html">Sunday Funday Pool Party</a></h3>
           <p>Date: July 20, 2025<br />Location: Fresno, CA</p>
-          <p>Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
+          <p>Join us for a Sunday funday! Full Millions of years ago, the earth was populated by enormous creatures: dinosaurs. They are extinct now, but we can still find their fossil remains all over the world, even in your backyard. If you want to learn more about these amazing animals, join us for a fossil-digging adventure. All you need is a shovel, a brush, and a lot of patience. Are you ready to become a paleontologist? of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
           <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
         </div>
         <div class="event" data-date="2025-09-10">
@@ -402,50 +402,141 @@
       menu.classList.toggle('active');
     }
 
-    // Water effect using Three.js with procedural waves and caustics
+    // Water effect using Three.js with realistic pool waves and caustics
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 100);
-    camera.position.set(0, 5, 7);
+    const camera = new THREE.OrthographicCamera(
+      window.innerWidth / -200, window.innerWidth / 200,
+      window.innerHeight / 200, window.innerHeight / -200,
+      0.1, 100
+    );
+    camera.position.set(0, 10, 0);
     camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('smokeCanvas'), alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     // Plane geometry for water surface
     const geometry = new THREE.PlaneGeometry(10, 10, 128, 128);
     geometry.rotateX(-Math.PI / 2);
+
+    // Noise function for wave variation
+    function mod289(x) { return x - Math.floor(x * (1.0 / 289.0)) * 289.0; }
+    function permute(x) { return mod289(((x * 34.0) + 1.0) * x); }
+    function snoise(v) {
+      const vec2 C = [1.0 / 6.0, 1.0 / 3.0];
+      const vec4 D = [0.0, 0.5, 1.0, 2.0];
+      let i = [Math.floor(v[0]), Math.floor(v[1])];
+      let x0 = [v[0] - i[0], v[1] - i[1]];
+      let i1 = x0[0] > x0[1] ? [1.0, 0.0] : [0.0, 1.0];
+      let x12 = [x0[0] + C[0] - i1[0], x0[1] + C[0] - i1[1], x0[0] + C[1], x0[1] + C[1]];
+      i = mod289(i);
+      let p = permute(permute(i[1] + [0.0, i1[1], 1.0]) + i[0] + [0.0, i1[0], 1.0]);
+      let m = Math.max(0.5 - [x0[0] * x0[0] + x0[1] * x0[1], x12[0] * x12[0] + x12[1] * x12[1], x12[2] * x12[2] + x12[3] * x12[3]], 0.0);
+      m = m * m * m * m;
+      let x = 2.0 * (p * 0.0243902439) - 1.0;
+      let h = Math.abs(x) - 0.5;
+      let ox = Math.floor(x + 0.5);
+      let a0 = x - ox;
+      m *= 1.79284291400159 - 0.85373472095314 * (a0 * a0 + h * h);
+      let g = [
+        a0[0] * x0[0] + h[0] * x0[1],
+        a0[1] * x12[0] + h[1] * x12[1],
+        a0[2] * x12[2] + h[2] * x12[3]
+      ];
+      return 130.0 * (m[0] * g[0] + m[1] * g[1] + m[2] * g[2]);
+    }
 
     // Shader material for water
     const material = new THREE.ShaderMaterial({
       vertexShader: `
         uniform float time;
         varying vec2 vUv;
+        varying vec3 vNormal;
+        varying vec3 vPosition;
+
+        float snoise(vec2 v) {
+          // Simplified noise function (pasted from JS for shader compatibility)
+          vec2 i = floor(v);
+          vec2 f = fract(v);
+          float a = fract(sin(dot(i, vec2(127.1, 311.7))) * 43758.5453123);
+          float b = fract(sin(dot(i + vec2(1.0, 0.0), vec2(127.1, 311.7))) * 43758.5453123);
+          float c = fract(sin(dot(i + vec2(0.0, 1.0), vec2(127.1, 311.7))) * 43758.5453123);
+          float d = fract(sin(dot(i + vec2(1.0, 1.0), vec2(127.1, 311.7))) * 43758.5453123);
+          vec2 u = f * f * (3.0 - 2.0 * f);
+          return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+        }
+
         void main() {
           vUv = uv;
           vec3 pos = position;
-          // Multiple sine waves for realistic wave motion
-          pos.y += 0.15 * sin(5.0 * pos.x + time);
-          pos.y += 0.10 * cos(3.0 * pos.z + time * 1.5);
-          pos.y += 0.05 * sin(7.0 * pos.x + pos.z * 2.0 + time * 0.5);
+          float t = time * 0.5;
+
+          // Multi-layered waves with noise for natural variation
+          pos.y += 0.1 * sin(pos.x * 3.0 + t) * cos(pos.z * 2.0 + t * 0.8);
+          pos.y += 0.05 * cos(pos.z * 4.0 + t * 1.2) * sin(pos.x * 2.0 + t * 0.6);
+          pos.y += 0.03 * snoise(vec2(pos.x * 2.0, pos.z * 2.0 + t * 0.3));
+
+          vPosition = pos;
+
+          // Compute normal for lighting
+          vec3 dx = vec3(1.0, 0.0, 0.0);
+          vec3 dz = vec3(0.0, 0.0, 1.0);
+          float dy_dx = 0.3 * cos(pos.x * 3.0 + t) * cos(pos.z * 2.0 + t * 0.8) +
+                        0.1 * cos(pos.z * 4.0 + t * 1.2) * cos(pos.x * 2.0 + t * 0.6);
+          float dy_dz = -0.2 * sin(pos.x * 3.0 + t) * sin(pos.z * 2.0 + t * 0.8) +
+                        -0.2 * sin(pos.z * 4.0 + t * 1.2) * sin(pos.x * 2.0 + t * 0.6);
+          vNormal = normalize(vec3(-dy_dx, 1.0, -dy_dz));
+
           gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
         }
       `,
       fragmentShader: `
         uniform float time;
         varying vec2 vUv;
+        varying vec3 vNormal;
+        varying vec3 vPosition;
 
-        // Simple caustic effect pattern
-        float caustic(vec2 uv, float time) {
-          uv *= 10.0;
-          float pattern = sin(uv.x + time) * sin(uv.y + time);
-          return smoothstep(0.3, 0.7, pattern);
+        float snoise(vec2 v) {
+          // Simplified noise function (same as vertex shader)
+          vec2 i = floor(v);
+          vec2 f = fract(v);
+          float a = fract(sin(dot(i, vec2(127.1, 311.7))) * 43758.5453123);
+          float b = fract(sin(dot(i + vec2(1.0, 0.0), vec2(127.1, 311.7))) * 43758.5453123);
+          float c = fract(sin(dot(i + vec2(0.0, 1.0), vec2(127.1, 311.7))) * 43758.5453123);
+          float d = fract(sin(dot(i + vec2(1.0, 1.0), vec2(127.1, 311.7))) * 43758.5453123);
+          vec2 u = f * f * (3.0 - 2.0 * f);
+          return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
         }
 
         void main() {
-          vec3 baseColor = vec3(0.1, 0.5, 0.7); // Bright light blue pool bottom
-          float light = caustic(vUv, time * 3.0) * 0.5;
-          vec3 color = baseColor + vec3(light);
-          gl_FragColor = vec4(color, 0.7); // Slight transparency
+          vec3 poolColor = vec3(0.05, 0.3, 0.6); // Deep pool blue
+          vec3 lightColor = vec3(0.8, 0.9, 1.0); // Light blue for caustics
+          vec3 lightDir = normalize(vec3(0.5, 1.0, 0.2)); // Light source direction
+
+          // Caustic effect
+          vec2 uv = vUv * 10.0 + vec2(time * 0.1, time * 0.15);
+          float caustic1 = sin(uv.x + snoise(uv + time * 0.2)) * cos(uv.y + snoise(uv + time * 0.3));
+          float caustic2 = snoise(uv + vec2(time * 0.1, time * 0.2)) * 0.5;
+          float caustic = smoothstep(0.2, 0.8, caustic1 + caustic2) * 0.6;
+
+          // Pool bottom texture
+          float tilePattern = sin(vUv.x * 50.0) * sin(vUv.y * 50.0) * 0.05 + 0.95;
+          vec3 baseColor = poolColor * tilePattern;
+
+          // Lighting with normal
+          float diffuse = max(dot(vNormal, lightDir), 0.0);
+          vec3 color = baseColor + caustic * lightColor * diffuse;
+
+          // Add slight refraction effect
+          float refraction = snoise(vUv * 5.0 + time * 0.1) * 0.05;
+          color += vec3(refraction) * 0.2;
+
+          // Add subtle water surface glint
+          float glint = pow(diffuse, 10.0) * 0.3;
+          color += vec3(glint) * lightColor;
+
+          gl_FragColor = vec4(color, 0.6); // Slightly transparent water
         }
       `,
       uniforms: {
@@ -459,7 +550,10 @@
     scene.add(water);
 
     window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth/window.innerHeight;
+      camera.left = window.innerWidth / -200;
+      camera.right = window.innerWidth / 200;
+      camera.top = window.innerHeight / 200;
+      camera.bottom = window.innerHeight / -200;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
