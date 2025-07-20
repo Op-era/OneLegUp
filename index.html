@@ -194,7 +194,7 @@
     .content {
       display: flex;
       flex: 1;
-      margin-top: 140px; /* make room for banner and header */
+      margin-top: 140px; /* room for banner and header */
       min-height: calc(100vh - 140px);
     }
 
@@ -454,7 +454,7 @@
 
   <div class="scrolling-banner" aria-live="polite" role="region">
     <span>
-      ALL SINGLE MALES MUST PAY IN ADVANCE OR THEY WILL NOT BE ADMITTED! Confirm by paying below. Message 559freakycouple on SLS your username and the email or account associated with your payment.
+      ALL SINGLE MALES MUST PAY IN ADVANCE OR THEY WILL NOT BE ADMITTED!
       <span class="special-flash">$10 more at the door!</span>
       &nbsp;&nbsp;&nbsp;
     </span>
@@ -463,7 +463,6 @@
   <div class="container">
     <div class="content">
       <div class="image-area">
-        <!-- Removed sub-notice text as requested -->
         <img src="images/pool_party2.jpg" alt="Sunday Funday Pool Party" />
         <div class="image-text">
           <p>Join us for an unforgettable night at the Skinny Dipping Pool Party! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere.</p>
@@ -487,77 +486,149 @@
 
       <div class="events" id="eventsContainer">
         <h2>Upcoming Parties</h2>
-        <div class="event sunday-funday" data-date="2025-07-20">
-          <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
-          <p>Date: July 20, 2025<br />Location: Fresno, CA</p>
-          <p>Join us for a Sunday funday! Full of wet play time for adults!</p>
-          <p>Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
-          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
+        <div id="upcomingEvents">
+          <div class="event sunday-funday" data-date="2025-07-20">
+            <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
+            <p>Date: July 20, 2025<br />Location: Fresno, CA</p>
+            <p>Join us for a Sunday funday! Full of wet play time for adults!</p>
+            <p>Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
+            <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
+          </div>
+          <div class="event almost-there" data-date="2025-09-10">
+            <h3><a href="payment.html">I'm Almost There</a></h3>
+            <p>Date: Sept 10, 2025<br>Location: Fresno, CA</p>
+            <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=396000" target="_blank">View on SLS</a>
+          </div>
         </div>
-        <div class="event skinny-dipping" data-date="2025-05-31">
-          <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
-          <p>Date: May 31, 2025<br>Location: Fresno, CA</p>
-          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
-          <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="thumbnail" />
-        </div>
-        <div class="event almost-there" data-date="2025-09-10">
-          <h3><a href="payment.html">I'm Almost There</a></h3>
-          <p>Date: Sept 10, 2025<br>Location: Fresno, CA</p>
-          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=396000" target="_blank">View on SLS</a>
+
+        <h2 style="margin-top: 40px;">Past Events</h2>
+        <div id="pastEvents">
+          <div class="event skinny-dipping" data-date="2025-05-31">
+            <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
+            <p>Date: May 31, 2025<br>Location: Fresno, CA</p>
+            <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
+            <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="thumbnail" />
+          </div>
         </div>
       </div>
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script>
-    // Hamburger toggle
+    // Hamburger Menu Toggle
+    const hamburger = document.getElementById('hamburger');
+    const menu = document.getElementById('menu');
     function toggleMenu() {
-      const hamburger = document.getElementById('hamburger');
-      const menu = document.getElementById('menu');
       hamburger.classList.toggle('active');
       menu.classList.toggle('active');
     }
 
-    // Smoke Canvas setup (basic example)
-    const canvas = document.getElementById('smokeCanvas');
-    const ctx = canvas.getContext('2d');
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    resize();
-    window.addEventListener('resize', resize);
+    // Three.js Smoke Effect (fixed from your original)
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+    camera.position.z = 1;
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('smokeCanvas'), alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Simple smoke particle effect placeholder
-    let particles = [];
-    function createParticle() {
-      return {
-        x: Math.random() * canvas.width,
-        y: canvas.height,
-        size: 10 + Math.random() * 30,
-        speedY: 1 + Math.random() * 2,
-        opacity: 0.1 + Math.random() * 0.3,
-      };
+    function generateNoiseTexture(width, height) {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      const imageData = ctx.createImageData(width, height);
+      for (let i = 0; i < imageData.data.length; i += 4) {
+        const value = Math.random() * 255;
+        imageData.data[i] = value;
+        imageData.data[i + 1] = value;
+        imageData.data[i + 2] = value;
+        imageData.data[i + 3] = 255;
+      }
+      ctx.putImageData(imageData, 0, 0);
+      return new THREE.CanvasTexture(canvas);
     }
-    for (let i = 0; i < 50; i++) {
-      particles.push(createParticle());
+
+    const noiseTexture = generateNoiseTexture(256, 256);
+    noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping;
+
+    const geometry = new THREE.PlaneGeometry(2, 2);
+
+    const vertexShader = `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+
+    const fragmentShader = `
+      uniform sampler2D noiseTexture;
+      uniform float time;
+      varying vec2 vUv;
+      void main() {
+        vec2 uv = vUv + vec2(-time * 0.1, time * 0.05);
+        float noise = texture2D(noiseTexture, uv * 0.5).r;
+        float noise2 = texture2D(noiseTexture, uv * 0.2 + vec2(time * 0.05, -time * 0.03)).r;
+        float smoke = noise * noise2;
+        float alpha = smoothstep(0.5, 1.0, vUv.x) * smoke * 0.7;
+        vec3 color = vec3(
+          abs(sin(time * 0.7 + vUv.x)),
+          abs(sin(time * 0.8 + vUv.y)),
+          abs(sin(time * 0.9 + vUv.x + vUv.y))
+        );
+        gl_FragColor = vec4(color, alpha);
+      }
+    `;
+
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms: {
+        noiseTexture: { value: noiseTexture },
+        time: { value: 0.0 }
+      },
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+
+    const plane = new THREE.Mesh(geometry, material);
+    scene.add(plane);
+
+    function animate(time) {
+      requestAnimationFrame(animate);
+      material.uniforms.time.value = time * 0.001;
+      renderer.render(scene, camera);
     }
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => {
-        ctx.beginPath();
-        ctx.fillStyle = `rgba(200,200,200,${p.opacity})`;
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-        p.y -= p.speedY;
-        p.opacity -= 0.002;
-        if (p.opacity <= 0) {
-          Object.assign(p, createParticle());
+    animate(0);
+
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Event sorting and moving past events to "Past Events" section
+    function movePastEvents() {
+      const now = new Date();
+      const upcomingContainer = document.getElementById('upcomingEvents');
+      const pastContainer = document.getElementById('pastEvents');
+
+      // Collect all upcoming events
+      const events = Array.from(upcomingContainer.children);
+      events.forEach(event => {
+        const dateStr = event.getAttribute('data-date');
+        if (!dateStr) return;
+
+        const eventDate = new Date(dateStr + 'T23:59:59'); // consider event as ended at end of day
+        if (eventDate < now) {
+          // Move to past events
+          pastContainer.appendChild(event);
         }
       });
-      requestAnimationFrame(animate);
     }
-    animate();
+
+    // Run once on load and then every minute to keep updated
+    movePastEvents();
+    setInterval(movePastEvents, 60000);
+
   </script>
 </body>
 </html>
