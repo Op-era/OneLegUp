@@ -439,32 +439,28 @@
           // Base pool color (bright blue #A4F4F8)
           vec3 poolColor = vec3(0.643, 0.957, 0.973);
           vec3 lightColor = vec3(1.0, 1.0, 1.0); // Pure white for clean lighting
-          vec3 lightDir = normalize(vec3(0.5, 1.0, 0.3));
 
-          // Dynamic color variation using provided palette
+          // Dynamic color variation (focused on bright blues)
           float t = sin(time * 0.3) * 0.5 + 0.5;
           vec3 color1 = vec3(0.89, 0.98, 1.0); // #E3FAFF
           vec3 color2 = vec3(0.788, 0.98, 0.996); // #C9FAFE
           vec3 color3 = vec3(0.008, 0.729, 0.839); // #02BAD6
           vec3 color4 = vec3(0.051, 0.471, 0.667); // #0D78AA
-          vec3 dynamicColor = mix(mix(color1, color2, t), mix(color3, color4, t), t * 0.2);
-          vec3 baseColor = mix(poolColor, dynamicColor, 0.2); // Subtle variation
+          vec3 dynamicColor = mix(color2, color1, t); // Prioritize #C9FAFE and #E3FAFF
+          vec3 baseColor = mix(poolColor, dynamicColor, 0.15); // Minimal variation
 
           // Enhanced caustic effect for sparkling look
           vec2 uv = vUv * 10.0 + vec2(time * 0.15, time * 0.2);
           float caustic = sin(uv.x + sin(uv.y + time * 0.3)) * cos(uv.y + cos(uv.x + time * 0.4));
-          caustic = smoothstep(0.2, 0.8, caustic) * 0.7;
-
-          // Lighter pool bottom texture
-          float tilePattern = 0.98 + 0.02 * sin(vUv.x * 60.0) * sin(vUv.y * 60.0);
-          baseColor *= tilePattern;
+          caustic = smoothstep(0.2, 0.8, caustic) * 0.8;
 
           // Lighting with normal
+          vec3 lightDir = normalize(vec3(0.5, 1.0, 0.3));
           float diffuse = max(dot(vNormal, lightDir), 0.0);
           vec3 color = baseColor + caustic * lightColor * diffuse;
 
           // Enhanced glint for sparkling effect
-          float glint = pow(diffuse, 12.0) * 0.45;
+          float glint = pow(diffuse, 12.0) * 0.5;
           color += vec3(glint) * lightColor;
 
           gl_FragColor = vec4(color, 0.5); // Slightly transparent water
