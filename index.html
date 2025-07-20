@@ -120,7 +120,7 @@
       max-width: 80%;
       max-height: 40%;
       object-fit: contain;
-      margin-top: 20px;
+      margin-top: 10px;
       border-radius: 10px;
     }
     .notice-banner {
@@ -134,11 +134,8 @@
         0 0 20px #0ff,
         0 0 30px #0ff,
         0 0 40px #0ff;
-      margin-bottom: 20px;
-      position: relative;
+      margin-bottom: 10px;
       width: fit-content;
-      margin-left: auto;
-      margin-right: auto;
     }
     .payment-buttons {
       display: flex;
@@ -206,17 +203,17 @@
     }
     .event h3 {
       font-size: 1.4rem;
-      animation: colorCycle 10s ease infinite;
-      animation-delay: 3s; /* Match "I'm almost there" speed */
+      color: #ffeb3b !important; /* Initial color */
+      animation: colorCycle 10s ease infinite 3s !important;
       user-select: text;
     }
     .event h3 a {
-      color: inherit;
+      color: inherit !important;
       text-decoration: none;
       transition: color 0.3s;
     }
     .event h3 a:hover {
-      color: #ff4081;
+      color: #ff4081 !important;
       text-decoration: underline;
     }
     .event p {
@@ -258,7 +255,7 @@
       color: #0ff;
       font-weight: bold;
       text-align: center;
-      margin: 0 auto 20px auto;
+      margin: 0 auto;
       width: fit-content;
       user-select: none;
       text-shadow:
@@ -303,6 +300,9 @@
       .site-title {
         font-size: 1.2rem;
       }
+      .notice-banner {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
@@ -326,15 +326,14 @@
   </nav>
 
   <div class="container">
-    <div class="notice-banner" style="max-width: 500px; margin-left:auto; margin-right:auto; margin-bottom: 10px;">
-      <marquee behavior="scroll" direction="left" scrollamount="5" style="width:100%; color:#0ff; text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff;">
-        ALL SINGLE MALES MUST PAY IN ADVANCE OR THEY WILL NOT BE ADMITTED! 
-        <span class="flashing-text">$10 more at the door!</span>
-      </marquee>
-    </div>
-
     <div class="content">
       <div class="image-area">
+        <div class="notice-banner" style="max-width: 500px;">
+          <marquee behavior="scroll" direction="left" scrollamount="5" style="width:100%; color:#0ff; text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff;">
+            ALL SINGLE MALES MUST PAY IN ADVANCE OR THEY WILL NOT BE ADMITTED! 
+            <span class="flashing-text">$10 more at the door!</span>
+          </marquee>
+        </div>
         <img src="images/pool_party2.jpg" alt="Sunday Funday Pool Party" />
         <div class="payment-buttons" id="paymentButtons">
           <div class="pay-group">
@@ -392,7 +391,7 @@
     // Water effect using Three.js
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.set(0, 4, 0.01); // Slightly offset to avoid z-fighting
+    camera.position.set(0, 4, 0.01);
     camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('smokeCanvas'), alpha: true });
@@ -437,9 +436,19 @@
         varying vec3 vNormal;
 
         void main() {
-          vec3 poolColor = vec3(0.2, 0.6, 0.9); // Brighter pool blue
-          vec3 lightColor = vec3(0.95, 0.98, 1.0); // Light for caustics
+          // Vibrant pool blue based on provided palette
+          vec3 poolColor = vec3(0.0, 0.894, 1.0); // Approx #00e4ff
+          vec3 lightColor = vec3(0.9, 1.0, 0.95); // Light for caustics
           vec3 lightDir = normalize(vec3(0.5, 1.0, 0.3));
+
+          // Dynamic color variation from palette
+          float t = sin(time * 0.2) * 0.5 + 0.5;
+          vec3 color1 = vec3(0.337, 0.631, 1.0); // #56a1ff
+          vec3 color2 = vec3(0.0, 1.0, 0.953); // #00fff3
+          vec3 color3 = vec3(0.0, 0.341, 1.0); // #0057ff
+          vec3 color4 = vec3(0.063, 0.0, 1.0); // #1000ff
+          vec3 dynamicColor = mix(mix(color1, color2, t), mix(color3, color4, t), t * 0.5);
+          vec3 baseColor = mix(poolColor, dynamicColor, 0.3);
 
           // Simple caustic effect
           vec2 uv = vUv * 8.0 + vec2(time * 0.1, time * 0.15);
@@ -448,7 +457,7 @@
 
           // Pool bottom texture
           float tilePattern = 0.95 + 0.05 * sin(vUv.x * 50.0) * sin(vUv.y * 50.0);
-          vec3 baseColor = poolColor * tilePattern;
+          baseColor *= tilePattern;
 
           // Lighting with normal
           float diffuse = max(dot(vNormal, lightDir), 0.0);
@@ -458,7 +467,7 @@
           float glint = pow(diffuse, 10.0) * 0.25;
           color += vec3(glint) * lightColor;
 
-          gl_FragColor = vec4(color, 0.5); // Slightly more transparent water
+          gl_FragColor = vec4(color, 0.5); // Slightly transparent water
         }
       `,
       uniforms: {
