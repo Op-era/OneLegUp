@@ -70,7 +70,9 @@
       position: relative;
       z-index: 1;
       min-height: 100vh;
-      padding: 0 20px 40px 20px;
+      padding: 0 50px 40px 50px; /* Added padding to both sides */
+      max-width: 1200px; /* Limits the width */
+      margin: 0 auto; /* Centers the container */
     }
     .header {
       position: fixed;
@@ -108,7 +110,7 @@
       font-size: 1.5rem;
       font-weight: 600;
       color: #FFD700; /* Gold */
-      text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 2px 2px 4px rgba(0, 0, 0, 0.5); /* Added drop shadow */
       animation: colorCycle 5s ease infinite;
       user-select: none;
     }
@@ -137,6 +139,7 @@
       color: #fff;
       text-decoration: none;
       font-size: 1.2rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Added drop shadow */
       transition: color 0.3s;
     }
     .menu ul li a:hover {
@@ -171,10 +174,12 @@
       margin-bottom: 10px;
       width: fit-content;
       background: none; /* No background */
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Added drop shadow */
     }
     .notice-banner marquee {
       color: #D32F2F; /* Red accent */
       background: none; /* No background */
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Added drop shadow */
     }
     .payment-buttons {
       display: flex;
@@ -195,7 +200,7 @@
       color: #4FC3F7; /* Light blue */
       text-align: center;
       margin-bottom: 8px;
-      text-shadow: 0 0 5px #4FC3F7;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Added drop shadow */
     }
     .pay-button {
       display: inline-block;
@@ -209,6 +214,7 @@
       transition: background 0.3s, color 0.3s;
       text-align: center;
       user-select: none;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Added subtle drop shadow */
     }
     .pay-button:hover {
       background: #FFD700; /* Gold */
@@ -226,7 +232,7 @@
       font-size: 1.8rem;
       margin-bottom: 20px;
       color: #fff;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Added drop shadow */
       animation: colorPulse 8s ease infinite;
     }
     .event {
@@ -245,6 +251,7 @@
       color: #FFD700 !important; /* Gold */
       animation: colorCycle 10s ease infinite 3s !important;
       user-select: text;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Added drop shadow */
     }
     .event h3 a {
       color: inherit !important;
@@ -260,12 +267,14 @@
       color: #B3E5FC; /* Pale blue */
       margin-bottom: 8px;
       user-select: text;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Added drop shadow */
     }
     .event a {
       color: #4FC3F7; /* Light blue */
       text-decoration: none;
       font-weight: 600;
       transition: color 0.3s;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Added drop shadow */
     }
     .event a:hover {
       color: #FFD700; /* Gold */
@@ -299,7 +308,8 @@
       text-shadow:
         0 0 10px #D32F2F,
         0 0 20px #D32F2F,
-        0 0 30px #D32F2F;
+        0 0 30px #D32F2F,
+        2px 2px 4px rgba(0, 0, 0, 0.5); /* Added drop shadow */
       margin: 0 20px;
     }
     @keyframes waveAnimation {
@@ -350,6 +360,9 @@
       }
       .flashing-text {
         margin: 0 10px;
+      }
+      .container {
+        padding: 0 20px 40px 20px; /* Reduced padding for mobile */
       }
     }
   </style>
