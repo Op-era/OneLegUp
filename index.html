@@ -13,7 +13,7 @@
     }
     body {
       font-family: 'Poppins', sans-serif;
-      background: #000;
+      background: #005566; /* Oktoberfest dark blue */
       color: #fff;
       position: relative;
       overflow-x: hidden;
@@ -37,9 +37,9 @@
       z-index: 0;
       background: linear-gradient(
         135deg,
-        #A4F4F8 0%,
-        #C9FAFE 50%,
-        #02BAD6 100%
+        #4FC3F7 0%, /* Light blue */
+        #B3E5FC 50%, /* Pale blue */
+        #01579B 100% /* Dark blue */
       );
       animation: waveAnimation 8s ease-in-out infinite !important;
       -webkit-animation: waveAnimation 8s ease-in-out infinite !important;
@@ -56,7 +56,7 @@
       height: 200%;
       background: radial-gradient(
         circle at 50% 50%,
-        #C9FAFE 0%,
+        #B3E5FC 0%, /* Pale blue */
         transparent 50%
       );
       animation: sparkleAnimation 4s ease-in-out infinite !important;
@@ -107,8 +107,8 @@
     .site-title {
       font-size: 1.5rem;
       font-weight: 600;
-      color: #ffeb3b;
-      text-shadow: 0 0 10px rgba(255, 107, 97, 0.8);
+      color: #FFD700; /* Gold */
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
       animation: colorCycle 5s ease infinite;
       user-select: none;
     }
@@ -118,7 +118,7 @@
       left: -250px;
       width: 250px;
       height: 100%;
-      background: #1a1a1a;
+      background: #003087; /* Dark blue */
       transition: left 0.3s ease;
       z-index: 999;
       padding-top: 60px;
@@ -140,7 +140,7 @@
       transition: color 0.3s;
     }
     .menu ul li a:hover {
-      color: #ff6f61;
+      color: #FFD700; /* Gold */
     }
     .content {
       display: flex;
@@ -166,14 +166,14 @@
     .notice-banner {
       text-align: center;
       font-weight: bold;
-      color: #FF69B4; /* Hot pink */
+      color: #D32F2F; /* Red accent */
       font-size: 1.2rem;
       margin-bottom: 10px;
       width: fit-content;
       background: none; /* No background */
     }
     .notice-banner marquee {
-      color: #FF69B4; /* Hot pink */
+      color: #D32F2F; /* Red accent */
       background: none; /* No background */
     }
     .payment-buttons {
@@ -192,15 +192,15 @@
     }
     .pay-group p {
       font-weight: 700;
-      color: #00e5ff;
+      color: #4FC3F7; /* Light blue */
       text-align: center;
       margin-bottom: 8px;
-      text-shadow: 0 0 5px #00e5ff;
+      text-shadow: 0 0 5px #4FC3F7;
     }
     .pay-button {
       display: inline-block;
       padding: 10px 20px;
-      background: #00e5ff;
+      background: #4FC3F7; /* Light blue */
       color: #000;
       font-size: 1rem;
       font-weight: 600;
@@ -211,8 +211,8 @@
       user-select: none;
     }
     .pay-button:hover {
-      background: #ff4081;
-      color: #fff;
+      background: #FFD700; /* Gold */
+      color: #000;
     }
     .events {
       flex: 1 1 35%;
@@ -233,7 +233,7 @@
       margin-bottom: 20px;
       padding: 10px;
       border-radius: 8px;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 80, 102, 0.3); /* Dark blue with transparency */
       transition: transform 0.3s ease;
       cursor: default;
     }
@@ -242,7 +242,7 @@
     }
     .event h3 {
       font-size: 1.4rem;
-      color: #ffeb3b !important;
+      color: #FFD700 !important; /* Gold */
       animation: colorCycle 10s ease infinite 3s !important;
       user-select: text;
     }
@@ -252,23 +252,23 @@
       transition: color 0.3s;
     }
     .event h3 a:hover {
-      color: #ff4081 !important;
+      color: #D32F2F !important; /* Red accent */
       text-decoration: underline;
     }
     .event p {
       font-size: 0.9rem;
-      color: #e0e0e0;
+      color: #B3E5FC; /* Pale blue */
       margin-bottom: 8px;
       user-select: text;
     }
     .event a {
-      color: #00e5ff;
+      color: #4FC3F7; /* Light blue */
       text-decoration: none;
       font-weight: 600;
       transition: color 0.3s;
     }
     .event a:hover {
-      color: #ff4081;
+      color: #FFD700; /* Gold */
       text-decoration: underline;
     }
     .thumbnail {
@@ -277,29 +277,29 @@
       margin-top: 10px;
     }
     @keyframes colorCycle {
-      0%, 100% { color: #ffeb3b; text-shadow: 0 0 10px #ffeb3b; }
-      33% { color: #40c4ff; text-shadow: 0 0 10px #40c4ff; }
-      66% { color: #ff4081; text-shadow: 0 0 10px #ff4081; }
+      0%, 100% { color: #FFD700; text-shadow: 0 0 10px #FFD700; } /* Gold */
+      33% { color: #4FC3F7; text-shadow: 0 0 10px #4FC3F7; } /* Light blue */
+      66% { color: #D32F2F; text-shadow: 0 0 10px #D32F2F; } /* Red accent */
     }
     @keyframes colorPulse {
-      0%, 100% { text-shadow: 0 0 10px rgba(255, 107, 97, 0.8); }
-      50% { text-shadow: 0 0 15px rgba(64, 196, 255, 0.8); }
+      0%, 100% { text-shadow: 0 0 10px rgba(79, 195, 247, 0.8); } /* Light blue */
+      50% { text-shadow: 0 0 15px rgba(255, 215, 0, 0.8); } /* Gold */
     }
     @keyframes flashGrow {
-      0%, 100% { transform: scale(1); opacity: 1; text-shadow: 0 0 10px #FF69B4, 0 0 20px #FF69B4; }
-      50% { transform: scale(1.2); opacity: 0.7; text-shadow: 0 0 30px #FF69B4, 0 0 40px #FF69B4; }
+      0%, 100% { transform: scale(1); opacity: 1; text-shadow: 0 0 10px #D32F2F, 0 0 20px #D32F2F; } /* Red accent */
+      50% { transform: scale(1.2); opacity: 0.7; text-shadow: 0 0 30px #D32F2F, 0 0 40px #D32F2F; }
     }
     .flashing-text {
       animation: flashGrow 1.5s ease-in-out infinite;
-      color: #FF69B4;
+      color: #D32F2F; /* Red accent */
       font-weight: bold;
       text-align: center;
       display: inline-block;
       user-select: none;
       text-shadow:
-        0 0 10px #FF69B4,
-        0 0 20px #FF69B4,
-        0 0 30px #FF69B4;
+        0 0 10px #D32F2F,
+        0 0 20px #D32F2F,
+        0 0 30px #D32F2F;
       margin: 0 20px;
     }
     @keyframes waveAnimation {
@@ -389,22 +389,29 @@
             <p>Couples ($40):</p>
             <a href="https://paypal.me/0neLegUp/40" target="_blank" class="pay-button">Pay $40 with PayPal</a>
             <a href="https://cash.app/$0neLegUp?amount=40" target="_blank" class="pay-button">Pay $40 with Cash App</a>
-            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=40¬e=Couples" target="_blank" class="pay-button">Pay $40 with Venmo</a>
+            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=40&note=Couples" target="_blank" class="pay-button">Pay $40 with Venmo</a>
           </div>
           <div class="pay-group">
             <p>Single Male ($80):</p>
             <a href="https://paypal.me/0neLegUp/80" target="_blank" class="pay-button">Pay $80 with PayPal</a>
             <a href="https://cash.app/$0neLegUp?amount=80" target="_blank" class="pay-button">Pay $80 with Cash App</a>
-            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=80¬e=Single%20Male" target="_blank" class="pay-button">Pay $80 with Venmo</a>
+            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=80&note=Single%20Male" target="_blank" class="pay-button">Pay $80 with Venmo</a>
           </div>
         </div>
+        <img src="images/oktoberfestdrinking.png" alt="Oktoberfest Swinger Party Flyer" style="max-width: 100%; margin-top: 20px;" />
       </div>
 
       <div class="events" id="eventsContainer">
         <h2>Upcoming Parties</h2>
+        <div class="event" data-date="2025-09-27">
+          <h3><a href="payment.html">Oktoberfest Party</a></h3>
+          <p>Date: September 27, 2025<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
+          <p>Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.</p>
+          <a href="https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628" target="_blank">View on SLS</a>
+        </div>
         <div class="event" data-date="2025-07-20">
           <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
-          <p>Date: July 20, 2025<br />Location: Fresno, CA</p>
+          <p>Date: July 20, 2025<br>Location: Fresno, CA</p>
           <p>Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
           <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
         </div>
@@ -448,9 +455,9 @@
 
       // Draw subtle wave patterns
       const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      gradient.addColorStop(0, '#A4F4F8');
-      gradient.addColorStop(0.5, '#C9FAFE');
-      gradient.addColorStop(1, '#02BAD6');
+      gradient.addColorStop(0, '#4FC3F7'); /* Light blue */
+      gradient.addColorStop(0.5, '#B3E5FC'); /* Pale blue */
+      gradient.addColorStop(1, '#01579B'); /* Dark blue */
 
       ctx.fillStyle = gradient;
       ctx.globalAlpha = 0.5;
@@ -464,7 +471,7 @@
 
       // Add sparkles
       ctx.globalAlpha = 0.3;
-      ctx.fillStyle = '#C9FAFE';
+      ctx.fillStyle = '#B3E5FC'; /* Pale blue */
       for (let i = 0; i < 20; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
