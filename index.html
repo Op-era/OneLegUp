@@ -13,7 +13,7 @@
     }
     body {
       font-family: 'Poppins', sans-serif;
-      background: #000; /* Black base */
+      background: #000; /* Solid black base */
       color: #fff;
       position: relative;
       overflow-x: hidden;
@@ -36,9 +36,11 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.3) 0%, rgba(255, 0, 255, 0.3) 50%, rgba(0, 255, 0, 0.3) 100%); /* Neon cyan, pink, lime gradient */
-      animation: neonPulse 5s ease-in-out infinite;
-      transform: translateZ(-50px) scale(1.1);
+      background: url('https://via.placeholder.com/1200x800?text=3D+Club+Interior') no-repeat center center;
+      background-size: cover;
+      opacity: 0.3;
+      transform: translateZ(-50px) rotateY(30deg);
+      filter: blur(5px);
     }
     #clubBackground::after {
       content: '';
@@ -47,28 +49,12 @@
       left: 10%;
       width: 80%;
       height: 80%;
-      background: url('https://via.placeholder.com/1200x800?text=3D+Club+Texture') no-repeat center center;
-      background-size: cover;
-      opacity: 0.2;
-      transform: translateZ(-100px) rotateY(30deg);
-      filter: blur(5px);
+      background: linear-gradient(45deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1), rgba(0, 255, 0, 0.1)); /* Subtle neon accents */
+      animation: neonBlink 4s ease-in-out infinite;
+      transform: translateZ(-100px);
     }
     .neon-effect {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
-      background: linear-gradient(
-        135deg,
-        #ff00ff 0%, /* Neon pink */
-        #00ffff 50%, /* Neon cyan */
-        #00ff00 100% /* Neon lime */
-      );
-      animation: neonGlowAnimation 6s ease-in-out infinite;
-      overflow: hidden;
-      transform: translateZ(-200px);
+      display: none; /* Removed the gradient background */
     }
     .container {
       position: relative;
@@ -332,9 +318,9 @@
       text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
       margin: 0 20px;
     }
-    @keyframes neonGlowAnimation {
-      0%, 100% { filter: brightness(100%); }
-      50% { filter: brightness(150%); }
+    @keyframes neonBlink {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.5; }
     }
     @keyframes rotateClub {
       0% { transform: rotateY(0deg); }
@@ -357,9 +343,8 @@
 </head>
 <body>
   <div id="clubBackground"></div>
-  <div class="neon-effect"></div>
 
-  <div id="alertOverlay"></div>
+  <div id="alertOverlay">LAST DAY FOR DISCOUNTS, LAST DAY FOR SINGLE MALES TO PAY</div>
 
   <div class="header">
     <div class="hamburger" id="hamburger" onclick="toggleMenu()">
@@ -455,7 +440,7 @@
     // Disable Pay buttons at midnight
     function disablePayButtonsAtMidnight() {
       const now = new Date();
-      const midnight = new Date();
+      const midnight = new Date(now);
       midnight.setHours(24, 0, 0, 0);
       const msUntilMidnight = midnight.getTime() - now.getTime();
 
