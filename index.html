@@ -381,6 +381,434 @@
             <p>Please text 559-284-8414 Your SLS username when paying, so we know you paid. We don't want you to have to pay at the door or not be admitted! If paying at the door please have your cash in an envelope with your SLS name written on it! Thank you!!!</p>
           </div>
           <div style="flex: 2;">
+            <img src="images/neonglow.jpg" alt="Neon Glow Swinger Party Flyer" style="max-width: 100%;" />
+          </div>
+        </div>
+        <div class="payment-buttons" id="paymentButtons">
+          <div class="pay-group">
+            <p>Couples ($40):</p>
+            <a href="https://paypal.me/0neLegUp/40" target="_blank" class="pay-button pay">Pay $40 with PayPal</a>
+            <a href="https://cash.app/$0neLegUp?amount=40" target="_blank" class="pay-button pay">Pay $40 with Cash App</a>
+            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=40&note=Couples" target="_blank" class="pay-button pay">Pay $40 with Venmo</a>
+          </div>
+          <div class="pay-group">
+            <p>Single Male ($80):</p>
+            <a href="https://paypal.me/0neLegUp/80" target="_blank" class="pay-button pay">Pay $80 with PayPal</a>
+            <a href="https://cash.app/$0neLegUp?amount=80" target="_blank" class="pay-button pay">Pay $80 with Cash App</a>
+            <a href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=80&note=Single%20Male" target="_blank" class="pay-button pay">Pay $80 with Venmo</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="events" id="eventsContainer">
+        <h2>Upcoming Parties</h2>
+        <div class="event" data-date="2025-11-15">
+          <h3><a href="payment.html">NEON GLOW PARTY</a></h3>
+          <p>Date: November 15, 2025<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
+          <p>Light up the night at our NEON GLOW PARTY! Dress in vibrant neon outfits and enjoy a glowing atmosphere from 8 PM to 2 AM. Doors close at 10 PM. BYOB.</p>
+          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642" target="_blank">View on SLS</a>
+        </div>
+
+        <h2 style="margin-top: 40px;">Past Events</h2>
+        <div id="pastEvents">
+          <div class="event" data-date="2025-10-04">
+            <h3><a href="payment.html">Oktoberfest Party</a></h3>
+            <p>Date: October 4, 2025<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
+            <p>Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.</p>
+            <a href="https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628" target="_blank">View on SLS</a>
+          </div>
+          <div class="event" data-date="2025-07-20">
+            <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
+            <p>Date: July 20, 2025<br>Location: Fresno, CA</p>
+            <p>Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
+            <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
+          </div>
+          <div class="event" data-date="2025-05-31">
+            <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
+            <p>Date: May 31, 2025<br>Location: Fresno, CA</p>
+            <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
+            <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="thumbnail" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Hamburger Menu Toggle
+    const hamburger = document.getElementById('hamburger');
+    const menu = document.getElementById('menu');
+    function toggleMenu() {
+      hamburger.classList.toggle('active');
+      menu.classList.toggle('active');
+    }
+
+    // Canvas-based neon glow effect
+    const canvas = document.getElementById('neonCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let time = 0;
+    function drawNeonGlow() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      gradient.addColorStop(0, '#ff00ff'); // Neon pink
+      gradient.addColorStop(0.5, '#00ffff'); // Neon cyan
+      gradient.addColorStop(1, '#00ff00'); // Neon lime
+
+      ctx.fillStyle = gradient;
+      ctx.globalAlpha = 0.6;
+
+      for (let x = 0; x < canvas.width; x += 20) {
+        const y = canvas.height / 2 + Math.sin((x * 0.01 + time) * 0.5) * 50;
+        ctx.beginPath();
+        ctx.arc(x, y, 8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.globalAlpha = 0.4;
+      ctx.fillStyle = '#ff00ff';
+      for (let i = 0; i < 30; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const radius = Math.random() * 5 + 2;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      time += 0.05;
+      requestAnimationFrame(drawNeonGlow);
+    }
+
+    drawNeonGlow();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Disable Pay buttons at midnight
+    function disablePayButtonsAtMidnight() {
+      const now = new Date();
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      const msUntilMidnight = midnight.getTime() - now.getTime();
+
+      setTimeout(() => {
+        document.querySelectorAll(".pay").forEach(btn => btn.disabled = true);
+      }, msUntilMidnight);
+    }
+    disablePayButtonsAtMidnight();
+  </script>
+</body>
+</html>      height: 60px;
+    }
+    .hamburger {
+      cursor: pointer;
+      margin-right: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+    }
+    .hamburger div {
+      width: 30px;
+      height: 3px;
+      background: #00ffff; /* Neon cyan */
+      transition: all 0.3s ease;
+    }
+    .hamburger.active div:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .hamburger.active div:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger.active div:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+    .site-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #ff00ff; /* Neon pink */
+      text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+      animation: neonPulse 2s ease infinite;
+      user-select: none;
+    }
+    .menu {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: #1a0033; /* Dark purple for neon contrast */
+      transition: left 0.3s ease;
+      z-index: 999;
+      padding-top: 60px;
+    }
+    .menu.active {
+      left: 0;
+    }
+    .menu ul {
+      list-style: none;
+      padding: 0 20px;
+    }
+    .menu ul li {
+      margin: 20px 0;
+    }
+    .menu ul li a {
+      color: #00ffff; /* Neon cyan */
+      text-decoration: none;
+      font-size: 1.2rem;
+      text-shadow: 0 0 5px #00ffff;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    .menu ul li a:hover {
+      color: #ff00ff; /* Neon pink */
+      text-shadow: 0 0 10px #ff00ff;
+    }
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 150px;
+      min-height: calc(100vh - 150px);
+    }
+    .image-area {
+      flex: 2 1 60%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+    }
+    .image-area img {
+      max-width: 80%;
+      max-height: 40%;
+      object-fit: contain;
+      margin-top: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #00ff00; /* Neon lime glow */
+    }
+    .notice-banner {
+      text-align: center;
+      font-weight: bold;
+      color: #ff0000; /* Bright red for visibility */
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      width: fit-content;
+      background: none;
+      text-shadow: 0 0 10px #ff0000;
+    }
+    .notice-banner marquee {
+      color: #ff0000;
+      background: none;
+      text-shadow: 0 0 10px #ff0000;
+    }
+    .payment-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 20px;
+      width: 100%;
+      max-width: 500px;
+    }
+    .pay-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+    .pay-group p {
+      font-weight: 700;
+      color: #00ffff; /* Neon cyan */
+      text-align: center;
+      margin-bottom: 8px;
+      text-shadow: 0 0 5px #00ffff;
+    }
+    .pay-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #ff00ff; /* Neon pink */
+      color: #000;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+      text-align: center;
+      user-select: none;
+      text-shadow: 0 0 5px #000;
+      box-shadow: 0 0 10px #ff00ff;
+    }
+    .pay-button:hover {
+      background: #00ff00; /* Neon lime */
+      color: #000;
+      box-shadow: 0 0 15px #00ff00;
+    }
+    .events {
+      flex: 1 1 35%;
+      padding: 20px;
+      overflow-y: auto;
+      position: relative;
+      z-index: 1;
+      max-height: 70vh;
+    }
+    .events h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #00ffff; /* Neon cyan */
+      text-shadow: 0 0 10px #00ffff;
+      animation: neonPulse 2s ease infinite;
+    }
+    .event {
+      margin-bottom: 20px;
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(26, 0, 51, 0.4); /* Semi-transparent dark purple */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: default;
+    }
+    .event:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #ff00ff; /* Neon pink glow */
+    }
+    .event h3 {
+      font-size: 1.4rem;
+      color: #ff00ff !important; /* Neon pink */
+      text-shadow: 0 0 10px #ff00ff;
+      animation: neonPulse 3s ease infinite !important;
+      user-select: text;
+    }
+    .event h3 a {
+      color: inherit !important;
+      text-decoration: none;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    .event h3 a:hover {
+      color: #00ff00 !important; /* Neon lime */
+      text-shadow: 0 0 10px #00ff00;
+    }
+    .event p {
+      font-size: 0.9rem;
+      color: #00ffff; /* Neon cyan */
+      margin-bottom: 8px;
+      user-select: text;
+      text-shadow: 0 0 5px #00ffff;
+    }
+    .event a {
+      color: #ff00ff; /* Neon pink */
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s, text-shadow 0.3s;
+      text-shadow: 0 0 5px #ff00ff;
+    }
+    .event a:hover {
+      color: #00ff00; /* Neon lime */
+      text-shadow: 0 0 10px #00ff00;
+    }
+    .thumbnail {
+      max-width: 100px;
+      border-radius: 5px;
+      margin-top: 10px;
+      box-shadow: 0 0 10px #00ff00; /* Neon lime glow */
+    }
+    #alertOverlay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-30deg);
+      font-size: 4rem;
+      font-weight: bold;
+      color: #ff0000; /* Bright red */
+      z-index: 5000;
+      pointer-events: none;
+      text-align: center;
+      white-space: nowrap;
+      animation: flashAlert 2s infinite;
+      text-shadow: 0 0 15px #ff0000;
+    }
+    @keyframes flashAlert {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+    @keyframes neonPulse {
+      0%, 100% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff; }
+      50% { text-shadow: 0 0 15px #00ffff, 0 0 25px #00ffff; }
+    }
+    @keyframes flashGrow {
+      0%, 100% { transform: scale(1); opacity: 1; text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; }
+      50% { transform: scale(1.2); opacity: 0.7; text-shadow: 0 0 30px #ff0000, 0 0 40px #ff0000; }
+    }
+    .flashing-text {
+      animation: flashGrow 1.5s ease-in-out infinite;
+      color: #ff0000;
+      font-weight: bold;
+      text-align: center;
+      display: inline-block;
+      user-select: none;
+      text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+      margin: 0 20px;
+    }
+    @keyframes neonGlowAnimation {
+      0%, 100% { filter: brightness(100%); }
+      50% { filter: brightness(150%); }
+    }
+    @keyframes neonSparkleAnimation {
+      0%, 100% { transform: translate(-25%, -25%) scale(1); opacity: 0.5; }
+      50% { transform: translate(-20%, -20%) scale(1.1); opacity: 0.7; }
+    }
+    @media (max-width: 768px) {
+      .content { flex-direction: column; margin-top: 120px; min-height: calc(100vh - 120px); }
+      .image-area, .events { width: 100%; max-height: none; }
+      .image-area img { max-width: 90%; max-height: 25%; margin-top: 10px; }
+      .payment-buttons { flex-direction: column; gap: 10px; max-width: none; }
+      .pay-group { flex: none; width: 100%; }
+      .pay-button { width: 80%; text-align: center; margin: 0 auto; }
+      .header { left: 10px; }
+      .site-title { font-size: 1.2rem; }
+      .notice-banner { font-size: 1rem; }
+      .flashing-text { margin: 0 10px; }
+      .container { padding: 0 20px 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="neon-effect"></div>
+  <canvas id="neonCanvas"></canvas>
+
+  <div id="alertOverlay">LAST DAY FOR DISCOUNTS, LAST DAY FOR SINGLE MALES TO PAY</div>
+
+  <div class="header">
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <div></div><div></div><div></div>
+    </div>
+    <h1 class="site-title">One Leg Up</h1>
+  </div>
+
+  <nav class="menu" id="menu">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div class="content">
+      <div class="image-area">
+        <div class="notice-banner" style="max-width: 500px;">
+          <marquee behavior="scroll" direction="left" scrollamount="5" style="width:100%;">
+            ALL SINGLE MALES MUST PAY IN ADVANCE OR THEY WILL NOT BE ADMITTED!    
+            <span class="flashing-text">$10 more at the door!</span>    
+          </marquee>
+        </div>
+        <div style="display: flex; gap: 20px; align-items: flex-start;">
+          <div style="flex: 1; text-align: center; padding-right: 10px;">
+            <p>Please text 559-284-8414 Your SLS username when paying, so we know you paid. We don't want you to have to pay at the door or not be admitted! If paying at the door please have your cash in an envelope with your SLS name written on it! Thank you!!!</p>
+          </div>
+          <div style="flex: 2;">
             <img src="images/oktoberfestdrinking.png" alt="Oktoberfest Swinger Party Flyer" style="max-width: 100%;" />
           </div>
         </div>
