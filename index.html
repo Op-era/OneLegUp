@@ -9,19 +9,19 @@
     *{margin:0;padding:0;box-sizing:border-box;}
     html,body{
       height:100%;overflow:hidden;
-      background:#000;
+      background:transparent;
       font-family:'Poppins',sans-serif;
       color:#fff;
     }
 
-    /* 3D ROOM - NOW ON TOP */
+    /* 3D BACKGROUND - LASERS, LIGHTS, FOG */
     #club-room{
       position:fixed;top:0;left:0;width:100%;height:100%;
-      z-index:5 !important; /* ABOVE UI */
+      z-index:1; /* BEHIND UI */
       perspective:1500px;
       transform-style:preserve-3d;
       animation:rotateRoom 60s linear infinite;
-      pointer-events:none; /* LET UI BE CLICKABLE */
+      pointer-events:none;
     }
     @keyframes rotateRoom{0%{transform:rotateY(0deg);}100%{transform:rotateY(360deg);}}
 
@@ -88,17 +88,16 @@
       box-shadow:0 0 30px #ff00ff;
       display:flex;align-items:center;justify-content:center;
       font-size:1.8rem;font-weight:600;color:#000;
-      z-index:100 !important;
+      z-index:100;
       animation:spinSign 8s linear infinite;
       transform-origin:center;
-      pointer-events:none;
     }
     @keyframes spinSign{0%{transform:rotateY(0deg);}100%{transform:rotateY(360deg);}}
 
-    /* UI - BELOW 3D */
+    /* UI - ON TOP */
     .overlay{
       position:relative;
-      z-index:1; /* BELOW 3D */
+      z-index:10; /* ABOVE 3D */
       min-height:100vh;
       padding:80px 50px 40px 50px;
       max-width:1200px;
@@ -112,12 +111,26 @@
 
     .content{display:flex;flex-wrap:wrap;gap:30px;margin-top:30px;}
     .left{flex:2 1 60%;display:flex;flex-direction:column;align-items:center;}
-    .notice{text-align:center;font-weight:bold;color:#ff0000;font-size:1.4rem;margin:15px 0;padding:12px 20px;background:rgba(255,0,0,.1);border:2px solid #ff0000;border-radius:10px;max-width:700px;text-shadow:0 0 10px #ff0000;animation:flashGrow 2s ease-in-out infinite;}
-    .rsvp-button{margin-top:20px;padding:12px 30px;background:#ff00ff;color:#000;font-weight:600;text-decoration:none;border-radius:8px;box-shadow:0 0 12px #ff00ff;transition:background .3s,box-shadow .3s;}
+    .notice{
+      text-align:center;font-weight:bold;color:#ff0000;
+      font-size:1.4rem;margin:15px 0;padding:12px 20px;
+      background:rgba(255,0,0,.1);border:2px solid #ff0000;
+      border-radius:10px;max-width:700px;
+      text-shadow:0 0 10px #ff0000;
+      animation:flashGrow 2s ease-in-out infinite;
+    }
+    .rsvp-button{
+      margin-top:20px;padding:12px 30px;background:#ff00ff;
+      color:#000;font-weight:600;text-decoration:none;border-radius:8px;
+      box-shadow:0 0 12px #ff00ff;transition:background .3s,box-shadow .3s;
+    }
     .rsvp-button:hover{background:#00ff00;box-shadow:0 0 18px #00ff00;}
     .countdown{margin-top:20px;font-size:1.6rem;color:#00ffff;text-shadow:0 0 10px #00ffff;}
     .flyer{max-width:80%;margin-top:20px;border-radius:12px;box-shadow:0 0 20px #00ff00;}
-    .events{flex:1 1 35%;padding:20px;overflow-y:auto;max-height:70vh;background:rgba(26,0,51,.5);border-radius:12px;}
+    .events{
+      flex:1 1 35%;padding:20px;overflow-y:auto;max-height:70vh;
+      background:rgba(26,0,51,.5);border-radius:12px;
+    }
     .events h2{font-size:1.8rem;color:#00ffff;text-shadow:0 0 10px #00ffff;animation:neonPulse 2s ease infinite;}
     .event{margin-bottom:20px;padding:12px;border-radius:8px;background:rgba(0,0,0,.3);transition:transform .3s,box-shadow .3s;}
     .event:hover{transform:scale(1.04);box-shadow:0 0 15px #ff00ff;}
@@ -143,7 +156,7 @@
 </head>
 <body>
 
-  <!-- 3D ROOM - ON TOP -->
+  <!-- 3D BACKGROUND - LASERS, LIGHTS, FOG -->
   <div id="club-room">
     <div class="fog"></div>
     <div class="floor"></div>
@@ -160,7 +173,7 @@
   <!-- SPINNING SIGN - TOP-LEFT -->
   <div class="sign">One Leg Up</div>
 
-  <!-- UI - BELOW 3D -->
+  <!-- UI - ON TOP -->
   <div class="overlay">
     <div class="header">
       <h1 class="site-title">One Leg Up</h1>
