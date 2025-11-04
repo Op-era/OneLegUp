@@ -113,9 +113,13 @@
 </head>
 <body>
 
+  <!-- FALLBACK NEON BG -->
   <div id="fallback-bg"></div>
+
+  <!-- 3D CANVAS -->
   <canvas id="scene-canvas"></canvas>
 
+  <!-- FULL UI -->
   <div class="overlay">
     <div class="header">
       <h1 class="site-title">One Leg Up</h1>
@@ -180,71 +184,122 @@
     </div>
   </div>
 
-  <!-- 3D + COUNTDOWN TO NEXT EVENT -->
+  <!-- 3D + COUNTDOWN (FIXED) -->
   <script>
-    // === 3D SCENE (FIXED) ===
+    // --- 3D SCENE ---
     const canvas = document.getElementById('scene-canvas');
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200);
-    camera.position.set(0, 6, 18);
-    camera.lookAt(0, 4, 0);
-
-    scene.fog = new THREE.FogExp2(0x000000, 0.04);
-    scene.add(new THREE.AmbientLight(0x404040, 0.8));
-
-    const pink = new THREE.PointLight(0xff00ff, 20, 70); pink.position.set(-8, 6, -8); scene.add(pink);
-    const cyan = new THREE.PointLight(0x00ffff, 20, 70); cyan.position.set(8, 6, -8); scene.add(cyan);
-    const lime = new THREE.PointLight(0x00ff00, 20, 70); lime.position.set(0, 6, 8); scene.add(lime);
-
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(60, 60),
-      new THREE.MeshStandardMaterial({ color: 0x111111, emissive: 0x00ff00, emissiveIntensity: 0.7 })
-    );
-    floor.rotation.x = -Math.PI / 2; floor.position.y = -0.02; scene.add(floor);
-
-    const grid = new THREE.GridHelper(60, 120, 0x00ff00, 0x00ff00);
-    grid.material.opacity = 0.4; grid.material.transparent = true; scene.add(grid);
-
-    const wallMat = new THREE.MeshStandardMaterial({ color: 0x1a0033 });
-    scene.add(new THREE.Mesh(new THREE.BoxGeometry(60, 18, 0.5), wallMat).translate(0, 9, -30)));
-    scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.5, 18, 60), wallMat).translate(-30, 9, 0)));
-    scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.5, 18, 60), wallMat).translate(30, 9, 0)));
-
-    const sign = new THREE.Mesh(
-      new THREE.BoxGeometry(10, 2.5, 0.3),
-      new THREE.MeshStandardMaterial({ color: 0xff00ff, emissive: 0xff00ff, emissiveIntensity: 2.5 })
-    );
-    sign.position.set(0, 12, -29.7); scene.add(sign);
-
-    // LASERS - NOW VISIBLE WITH PHONG + EMISSIVE
-    const laserMat = new THREE.MeshPhongMaterial({
-      color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 2, shininess: 100
-    });
-    const laserGeo = new THREE.ConeGeometry(1.5, 45, 20);
-    const laser1 = new THREE.Mesh(laserGeo, laserMat); laser1.rotation.x = Math.PI / 2; laser1.position.set(-15, 5, 0); scene.add(laser1);
-    const laser2 = new THREE.Mesh(laserGeo, laserMat); laser2.rotation.x = Math.PI / 2; laser2.position.set(15, 5, 0); scene.add(laser2);
-
-    const clock = new THREE.Clock();
-    function animate() {
-      requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
-      const pulse = 15 + Math.sin(t * 3) * 8;
-      pink.intensity = pulse; cyan.intensity = pulse + 2; lime.intensity = pulse + 4;
-      floor.material.emissiveIntensity = 0.7 + Math.sin(t * 4) * 0.4;
-      sign.rotation.y = t * 0.7;
-      laser1.rotation.y = t * 2.1; laser2.rotation.y = -t * 2.7;
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
+    let renderer, scene, camera;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
       renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // === COUNTDOWN TO NEXT EVENT ===
+      scene =  new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200);
+      camera.position.set(0, 6, 18);
+      camera.lookAt(0, 4, 0);
+
+      // FOG
+      scene.fog = new THREE.FogExp2(0x000000, 0.035);
+
+      // LIGHTS
+      scene.add(new THREE.AmbientLight(0x404040, 0.7));
+      const pink = new THREE.PointLight(0xff00ff, 20, 70); pink.position.set(-8, 6, -8); scene.add(pink);
+      const cyan = new THREE.PointLight(0x00ffff, 20, 70); cyan.position.set(8, 6, -8); scene.add(cyan);
+      const lime = new THREE.PointLight(0x00ff00, 20, 70); lime.position.set(0, 6, 8); scene.add(lime);
+
+      // FLOOR
+      const floor = new THREE.Mesh(
+        new THREE.PlaneGeometry(60, 60),
+        new THREE.MeshStandardMaterial({ color: 0x111111, emissive: 0x00ff00, emissiveIntensity: 0.6 })
+      );
+      floor.rotation.x = -Math.PI / 2; floor.position.y = -0.02; scene.add(floor);
+
+      // GRID
+      const grid = new THREE.GridHelper(60, 120, 0x00ff00, 0x00ff00);
+      grid.material.opacity = 0.35; grid.material.transparent = true; scene.add(grid);
+
+      // WALLS
+      const wallMat = new THREE.MeshStandardMaterial({ color: 0x1a0033 });
+      scene.add(new THREE.Mesh(new THREE.BoxGeometry(60, 18, 0.5), wallMat).translate(0, 9, -30)));
+      scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.5, 18, 60), wallMat).translate(-30, 9, 0)));
+      scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.5, 18, 60), wallMat).translate(30, 9, 0)));
+
+      // SIGN
+      const sign = new THREE.Mesh(
+        new THREE.BoxGeometry(10, 2.5, 0.3),
+        new THREE.MeshStandardMaterial({ color: 0xff00ff, emissive: 0xff00ff, emissiveIntensity: 2 })
+      );
+      sign.position.set(0, 12, -29.7); scene.add(sign);
+
+      // LASERS (PHONG + EMISSIVE)
+      const laserMat = new THREE.MeshPhongMaterial({
+        color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 3, shininess: 100
+      });
+      const laserGeo = new FIVE.ConeGeometry(1.2, 40, 16);
+      const laser1 = new THREE.Mesh(laserGeo, laserMat); laser1.rotation.x = Math.PI / 2; laser1.position.set(-15, 5, 0); scene.add(laser1);
+      const laser2 = new THREE.Mesh(laserGeo, laserMat); laser2.rotation.x = Math.PI / 2; laser2.position.set(15, 5, 0); scene.add(laser2);
+
+      // ANIMATION
+      const clock = new THREE.Clock();
+      function animate() {
+        requestAnimationFrame(animate);
+        const t = clock.getElapsedTime();
+        const pulse = 15 + Math.sin(t * 3) * 8;
+        pink.intensity = pulse; cyan.intensity = pulse + 2; lime.intensity = pulse + 4;
+        floor.material.emissiveIntensity = 0.6 + Math.sin(t * 4) * 0.3;
+        sign.rotation.y = t * 0.7;
+        laser1.rotation.y = t * 2; laser2.rotation.y = -t * 2.5;
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+    } catch (err) {
+      console.error("3D failed:", err);
+    }
+
+    // --- COUNTDOWN TO NEXT EVENT ---
+    const events = Array.from(document.querySelectorAll('.event[data-date]'))
+      .map(el => ({ el, date: new Date(el.dataset.date + 'T20:00:00-08:00') }))
+      .filter(e => e.date > new Date())
+      .sort((a, b) => a.date - b.date);
+
+    const countdownEl = document.getElementById('countdown');
+    let currentEvent = events[0];
+
+    function updateCountdown() {
+      if (!currentEvent) {
+        countdownEl.textContent = 'No upcoming events';
+        return;
+      }
+      const diff = currentEvent.date - Date.now();
+      if (diff <= 0) {
+        // Move to next
+        const idx = events.indexOf(currentEvent);
+        currentEvent = events[idx + 1] || null;
+        updateCountdown();
+        return;
+      }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      countdownEl.innerHTML = `${d}d : ${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s`;
+    }
+
+    // Start countdown
+    if (events.length > 0) {
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    } else {
+      countdownEl.textContent = 'No upcoming events';
+    }
+  </script>
+</body>
+</html>
