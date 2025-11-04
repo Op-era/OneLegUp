@@ -4,7 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>One Leg Up - Swingers Club</title>
+
+  <!-- ORIGINAL FONT -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.min.js"></script>
+
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     html,body{
@@ -12,162 +18,173 @@
       background:#000;
       font-family:'Poppins',sans-serif;
       color:#fff;
-      perspective:1000px; /* Enable 3D */
     }
-    /* 3D CLUB ROOM BG */
-    #club-bg{
-      position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;
-      transform-style:preserve-3d;
-      animation:rotateRoom 40s linear infinite;
+
+    /* 3D CANVAS - FIXED Z-INDEX */
+    #scene-canvas{
+      position:fixed !important;
+      top:0 !important; left:0 !important;
+      width:100% !important; height:100% !important;
+      z-index:-1 !important;
+      display:block !important;
     }
-    /* FOG LAYER */
-    #fog{
-      position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
-      background:linear-gradient(45deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.8) 100%);
-      backdrop-filter:blur(2px);
-      animation:fogDrift 20s ease infinite;
+
+    /* FALLBACK BG - FIXED: BELOW CANVAS */
+    #fallback-bg{
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:radial-gradient(circle at center, #110022 0%, #000 70%);
+      opacity:0.6;pointer-events:none;
+      z-index:-2 !important;
+      animation:neonBreath 6s ease infinite;
     }
-    @keyframes fogDrift{0%,100%{opacity:0.7;transform:translateX(0);}50%{opacity:0.4;transform:translateX(10px);}}
-    /* FLOOR */
-    .floor{
-      position:absolute;bottom:0;left:50%;width:200%;height:50%;
-      background:linear-gradient(90deg, #111 0%, #00ff00 50%, #111 100%);
-      transform:translateX(-50%) rotateX(90deg);
-      transform-origin:bottom;
-      animation:pulseFloor 4s ease infinite;
+    @keyframes neonBreath{0%,100%{opacity:0.6}50%{opacity:0.9}}
+
+    .overlay{
+      position:relative;z-index:10;pointer-events:none;
+      min-height:100vh;padding:80px 50px 40px 50px;
+      max-width:1200px;margin:0 auto;
     }
-    @keyframes pulseFloor{0%,100%{box-shadow:0 0 20px #00ff00;}50%{box-shadow:0 0 50px #00ff00,0 0 100px #00ff00;}}
-    /* WALLS */
-    .wall-back{
-      position:absolute;top:0;left:50%;width:200%;height:100%;
-      background:#1a0033;
-      transform:translateX(-50%) translateZ(-50px);
-      box-shadow:inset 0 0 50px #ff00ff;
-    }
-    .wall-left,.wall-right{
-      position:absolute;top:0;width:50%;height:100%;
-      background:#1a0033;
-      transform:rotateY(90deg);
-      box-shadow:inset 0 0 30px #00ffff;
-    }
-    .wall-left{left:0;transform-origin:right;}
-    .wall-right{right:0;transform-origin:left;}
-    /* PULSING LIGHTS */
-    .light-pink,.light-cyan,.light-lime{
-      position:absolute;top:10%;width:20%;height:20%;
-      border-radius:50%;
-      animation:pulseLight 3s ease infinite;
-    }
-    .light-pink{left:10%;background:radial-gradient(circle, #ff00ff 0%, transparent 70%);animation-delay:0s;}
-    .light-cyan{right:10%;background:radial-gradient(circle, #00ffff 0%, transparent 70%);animation-delay:1s;}
-    .light-lime{top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle, #00ff00 0%, transparent 70%);animation-delay:2s;}
-    @keyframes pulseLight{0%,100%{opacity:0.5;transform:scale(1);box-shadow:0 0 20px currentColor;}50%{opacity:1;transform:scale(1.2);box-shadow:0 0 60px currentColor,0 0 100px currentColor;}}
-    /* ROTATING LASERS */
-    .laser{
-      position:absolute;top:50%;left:50%;width:4px;height:80px;
-      background:linear-gradient(to bottom, #00ffff, transparent);
-      box-shadow:0 0 20px #00ffff;
-      transform:translate(-50%,-50%) rotate(0deg);
-      animation:rotateLaser 8s linear infinite;
-    }
-    .laser:nth-child(1){animation-delay:0s;animation-direction:normal;}
-    .laser:nth-child(2){animation-delay:4s;animation-direction:reverse;}
-    @keyframes rotateLaser{0%{transform:translate(-50%,-50%) rotate(0deg);}100%{transform:translate(-50%,-50%) rotate(360deg);}}
-    /* SPINNING SIGN */
-    .sign{
-      position:absolute;top:20%;left:50%;width:200px;height:60px;
-      background:#ff00ff;
-      transform:translateX(-50%) translateZ(-45px) rotateY(0deg);
-      box-shadow:0 0 30px #ff00ff;
-      animation:spinSign 10s linear infinite;
-      display:flex;align-items:center;justify-content:center;
-      font-size:1.5rem;font-weight:600;color:#000;text-shadow:none;
-    }
-    @keyframes spinSign{0%{transform:translateX(-50%) translateZ(-45px) rotateY(0deg);}100%{transform:translateX(-50%) translateZ(-45px) rotateY(360deg);}}
-    /* UI (UNCHANGED) */
-    .overlay{position:relative;z-index:10;pointer-events:none;min-height:100vh;padding:80px 50px 40px 50px;max-width:1200px;margin:0 auto;}
     .overlay>*{pointer-events:auto;}
+
     .header{position:fixed;top:20px;left:20px;}
-    .site-title{font-size:2rem;font-weight:600;color:#ff00ff;text-shadow:0 0 12px #ff00ff,0 0 24px #ff00ff;animation:neonPulse 2s ease infinite;}
+    .site-title{
+      font-size:2rem;font-weight:600;color:#ff00ff;
+      text-shadow:0 0 12px #ff00ff,0 0 24px #ff00ff;
+      animation:neonPulse 2s ease infinite;
+    }
     .content{display:flex;flex-wrap:wrap;gap:30px;margin-top:30px;}
     .left{flex:2 1 60%;display:flex;flex-direction:column;align-items:center;}
-    .notice{text-align:center;font-weight:bold;color:#ff0000;font-size:1.4rem;margin:15px 0;padding:12px 20px;background:rgba(255,0,0,.1);border:2px solid #ff0000;border-radius:10px;max-width:700px;text-shadow:0 0 10px #ff0000;animation:flashGrow 2s ease-in-out infinite;}
-    .rsvp-button{margin-top:20px;padding:12px 30px;background:#ff00ff;color:#000;font-weight:600;text-decoration:none;border-radius:8px;box-shadow:0 0 12px #ff00ff;transition:background .3s,box-shadow .3s;}
+    .notice{
+      text-align:center;font-weight:bold;color:#ff0000;
+      font-size:1.4rem;margin:15px 0;padding:12px 20px;
+      background:rgba(255,0,0,.1);border:2px solid #ff0000;
+      border-radius:10px;max-width:700px;
+      text-shadow:0 0 10px #ff0000;
+      animation:flashGrow 2s ease-in-out infinite;
+    }
+    .rsvp-button{
+      margin-top:20px;padding:12px 30px;background:#ff00ff;
+      color:#000;font-weight:600;text-decoration:none;border-radius:8px;
+      box-shadow:0 0 12px #ff00ff;transition:background .3s,box-shadow .3s;
+    }
     .rsvp-button:hover{background:#00ff00;box-shadow:0 0 18px #00ff00;}
-    .countdown{margin-top:20px;font-size:1.6rem;color:#00ffff;text-shadow:0 0 10px #00ffff;}
-    .flyer{max-width:80%;margin-top:20px;border-radius:12px;box-shadow:0 0 20px #00ff00;}
-    .events{flex:1 1 35%;padding:20px;overflow-y:auto;max-height:70vh;background:rgba(26,0,51,.5);border-radius:12px;}
-    .events h2{font-size:1.8rem;color:#00ffff;text-shadow:0 0 10px #00ffff;animation:neonPulse 2s ease infinite;}
-    .event{margin-bottom:20px;padding:12px;border-radius:8px;background:rgba(0,0,0,.3);transition:transform .3s,box-shadow .3s;}
+    .countdown{
+      margin-top:20px;font-size:1.6rem;color:#00ffff;
+      text-shadow:0 0 10px #00ffff;
+    }
+    .flyer{
+      max-width:80%;margin-top:20px;border-radius:12px;
+      box-shadow:0 0 20px #00ff00;
+    }
+    .events{
+      flex:1 1 35%;padding:20px;overflow-y:auto;max-height:70vh;
+      background:rgba(26,0,51,.5);border-radius:12px;
+    }
+    .events h2{
+      font-size:1.8rem;color:#00ffff;
+      text-shadow:0 0 10px #00ffff;
+      animation:neonPulse 2s ease infinite;
+    }
+    .event{margin-bottom:20px;padding:12px;border-radius:8px;
+      background:rgba(0,0,0,.3);transition:transform .3s,box-shadow .3s;}
     .event:hover{transform:scale(1.04);box-shadow:0 0 15px #ff00ff;}
-    .event h3{font-size:1.4rem;color:#ff00ff!important;text-shadow:0 0 10px #ff00ff;animation:neonPulse 3s ease infinite!important;}
+    .event h3{
+      font-size:1.4rem;color:#ff00ff!important;
+      text-shadow:0 0 10px #ff00ff;
+      animation:neonPulse 3s ease infinite!important;
+    }
     .event h3 a{color:inherit!important;text-decoration:none;}
     .event h3 a:hover{color:#00ff00!important;text-shadow:0 0 10px #00ff00;}
     .event p{font-size:.9rem;color:#00ffff;text-shadow:0 0 5px #00ffff;}
-    .event a{color:#ff00ff;text-decoration:none;font-weight:600;text-shadow:0 0 5px #ff00ff;}
+    .event a{color:#ff00ff;text-decoration:none;font-weight:600;
+      text-shadow:0 0 5px #ff00ff;}
     .event a:hover{color:#00ff00;text-shadow:0 0 10px #00ff00;}
-    .thumbnail{max-width:100px;border-radius:5px;margin-top:10px;box-shadow:0 0 10px #00ff00;}
-    @keyframes neonPulse{0%,100%{text-shadow:0 0 10px #ff00ff,0 0 20px #ff00ff}50%{text-shadow:0 0 15px #00ffff,0 0 25px #00ffff}}
-    @keyframes flashGrow{0%,100%{transform:scale(1);opacity:1;text-shadow:0 0 10px #ff0000,0 0 20px #ff0000}50%{transform:scale(1.05);opacity:.9;text-shadow:0 0 25px #ff0000,0 0 35px #ff0000}}
-    @media (max-width:768px){.content{flex-direction:column;}.left,.events{width:100%;}.site-title{font-size:1.5rem;}.notice{font-size:1.1rem;padding:10px 15px;}.rsvp-button{font-size:.9rem;padding:10px 20px;}.countdown{font-size:1.3rem;}.overlay{padding:70px 20px 40px 20px;}}
+    .thumbnail{max-width:100px;border-radius:5px;margin-top:10px;
+      box-shadow:0 0 10px #00ff00;}
+
+    @keyframes neonPulse{
+      0%,100%{text-shadow:0 0 10px #ff00ff,0 0 20px #ff00ff}
+      50%{text-shadow:0 0 15px #00ffff,0 0 25px #00ffff}
+    }
+    @keyframes flashGrow{
+      0%,100%{transform:scale(1);opacity:1;text-shadow:0 0 10px #ff0000,0 0 20px #ff0000}
+      50%{transform:scale(1.05);opacity:.9;text-shadow:0 0 25px #ff0000,0 0 35px #ff0000}
+    }
+
+    @media (max-width:768px){
+      .content{flex-direction:column;}
+      .left,.events{width:100%;}
+      .site-title{font-size:1.5rem;}
+      .notice{font-size:1.1rem;padding:10px 15px;}
+      .rsvp-button{font-size:.9rem;padding:10px 20px;}
+      .countdown{font-size:1.3rem;}
+      .overlay{padding:70px 20px 40px 20px;}
+    }
   </style>
 </head>
 <body>
 
-  <!-- 3D CLUB BG -->
-  <div id="club-bg">
-    <div class="fog"></div>
-    <div class="floor"></div>
-    <div class="wall-back"></div>
-    <div class="wall-left"></div>
-    <div class="wall-right"></div>
-    <div class="light-pink"></div>
-    <div class="light-cyan"></div>
-    <div class="light-lime"></div>
-    <div class="laser"></div>
-    <div class="laser"></div>
-    <div class="sign">One Leg Up</div>
-  </div>
+  <!-- FALLBACK BG - BELOW CANVAS -->
+  <div id="fallback-bg"></div>
 
-  <!-- UI -->
+  <!-- 3D CANVAS - ON TOP -->
+  <canvas id="scene-canvas"></canvas>
+
+  <!-- FULL UI -->
   <div class="overlay">
     <div class="header">
       <h1 class="site-title">One Leg Up</h1>
     </div>
+
     <div class="content">
       <div class="left">
-        <div class="notice">All pay will be cash in envelopes at the door.</div>
-        <a href="sms:15597875801?body=RSVP%20-%20My%20SLS%20username%20is%3A%20" class="rsvp-button">Text to RSVP (include your SLS username)</a>
+        <div class="notice">
+          All pay will be cash in envelopes at the door.
+        </div>
+
+        <a href="sms:15597875801?body=RSVP%20-%20My%20SLS%20username%20is%3A%20"
+           class="rsvp-button">
+          Text to RSVP (include your SLS username)
+        </a>
+
         <div class="countdown" id="countdown">Loading...</div>
+
         <img src="images/neonglow.jpg" alt="Neon Glow Party Flyer" class="flyer">
       </div>
+
       <div class="events">
         <h2>Upcoming Parties</h2>
+
         <div class="event" data-date="2026-01-03">
           <h3><a href="payment.html">New Year, Newbie Supermoon Party!</a></h3>
           <p>Date: January 3, 2026<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
           <p>Kick off 2026 with a supermoon glow! Newbie-friendly. 8 PM – 2 AM. Doors close 10 PM. BYOB.</p>
           <a href="#" target="_blank">View on SLS (link coming soon)</a>
         </div>
+
         <div class="event" data-date="2025-11-15">
           <h3><a href="payment.html">NEON GLOW PARTY</a></h3>
           <p>Date: November 15, 2025<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
           <p>Light up the night! Dress in vibrant neon. 8 PM – 2 AM. Doors close 10 PM. BYOB.</p>
           <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642" target="_blank">View on SLS</a>
         </div>
+
         <h2 style="margin-top:40px;">Past Events</h2>
+
         <div class="event" data-date="2025-10-04">
           <h3><a href="payment.html">Oktoberfest Party</a></h3>
           <p>Date: October 4, 2025<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
           <p>Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.</p>
           <a href="https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628" target="_blank">View on SLS</a>
         </div>
+
         <div class="event" data-date="2025-07-20">
           <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
           <p>Date: July 20, 2025<br>Location: Fresno, CA</p>
           <p>Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
           <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
         </div>
+
         <div class="event" data-date="2025-05-31">
           <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
           <p>Date: May 31, 2025<br>Location: Fresno, CA</p>
@@ -178,43 +195,116 @@
     </div>
   </div>
 
-  <!-- COUNTDOWN JS (ONLY) -->
+  <!-- 3D + COUNTDOWN (FIXED) -->
   <script>
-    const events = document.querySelectorAll('.event[data-date]');
-    const countdownEl = document.getElementById('countdown');
-    let nextEvent = null;
+    // === 3D SCENE ===
+    const canvas = document.getElementById('scene-canvas');
+    let renderer, scene, camera;
 
-    function findNextEvent() {
-      const now = new Date();
-      let closest = null;
-      events.forEach(el => {
-        const dateStr = el.dataset.date + 'T20:00:00-08:00';
-        const eventDate = new Date(dateStr);
-        if (eventDate > now && (!closest || eventDate < closest.date)) {
-          closest = { el, date: eventDate };
-        }
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200);
+      camera.position.set(0, 6, 18);
+      camera.lookAt(0, 4, 0);
+
+      // FOG
+      scene.fog = new THREE.FogExp2(0x000000, 0.035);
+
+      // LIGHTS
+      scene.add(new THREE.AmbientLight(0x404040, 0.7));
+      const pink = new THREE.PointLight(0xff00ff, 20, 70); pink.position.set(-8, 6, -8); scene.add(pink);
+      const cyan = new THREE.PointLight(0x00ffff, 20, 70); cyan.position.set(8, 6, -8); scene.add(cyan);
+      const lime = new THREE.PointLight(0x00ff00, 20, 70); lime.position.set(0, 6, 8); scene.add(lime);
+
+      // FLOOR
+      const floor = new THREE.Mesh(
+        new THREE.PlaneGeometry(60, 60),
+        new THREE.MeshStandardMaterial({ color: 0x111111, emissive: 0x00ff00, emissiveIntensity: 0.6 })
+      );
+      floor.rotation.x = -Math.PI / 2; floor.position.y = -0.02; scene.add(floor);
+
+      // GRID
+      const grid = new THREE.GridHelper(60, 120, 0x00ff00, 0x00ff00);
+      grid.material.opacity = 0.35; grid.material.transparent = true; scene.add(grid);
+
+      // WALLS
+      const wallMat = new THREE.MeshStandardMaterial({ color: 0x1a0033 });
+      scene.add(new THREE.Mesh(new THREE.BoxGeometry(60, 18, 0.5), wallMat).translate(0, 9, -30)));
+      scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.5, 18, 60), wallMat).translate(-30, 9, 0)));
+      scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.5, 18, 60), wallMat).translate(30, 9, 0)));
+
+      // SIGN
+      const sign = new THREE.Mesh(
+        new THREE.BoxGeometry(10, 2.5, 0.3),
+        new THREE.MeshStandardMaterial({ color: 0xff00ff, emissive: 0xff00ff, emissiveIntensity: 2 })
+      );
+      sign.position.set(0, 12, -29.7); scene.add(sign);
+
+      // LASERS - PHONG + EMISSIVE
+      const laserMat = new THREE.MeshPhongMaterial({
+        color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 3, shininess: 100
       });
-      return closest;
+      const laserGeo = new THREE.ConeGeometry(1.2, 40, 16);
+      const laser1 = new THREE.Mesh(laserGeo, laserMat); laser1.rotation.x = Math.PI / 2; laser1.position.set(-15, 5, 0); scene.add(laser1);
+      const laser2 = new THREE.Mesh(laserGeo, laserMat); laser2.rotation.x = Math.PI / 2; laser2.position.set(15, 5, 0); scene.add(laser2);
+
+      // ANIMATION
+      const clock = new THREE.Clock();
+      function animate() {
+        requestAnimationFrame(animate);
+        const t = clock.getElapsedTime();
+        const pulse = 15 + Math.sin(t * 3) * 8;
+        pink.intensity = pulse; cyan.intensity = pulse + 2; lime.intensity = pulse + 4;
+        floor.material.emissiveIntensity = 0.6 + Math.sin(t * 4) * 0.3;
+        sign.rotation.y = t * 0.7;
+        laser1.rotation.y = t * 2; laser2.rotation.y = -t * 2.5;
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+    } catch (err) {
+      console.error("3D failed:", err);
     }
 
+    // === COUNTDOWN TO NEXT EVENT ===
+    const events = Array.from(document.querySelectorAll('.event[data-date]'))
+      .map(el => ({ el, date: new Date(el.dataset.date + 'T20:00:00-08:00') }))
+      .filter(e => e.date > new Date())
+      .sort((a, b) => a.date - b.date);
+
+    const countdownEl = document.getElementById('countdown');
+    let currentEvent = events[0];
+
     function updateCountdown() {
-      nextEvent = findNextEvent();
-      if (!nextEvent) {
+      if (!currentEvent) {
         countdownEl.textContent = 'No upcoming events';
         return;
       }
-      const diff = nextEvent.date - Date.now();
+      const diff = currentEvent.date - Date.now();
       if (diff <= 0) {
-        updateCountdown(); // Recheck for next
+        const idx = events.indexOf(currentEvent);
+        currentEvent = events[idx + 1] || null;
+        updateCountdown();
         return;
       }
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      countdownEl.innerHTML = `${days}d : ${hours.toString().padStart(2, '0')}h : ${minutes.toString().padStart(2, '0')}m : ${seconds.toString().padStart(2, '0')}s`;
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      countdownEl.innerHTML = `${d}d : ${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s`;
     }
 
+    // START IMMEDIATELY
     updateCountdown();
     setInterval(updateCountdown, 1000);
   </script>
