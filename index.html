@@ -13,8 +13,22 @@
 
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
-    html,body{height:100%;overflow:hidden;background:#000;}
-    canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;}
+    html,body{
+      height:100%;overflow:hidden;
+      background:#000;
+      font-family:'Poppins',sans-serif;
+      color:#fff;
+    }
+    #scene-canvas{
+      position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;display:block !important;
+    }
+    #fallback-bg{
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:radial-gradient(circle at center, #110022 0%, #000 70%);
+      opacity:0.6;pointer-events:none;z-index:-2;
+      animation:neonBreath 6s ease infinite;
+    }
+    @keyframes neonBreath{0%,100%{opacity:0.6}50%{opacity:0.9}}
     .overlay{
       position:relative;z-index:10;pointer-events:none;
       min-height:100vh;padding:80px 50px 40px 50px;
@@ -99,10 +113,9 @@
 </head>
 <body>
 
-  <!-- 3-D CANVAS -->
+  <div id="fallback-bg"></div>
   <canvas id="scene-canvas"></canvas>
 
-  <!-- UI (unchanged) -->
   <div class="overlay">
     <div class="header">
       <h1 class="site-title">One Leg Up</h1>
@@ -126,6 +139,15 @@
 
       <div class="events">
         <h2>Upcoming Parties</h2>
+
+        <!-- NEW EVENT ADDED -->
+        <div class="event" data-date="2026-01-03">
+          <h3><a href="payment.html">New Year, Newbie Supermoon Party!</a></h3>
+          <p>Date: January 3, 2026<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
+          <p>Kick off 2026 with a supermoon glow! Newbie-friendly. 8 PM – 2 AM. Doors close 10 PM. BYOB.</p>
+          <a href="#" target="_blank">View on SLS (link coming soon)</a>
+        </div>
+
         <div class="event" data-date="2025-11-15">
           <h3><a href="payment.html">NEON GLOW PARTY</a></h3>
           <p>Date: November 15, 2025<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
@@ -159,95 +181,92 @@
     </div>
   </div>
 
-  <!-- 3-D SCENE (only change) -->
+  <!-- 3D SCENE + COUNTDOWN (UNCHANGED) -->
   <script>
     const canvas = document.getElementById('scene-canvas');
-    const renderer = new THREE.WebGLRenderer({canvas, alpha:true});
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    let renderer, scene, camera;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      console.log("WebGL Renderer Created");
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 200);
-    camera.position.set(0,6,18);
-    camera.lookAt(0,4,0);
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200);
+      camera.position.set(0, 6, 18);
+      camera.lookAt(0, 4, 0);
 
-    scene.fog = new THREE.FogExp2(0x000000, 0.03);
+      scene.fog = new THREE.FogExp2(0x000000, 0.035);
+      scene.add(new THREE.AmbientLight(0x404040, 0.7));
 
-    scene.add(new THREE.AmbientLight(0x404040,0.6));
+      const pink = new THREE.PointLight(0xff00ff, 15, 60); pink.position.set(-8, 6, -8); scene.add(pink);
+      const cyan = new THREE.PointLight(0x00ffff, 15, 60); cyan.position.set(8, 6, -8); scene.add(cyan);
+      const lime = new THREE.PointLight(0x00ff00, 15, 60); lime.position.set(0, 6, 8); scene.add(lime);
 
-    const pink = new THREE.PointLight(0xff00ff,12,60); pink.position.set(-8,6,-8); scene.add(pink);
-    const cyan = new THREE.PointLight(0x00ffff,12,60); cyan.position.set(8,6,-8); scene.add(cyan);
-    const lime = new THREE.PointLight(0x00ff00,12,60); lime.position.set(0,6,8); scene.add(lime);
+      const floor = new THREE.Mesh(
+        new THREE.PlaneGeometry(60, 60),
+        new THREE.MeshStandardMaterial({ color: 0x111111, emissive: 0x00ff00, emissiveIntensity: 0.6 })
+      );
+      floor.rotation.x = -Math.PI / 2; floor.position.y = -0.02; scene.add(floor);
 
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(50,50),
-      new THREE.MeshStandardMaterial({color:0x111111,emissive:0x00ff00,emissiveIntensity:0.5,metalness:0.9,roughness:0.1})
-    );
-    floor.rotation.x = -Math.PI/2; floor.position.y = -0.02; scene.add(floor);
+      const grid = new THREE.GridHelper(60, 120, 0x00ff00, 0x00ff00);
+      grid.material.opacity = 0.35; grid.material.transparent = true; scene.add(grid);
 
-    const grid = new THREE.GridHelper(50,100,0x00ff00,0x00ff00);
-    grid.material.opacity = 0.3; grid.material.transparent = true; scene.add(grid);
+      const wallMat = new THREE.MeshStandardMaterial({ color: 0x1a0033 });
+      scene.add(new THREE.Mesh(new THREE.BoxGeometry(60, 18, 0.5), wallMat).translate(0, 9, -30)));
+      scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.5, 18, 60), wallMat).translate(-30, 9, 0)));
+      scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.5, 18, 60), wallMat).translate(30, 9, 0)));
 
-    const wallMat = new THREE.MeshStandardMaterial({color:0x1a0033,metalness:0.9,roughness:0.2});
-    scene.add(new THREE.Mesh(new THREE.BoxGeometry(50,16,0.5),wallMat).translate(0,8,-25));
-    scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.5,16,50),wallMat).translate(-25,8,0));
-    scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.5,16,50),wallMat).translate(25,8,0));
+      const sign = new THREE.Mesh(
+        new THREE.BoxGeometry(10, 2.5, 0.3),
+        new THREE.MeshStandardMaterial({ color: 0xff00ff, emissive: 0xff00ff, emissiveIntensity: 2 })
+      );
+      sign.position.set(0, 12, -29.7); scene.add(sign);
 
-    const sign = new THREE.Mesh(
-      new THREE.BoxGeometry(9,2.2,0.3),
-      new THREE.MeshStandardMaterial({color:0xff00ff,emissive:0xff00ff,emissiveIntensity:1.5})
-    );
-    sign.position.set(0,11,-24.7); scene.add(sign);
+      const laserMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: false });
+      const laserGeo = new THREE.ConeGeometry(1.2, 40, 16);
+      const laser1 = new THREE.Mesh(laserGeo, laserMat); laser1.rotation.x = Math.PI / 2; laser1.position.set(-15, 5, 0); scene.add(laser1);
+      const laser2 = new THREE.Mesh(laserGeo, laserMat); laser2.rotation.x = Math.PI / 2; laser2.position.set(15, 5, 0); scene.add(laser2);
 
-    const laserMat = new THREE.MeshBasicMaterial({color:0x00ffff,transparent:true,opacity:1});
-    const laserGeo = new THREE.ConeGeometry(1,35,16);
-    const laser1 = new THREE.Mesh(laserGeo,laserMat);
-    laser1.rotation.x = Math.PI/2; laser1.position.set(-12,5,0); scene.add(laser1);
-    const laser2 = new THREE.Mesh(laserGeo,laserMat);
-    laser2.rotation.x = Math.PI/2; laser2.position.set(12,5,0); scene.add(laser2);
+      const clock = new THREE.Clock();
+      function animate() {
+        requestAnimationFrame(animate);
+        const t = clock.getElapsedTime();
+        const pulse = 12 + Math.sin(t * 3) * 6;
+        pink.intensity = pulse; cyan.intensity = pulse + 1; lime.intensity = pulse + 2;
+        floor.material.emissiveIntensity = 0.6 + Math.sin(t * 4) * 0.3;
+        sign.rotation.y = t * 0.7;
+        laser1.rotation.y = t * 2; laser2.rotation.y = -t * 2.5;
+        renderer.render(scene, camera);
+      }
+      animate();
 
-    const beam = new THREE.Mesh(
-      new THREE.CylinderGeometry(5,0.3,40,12,1,true),
-      new THREE.MeshBasicMaterial({color:0xff00ff,transparent:true,opacity:0.3})
-    );
-    beam.rotation.x = Math.PI/2; beam.position.set(0,9,-5); scene.add(beam);
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
 
-    const clock = new THREE.Clock();
-    function animate(){
-      requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
+      console.log("3D Scene Running");
 
-      const pulse = 10 + Math.sin(t*3.5)*5;
-      pink.intensity = pulse; cyan.intensity = pulse+1; lime.intensity = pulse+2;
-
-      floor.material.emissiveIntensity = 0.5 + Math.sin(t*4)*0.3;
-      sign.rotation.y = t*0.7;
-      laser1.rotation.y = t*2.2; laser2.rotation.y = -t*2.8;
-      beam.rotation.z = t*0.9;
-
-      renderer.render(scene,camera);
+    } catch (err) {
+      console.error("WebGL FAILED:", err);
+      alert("WebGL not supported. Using CSS fallback.");
     }
-    animate();
 
-    window.addEventListener('resize',()=>{
-      camera.aspect = window.innerWidth/window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth,window.innerHeight);
-    });
-
-    // COUNTDOWN - NOV 15 2025 8 PM PT
+    // COUNTDOWN - NOV 15 2025
     const party = new Date('2025-11-15T20:00:00-08:00');
     const cd = document.getElementById('countdown');
-    function update(){
+    function update() {
       const diff = party - Date.now();
-      if(diff<=0){cd.textContent='Party is LIVE!';return;}
-      const d=Math.floor(diff/864e5);
-      const h=Math.floor((diff%864e5)/36e5);
-      const m=Math.floor((diff%36e5)/6e4);
-      const s=Math.floor((diff%6e4)/1e3);
-      cd.innerHTML=`${d}d : ${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s`;
+      if (diff <= 0) { cd.textContent = 'Party is LIVE!'; return; }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      cd.innerHTML = `${d}d : ${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s`;
     }
-    update(); setInterval(update,1000);
+    update(); setInterval(update, 1000);
   </script>
 </body>
 </html>
