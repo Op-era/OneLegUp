@@ -114,6 +114,7 @@
     </div>
 
     <div class="content">
+      <!-- LEFT: Notice, RSVP, Countdown, Flyer -->
       <div class="left">
         <div class="notice">
           All pay will be cash in envelopes at the door.
@@ -129,22 +130,44 @@
         <img src="images/neonglow.jpg" alt="Neon Glow Party Flyer" class="flyer" />
       </div>
 
+      <!-- RIGHT: Events -->
       <div class="events">
         <h2>Upcoming Parties</h2>
         <div class="event" data-date="2025-11-15">
           <h3><a href="payment.html">NEON GLOW PARTY</a></h3>
           <p>Date: November 15, 2025<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
-          <p>8 PM – 2 AM. Doors close 10 PM. BYOB.</p>
+          <p>Light up the night! Dress in vibrant neon. 8 PM – 2 AM. Doors close 10 PM. BYOB.</p>
           <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642" target="_blank">View on SLS</a>
         </div>
 
         <h2 style="margin-top:40px;">Past Events</h2>
-        <!-- (same past events as before – omitted for brevity) -->
+
+        <!-- PAST EVENTS RESTORED -->
+        <div class="event" data-date="2025-10-04">
+          <h3><a href="payment.html">Oktoberfest Party</a></h3>
+          <p>Date: October 4, 2025<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
+          <p>Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.</p>
+          <a href="https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628" target="_blank">View on SLS</a>
+        </div>
+
+        <div class="event" data-date="2025-07-20">
+          <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
+          <p>Date: July 20, 2025<br>Location: Fresno, CA</p>
+          <p>Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
+          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
+        </div>
+
+        <div class="event" data-date="2025-05-31">
+          <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
+          <p>Date: May 31, 2025<br>Location: Fresno, CA</p>
+          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
+          <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="thumbnail" />
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- THREE.JS SCENE + COUNTDOWN -->
+  <!-- THREE.JS + COUNTDOWN -->
   <script>
     // ---------- 3-D CLUB ----------
     const container = document.getElementById('scene-container');
@@ -155,10 +178,10 @@
     renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
-    // ---- FOG ----
-    scene.fog = new THREE.FogExp2(0x000000, 0.035);   // denser fog
+    // FOG
+    scene.fog = new THREE.FogExp2(0x000000, 0.035);
 
-    // ---- LIGHTS ----
+    // LIGHTS
     const ambient = new THREE.AmbientLight(0x404040, 0.4);
     scene.add(ambient);
 
@@ -174,7 +197,7 @@
     lime.position.set(0, 5, 7);
     scene.add(lime);
 
-    // ---- FLOOR ----
+    // FLOOR
     const floorGeo = new THREE.PlaneGeometry(40, 40);
     const floorMat = new THREE.MeshStandardMaterial({
       color: 0x111111,
@@ -193,7 +216,7 @@
     grid.material.transparent = true;
     scene.add(grid);
 
-    // ---- WALLS ----
+    // WALLS
     const wallMat = new THREE.MeshStandardMaterial({ color: 0x1a0033, metalness: 0.9, roughness: 0.2 });
     const back = new THREE.Mesh(new THREE.BoxGeometry(40, 15, 0.5), wallMat);
     back.position.set(0, 7.5, -20);
@@ -205,14 +228,13 @@
     right.position.set(20, 7.5, 0);
     scene.add(right);
 
-    // ---- SIGN ----
+    // SIGN
     const signGeo = new THREE.BoxGeometry(8, 2, 0.3);
     const signMat = new THREE.MeshStandardMaterial({ color: 0xff00ff, emissive: 0xff00ff, emissiveIntensity: 1 });
     const sign = new THREE.Mesh(signGeo, signMat);
     sign.position.set(0, 10, -19.7);
     scene.add(sign);
 
-    // Canvas texture for sign text
     const canvas = document.createElement('canvas');
     canvas.width = 512; canvas.height = 128;
     const ctx = canvas.getContext('2d');
@@ -226,7 +248,7 @@
     sign.material.map = tex;
     sign.material.needsUpdate = true;
 
-    // ---- LASERS (thick cones that rotate) ----
+    // LASERS
     const laserMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.8 });
     const laserGeo = new THREE.ConeGeometry(0.4, 25, 8);
     const laser1 = new THREE.Mesh(laserGeo, laserMat);
@@ -239,7 +261,7 @@
     laser2.position.set(10, 4, 0);
     scene.add(laser2);
 
-    // ---- VOLUMETRIC LIGHT BEAMS (optional extra glow) ----
+    // VOLUMETRIC BEAM
     const beamMat = new THREE.MeshBasicMaterial({ color: 0xff00ff, transparent: true, opacity: 0.15 });
     const beamGeo = new THREE.CylinderGeometry(3, 0.1, 30, 8, 1, true);
     const beam = new THREE.Mesh(beamGeo, beamMat);
@@ -247,40 +269,32 @@
     beam.position.set(0, 8, -5);
     scene.add(beam);
 
-    // ---- CAMERA ----
+    // CAMERA
     camera.position.set(0, 6, 18);
     camera.lookAt(0, 4, 0);
 
-    // ---- ANIMATION ----
+    // ANIMATION
     const clock = new THREE.Clock();
     function animate() {
       requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
 
-      // Pulse lights
       const pulse = 2 + Math.sin(t * 4) * 1.5;
       pink.intensity = pulse;
       cyan.intensity = pulse + 0.5;
       lime.intensity = pulse + 1;
 
-      // Floor glow
       floor.material.emissiveIntensity = 0.3 + Math.sin(t * 5) * 0.2;
-
-      // Rotate sign
       sign.rotation.y = t * 0.7;
-
-      // Spin lasers
       laser1.rotation.y = t * 2.5;
       laser2.rotation.y = -t * 3;
-
-      // Sweep volumetric beam
       beam.rotation.z = t * 0.8;
 
       renderer.render(scene, camera);
     }
     animate();
 
-    // ---- RESIZE ----
+    // RESIZE
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -288,7 +302,7 @@
     });
 
     // ---------- COUNTDOWN ----------
-    const party = new Date('2025-11-15T20:00:00-08:00'); // 8 PM PT
+    const party = new Date('2025-11-15T20:00:00-08:00');
     const cd = document.getElementById('countdown');
     function update() {
       const diff = party - Date.now();
