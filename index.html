@@ -4,52 +4,126 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>One Leg Up - Swingers Club</title>
+
+  <!-- ORIGINAL FONT -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Three.js -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.min.js"></script>
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; overflow: hidden; background: #000; font-family: 'Poppins', sans-serif; color: #fff; }
-    canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; display: block !important; }
-    .overlay { position: relative; z-index: 10; pointer-events: none; min-height: 100vh; padding: 80px 50px 40px 50px; max-width: 1200px; margin: 0 auto; }
-    .overlay > * { pointer-events: auto; }
-    .header { position: fixed; top: 20px; left: 20px; }
-    .site-title { font-size: 2rem; font-weight: 600; color: #ff00ff; text-shadow: 0 0 12px #ff00ff, 0 0 24px #ff00ff; animation: neonPulse 2s ease infinite; }
-    .content { display: flex; flex-wrap: wrap; gap: 30px; margin-top: 30px; }
-    .left { flex: 2 1 60%; display: flex; flex-direction: column; align-items: center; }
-    .notice { text-align: center; font-weight: bold; color: #ff0000; font-size: 1.4rem; margin: 15px 0; padding: 12px 20px; background: rgba(255,0,0,.1); border: 2px solid #ff0000; border-radius: 10px; max-width: 700px; text-shadow: 0 0 10px #ff0000; animation: flashGrow 2s ease-in-out infinite; }
-    .rsvp-button { margin-top: 20px; padding: 12px 30px; background: #ff00ff; color: #000; font-weight: 600; text-decoration: none; border-radius: 8px; box-shadow: 0 0 12px #ff00ff; transition: background .3s, box-shadow .3s; }
-    .rsvp-button:hover { background: #00ff00; box-shadow: 0 0 18px #00ff00; }
-    .countdown { margin-top: 20px; font-size: 1.6rem; color: #00ffff; text-shadow: 0 0 10px #00ffff; }
-    .flyer { max-width: 80%; margin-top: 20px; border-radius: 12px; box-shadow: 0 0 20px #00ff00; }
-    .events { flex: 1 1 35%; padding: 20px; overflow-y: auto; max-height: 70vh; background: rgba(26,0,51,.5); border-radius: 12px; }
-    .events h2 { font-size: 1.8rem; color: #00ffff; text-shadow: 0 0 10px #00ffff; animation: neonPulse 2s ease infinite; }
-    .event { margin-bottom: 20px; padding: 12px; border-radius: 8px; background: rgba(0,0,0,.3); transition: transform .3s, box-shadow .3s; }
-    .event:hover { transform: scale(1.04); box-shadow: 0 0 15px #ff00ff; }
-    .event h3 { font-size: 1.4rem; color: #ff00ff !important; text-shadow: 0 0 10px #ff00ff; animation: neonPulse 3s ease infinite !important; }
-    .event h3 a { color: inherit !important; text-decoration: none; }
-    .event h3 a:hover { color: #00ff00 !important; text-shadow: 0 0 10px #00ff00; }
-    .event p { font-size: .9rem; color: #00ffff; text-shadow: 0 0 5px #00ffff; }
-    .event a { color: #ff00ff; text-decoration: none; font-weight: 600; text-shadow: 0 0 5px #ff00ff; }
-    .event a:hover { color: #00ff00; text-shadow: 0 0 10px #00ff00; }
-    .thumbnail { max-width: 100px; border-radius: 5px; margin-top: 10px; box-shadow: 0 0 10px #00ff00; }
-    @keyframes neonPulse { 0%,100% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff; } 50% { text-shadow: 0 0 15px #00ffff, 0 0 25px #00ffff; } }
-    @keyframes flashGrow { 0%,100% { transform: scale(1); opacity: 1; text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; } 50% { transform: scale(1.05); opacity: .9; text-shadow: 0 0 25px #ff0000, 0 0 35px #ff0000; } }
-    @media (max-width: 768px) { .content { flex-direction: column; } .left, .events { width: 100%; } .site-title { font-size: 1.5rem; } .notice { font-size: 1.1rem; padding: 10px 15px; } .rsvp-button { font-size: .9rem; padding: 10px 20px; } .countdown { font-size: 1.3rem; } .overlay { padding: 70px 20px 40px 20px; } }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{height:100%;overflow:hidden;background:#000;}
+    canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;}
+    .overlay{
+      position:relative;z-index:10;pointer-events:none;
+      min-height:100vh;padding:80px 50px 40px 50px;
+      max-width:1200px;margin:0 auto;
+    }
+    .overlay>*{pointer-events:auto;}
+    .header{position:fixed;top:20px;left:20px;}
+    .site-title{
+      font-size:2rem;font-weight:600;color:#ff00ff;
+      text-shadow:0 0 12px #ff00ff,0 0 24px #ff00ff;
+      animation:neonPulse 2s ease infinite;
+    }
+    .content{display:flex;flex-wrap:wrap;gap:30px;margin-top:30px;}
+    .left{flex:2 1 60%;display:flex;flex-direction:column;align-items:center;}
+    .notice{
+      text-align:center;font-weight:bold;color:#ff0000;
+      font-size:1.4rem;margin:15px 0;padding:12px 20px;
+      background:rgba(255,0,0,.1);border:2px solid #ff0000;
+      border-radius:10px;max-width:700px;
+      text-shadow:0 0 10px #ff0000;
+      animation:flashGrow 2s ease-in-out infinite;
+    }
+    .rsvp-button{
+      margin-top:20px;padding:12px 30px;background:#ff00ff;
+      color:#000;font-weight:600;text-decoration:none;border-radius:8px;
+      box-shadow:0 0 12px #ff00ff;transition:background .3s,box-shadow .3s;
+    }
+    .rsvp-button:hover{background:#00ff00;box-shadow:0 0 18px #00ff00;}
+    .countdown{
+      margin-top:20px;font-size:1.6rem;color:#00ffff;
+      text-shadow:0 0 10px #00ffff;
+    }
+    .flyer{
+      max-width:80%;margin-top:20px;border-radius:12px;
+      box-shadow:0 0 20px #00ff00;
+    }
+    .events{
+      flex:1 1 35%;padding:20px;overflow-y:auto;max-height:70vh;
+      background:rgba(26,0,51,.5);border-radius:12px;
+    }
+    .events h2{
+      font-size:1.8rem;color:#00ffff;
+      text-shadow:0 0 10px #00ffff;
+      animation:neonPulse 2s ease infinite;
+    }
+    .event{margin-bottom:20px;padding:12px;border-radius:8px;
+      background:rgba(0,0,0,.3);transition:transform .3s,box-shadow .3s;}
+    .event:hover{transform:scale(1.04);box-shadow:0 0 15px #ff00ff;}
+    .event h3{
+      font-size:1.4rem;color:#ff00ff!important;
+      text-shadow:0 0 10px #ff00ff;
+      animation:neonPulse 3s ease infinite!important;
+    }
+    .event h3 a{color:inherit!important;text-decoration:none;}
+    .event h3 a:hover{color:#00ff00!important;text-shadow:0 0 10px #00ff00;}
+    .event p{font-size:.9rem;color:#00ffff;text-shadow:0 0 5px #00ffff;}
+    .event a{color:#ff00ff;text-decoration:none;font-weight:600;
+      text-shadow:0 0 5px #ff00ff;}
+    .event a:hover{color:#00ff00;text-shadow:0 0 10px #00ff00;}
+    .thumbnail{max-width:100px;border-radius:5px;margin-top:10px;
+      box-shadow:0 0 10px #00ff00;}
+
+    @keyframes neonPulse{
+      0%,100%{text-shadow:0 0 10px #ff00ff,0 0 20px #ff00ff}
+      50%{text-shadow:0 0 15px #00ffff,0 0 25px #00ffff}
+    }
+    @keyframes flashGrow{
+      0%,100%{transform:scale(1);opacity:1;text-shadow:0 0 10px #ff0000,0 0 20px #ff0000}
+      50%{transform:scale(1.05);opacity:.9;text-shadow:0 0 25px #ff0000,0 0 35px #ff0000}
+    }
+
+    @media (max-width:768px){
+      .content{flex-direction:column;}
+      .left,.events{width:100%;}
+      .site-title{font-size:1.5rem;}
+      .notice{font-size:1.1rem;padding:10px 15px;}
+      .rsvp-button{font-size:.9rem;padding:10px 20px;}
+      .countdown{font-size:1.3rem;}
+      .overlay{padding:70px 20px 40px 20px;}
+    }
   </style>
 </head>
 <body>
+
+  <!-- 3-D CANVAS -->
   <canvas id="scene-canvas"></canvas>
+
+  <!-- UI (unchanged) -->
   <div class="overlay">
     <div class="header">
       <h1 class="site-title">One Leg Up</h1>
     </div>
+
     <div class="content">
       <div class="left">
-        <div class="notice">All pay will be cash in envelopes at the door.</div>
-        <a href="sms:15597875801?body=RSVP%20-%20My%20SLS%20username%20is%3A%20" class="rsvp-button">Text to RSVP (include your SLS username)</a>
+        <div class="notice">
+          All pay will be cash in envelopes at the door.
+        </div>
+
+        <a href="sms:15597875801?body=RSVP%20-%20My%20SLS%20username%20is%3A%20"
+           class="rsvp-button">
+          Text to RSVP (include your SLS username)
+        </a>
+
         <div class="countdown" id="countdown">Loading...</div>
+
         <img src="images/neonglow.jpg" alt="Neon Glow Party Flyer" class="flyer">
       </div>
+
       <div class="events">
         <h2>Upcoming Parties</h2>
         <div class="event" data-date="2025-11-15">
@@ -58,19 +132,23 @@
           <p>Light up the night! Dress in vibrant neon. 8 PM – 2 AM. Doors close 10 PM. BYOB.</p>
           <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642" target="_blank">View on SLS</a>
         </div>
+
         <h2 style="margin-top:40px;">Past Events</h2>
+
         <div class="event" data-date="2025-10-04">
           <h3><a href="payment.html">Oktoberfest Party</a></h3>
           <p>Date: October 4, 2025<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
           <p>Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.</p>
           <a href="https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628" target="_blank">View on SLS</a>
         </div>
+
         <div class="event" data-date="2025-07-20">
           <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
           <p>Date: July 20, 2025<br>Location: Fresno, CA</p>
           <p>Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
           <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
         </div>
+
         <div class="event" data-date="2025-05-31">
           <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
           <p>Date: May 31, 2025<br>Location: Fresno, CA</p>
@@ -80,136 +158,96 @@
       </div>
     </div>
   </div>
+
+  <!-- 3-D SCENE (only change) -->
   <script>
-    // THREE.JS - Simplified & Brightened
     const canvas = document.getElementById('scene-canvas');
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+    const renderer = new THREE.WebGLRenderer({canvas, alpha:true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap for mobile
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200);
-    camera.position.set(0, 6, 18);
-    camera.lookAt(0, 4, 0);
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 200);
+    camera.position.set(0,6,18);
+    camera.lookAt(0,4,0);
 
-    // Fog
     scene.fog = new THREE.FogExp2(0x000000, 0.03);
 
-    // Ambient Light
-    scene.add(new THREE.AmbientLight(0x404040, 0.6));
+    scene.add(new THREE.AmbientLight(0x404040,0.6));
 
-    // Pulsing Point Lights (BRIGHTER)
-    const pinkLight = new THREE.PointLight(0xff00ff, 10, 60);
-    pinkLight.position.set(-8, 6, -8);
-    scene.add(pinkLight);
-    const cyanLight = new THREE.PointLight(0x00ffff, 10, 60);
-    cyanLight.position.set(8, 6, -8);
-    scene.add(cyanLight);
-    const limeLight = new THREE.PointLight(0x00ff00, 10, 60);
-    limeLight.position.set(0, 6, 8);
-    scene.add(limeLight);
+    const pink = new THREE.PointLight(0xff00ff,12,60); pink.position.set(-8,6,-8); scene.add(pink);
+    const cyan = new THREE.PointLight(0x00ffff,12,60); cyan.position.set(8,6,-8); scene.add(cyan);
+    const lime = new THREE.PointLight(0x00ff00,12,60); lime.position.set(0,6,8); scene.add(lime);
 
-    // Floor (Glowing)
-    const floorMat = new THREE.MeshStandardMaterial({ color: 0x111111, emissive: 0x00ff00, emissiveIntensity: 0.5, metalness: 0.9, roughness: 0.1 });
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(50, 50), floorMat);
-    floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -0.02;
-    scene.add(floor);
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(50,50),
+      new THREE.MeshStandardMaterial({color:0x111111,emissive:0x00ff00,emissiveIntensity:0.5,metalness:0.9,roughness:0.1})
+    );
+    floor.rotation.x = -Math.PI/2; floor.position.y = -0.02; scene.add(floor);
 
-    // Grid
-    const grid = new THREE.GridHelper(50, 100, 0x00ff00, 0x00ff00);
-    grid.material.opacity = 0.3;
-    grid.material.transparent = true;
-    scene.add(grid);
+    const grid = new THREE.GridHelper(50,100,0x00ff00,0x00ff00);
+    grid.material.opacity = 0.3; grid.material.transparent = true; scene.add(grid);
 
-    // Walls
-    const wallMat = new THREE.MeshStandardMaterial({ color: 0x1a0033, metalness: 0.9, roughness: 0.2 });
-    scene.add(new THREE.Mesh(new THREE.BoxGeometry(50, 16, 0.5), wallMat).translate(0, 8, -25)); // Back
-    scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.5, 16, 50), wallMat).translate(-25, 8, 0)); // Left
-    scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.5, 16, 50), wallMat).translate(25, 8, 0)); // Right
+    const wallMat = new THREE.MeshStandardMaterial({color:0x1a0033,metalness:0.9,roughness:0.2});
+    scene.add(new THREE.Mesh(new THREE.BoxGeometry(50,16,0.5),wallMat).translate(0,8,-25));
+    scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.5,16,50),wallMat).translate(-25,8,0));
+    scene.add(new THREE.Mesh(new THREE.BoxGeometry(0.5,16,50),wallMat).translate(25,8,0));
 
-    // Rotating Sign
-    const signMat = new THREE.MeshStandardMaterial({ color: 0xff00ff, emissive: 0xff00ff, emissiveIntensity: 1.5 });
-    const sign = new THREE.Mesh(new THREE.BoxGeometry(9, 2.2, 0.3), signMat);
-    sign.position.set(0, 11, -24.7);
-    scene.add(sign);
-    // Simple text simulation (no canvas for simplicity - just glow)
-    sign.material.emissive = new THREE.Color(0xff00ff);
+    const sign = new THREE.Mesh(
+      new THREE.BoxGeometry(9,2.2,0.3),
+      new THREE.MeshStandardMaterial({color:0xff00ff,emissive:0xff00ff,emissiveIntensity:1.5})
+    );
+    sign.position.set(0,11,-24.7); scene.add(sign);
 
-    // Lasers (HUGE & BRIGHT)
-    const laserMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 1.0 });
-    const laserGeo = new THREE.ConeGeometry(1, 35, 16);
-    const laser1 = new THREE.Mesh(laserGeo, laserMat);
-    laser1.rotation.x = Math.PI / 2;
-    laser1.position.set(-12, 5, 0);
-    scene.add(laser1);
-    const laser2 = new THREE.Mesh(laserGeo, laserMat);
-    laser2.rotation.x = Math.PI / 2;
-    laser2.position.set(12, 5, 0);
-    scene.add(laser2);
+    const laserMat = new THREE.MeshBasicMaterial({color:0x00ffff,transparent:true,opacity:1});
+    const laserGeo = new THREE.ConeGeometry(1,35,16);
+    const laser1 = new THREE.Mesh(laserGeo,laserMat);
+    laser1.rotation.x = Math.PI/2; laser1.position.set(-12,5,0); scene.add(laser1);
+    const laser2 = new THREE.Mesh(laserGeo,laserMat);
+    laser2.rotation.x = Math.PI/2; laser2.position.set(12,5,0); scene.add(laser2);
 
-    // Volumetric Beam
-    const beamMat = new THREE.MeshBasicMaterial({ color: 0xff00ff, transparent: true, opacity: 0.3 });
-    const beam = new THREE.Mesh(new THREE.CylinderGeometry(5, 0.3, 40, 12, 1, true), beamMat);
-    beam.rotation.x = Math.PI / 2;
-    beam.position.set(0, 9, -5);
-    scene.add(beam);
+    const beam = new THREE.Mesh(
+      new THREE.CylinderGeometry(5,0.3,40,12,1,true),
+      new THREE.MeshBasicMaterial({color:0xff00ff,transparent:true,opacity:0.3})
+    );
+    beam.rotation.x = Math.PI/2; beam.position.set(0,9,-5); scene.add(beam);
 
-    // Animation Loop
     const clock = new THREE.Clock();
-    function animate() {
+    function animate(){
       requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
-      console.log('Scene rendering...'); // Debug log - remove if annoying
 
-      // Pulse lights
-      const pulse = 8 + Math.sin(t * 3.5) * 4;
-      pinkLight.intensity = pulse;
-      cyanLight.intensity = pulse + 1;
-      limeLight.intensity = pulse + 2;
+      const pulse = 10 + Math.sin(t*3.5)*5;
+      pink.intensity = pulse; cyan.intensity = pulse+1; lime.intensity = pulse+2;
 
-      // Floor glow
-      floorMat.emissiveIntensity = 0.5 + Math.sin(t * 4) * 0.3;
+      floor.material.emissiveIntensity = 0.5 + Math.sin(t*4)*0.3;
+      sign.rotation.y = t*0.7;
+      laser1.rotation.y = t*2.2; laser2.rotation.y = -t*2.8;
+      beam.rotation.z = t*0.9;
 
-      // Sign rotation
-      sign.rotation.y = t * 0.7;
-
-      // Laser sweep
-      laser1.rotation.y = t * 2.2;
-      laser2.rotation.y = -t * 2.8;
-
-      // Beam rotation
-      beam.rotation.z = t * 0.9;
-
-      renderer.render(scene, camera);
+      renderer.render(scene,camera);
     }
     animate();
 
-    // Resize
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
+    window.addEventListener('resize',()=>{
+      camera.aspect = window.innerWidth/window.innerHeight;
       camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(window.innerWidth,window.innerHeight);
     });
 
-    // COUNTDOWN - FIXED FOR NOV 15, 2025
-    const partyDate = new Date('2025-11-15T20:00:00-08:00'); // 8 PM PT
-    const countdownEl = document.getElementById('countdown');
-    function updateCountdown() {
-      const now = new Date();
-      const diff = partyDate - now;
-      if (diff <= 0) {
-        countdownEl.textContent = 'Party is LIVE!';
-        return;
-      }
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      countdownEl.innerHTML = `${days}d : ${hours.toString().padStart(2, '0')}h : ${minutes.toString().padStart(2, '0')}m : ${seconds.toString().padStart(2, '0')}s`;
+    // COUNTDOWN - NOV 15 2025 8 PM PT
+    const party = new Date('2025-11-15T20:00:00-08:00');
+    const cd = document.getElementById('countdown');
+    function update(){
+      const diff = party - Date.now();
+      if(diff<=0){cd.textContent='Party is LIVE!';return;}
+      const d=Math.floor(diff/864e5);
+      const h=Math.floor((diff%864e5)/36e5);
+      const m=Math.floor((diff%36e5)/6e4);
+      const s=Math.floor((diff%6e4)/1e3);
+      cd.innerHTML=`${d}d : ${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s`;
     }
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
+    update(); setInterval(update,1000);
   </script>
 </body>
 </html>
