@@ -91,7 +91,7 @@
       box-shadow:0 0 12px #ff00ff;transition:background .3s,box-shadow .3s;
     }
     .rsvp-button:hover{background:#00ff00;box-shadow:0 0 18px #00ff00;}
-    .countdown{margin-top:20px;font-size:1.6rem;color:#00ffff;text-shadow:0 0 10px #00ffff;}
+    .countdown{margin-top:20px;font-size:1.6rem;color:#00ffff;text-shadow:0 0 10px #00 låffff;}
     .flyer{max-width:80%;margin-top:20px;border-radius:12px;box-shadow:0 0 20px #00ff00;}
     .events{
       flex:1 1 35%;padding:20px;overflow-y:auto;max-height:70vh;
@@ -227,13 +227,12 @@
       }
     ];
 
-    // FORCE LOCAL DATE — FIXES "January 2" BUG
+    // Parse YYYY-MM-DD as local date to avoid UTC shift
     function parseLocalDate(dateStr) {
       const [y, m, d] = dateStr.split('-').map(Number);
       return new Date(y, m - 1, d);
     }
 
-    // SORT BY DATE
     allParties.sort((a, b) => parseLocalDate(a.date) - parseLocalDate(b.date));
 
     const upcomingContainer = document.getElementById('upcoming-container');
@@ -243,7 +242,7 @@
     allParties.forEach(party => {
       const eventDate = parseLocalDate(party.date);
 
-      // EVENT ENDS AT 2:00 AM NEXT DAY
+      // Party ends at 2:00 AM the next day
       const eventEnd = new Date(eventDate);
       eventEnd.setDate(eventEnd.getDate() + 1);
       eventEnd.setHours(2, 0, 0, 0);
@@ -275,7 +274,7 @@
       }
     });
 
-    // COUNTDOWN TO END OF NEXT EVENT
+    // Countdown to end of next event
     const countdownEl = document.getElementById('countdown');
     function updateCountdown() {
       if (!nextEventEnd) {
@@ -296,7 +295,7 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // LASERS
+    // Lasers
     const lasers = document.querySelectorAll('.laser');
     lasers.forEach(laser => {
       let currentAngle = Math.random() * 360;
