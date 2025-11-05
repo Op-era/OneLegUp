@@ -196,7 +196,7 @@
         date: "2025-11-15",
         title: "NEON GLOW PARTY",
         location: "1838 E. Everglade Ave, Fresno, CA 93720",
-        desc: "Light up the night with black lights! Dress in vibrant neon! 8 PM – 2 AM. Doors close 10 PM. BYOB.",
+        desc: "Light up the night! Dress in vibrant neon. 8 PM – 2 AM. Doors close 10 PM. BYOB.",
         link: "payment.html",
         sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642",
         slsText: "View on SLS"
@@ -230,6 +230,15 @@
       }
     ];
 
+    // DYNAMIC PST/PDT OFFSET — NO MORE DATE SHIFT
+    function getPSTPDT(dateStr) {
+      const date = new Date(dateStr);
+      const jan = new Date(date.getFullYear(), 0, 1);
+      const jul = new Date(date.getFullYear(), 6, 1);
+      const stdOffset = Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+      return date.getTimezoneOffset() < stdOffset ? '-07:00' : '-08:00'; // PDT if DST
+    }
+
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
@@ -241,13 +250,18 @@
     let nextEventDate = null;
 
     allParties.forEach(party => {
-      const eventDate = new Date(party.date + 'T20:00:00-08:00');
+      const tzOffset = getPSTPDT(party.date);
+      const eventDate = new Date(party.date + `T20:00:00${tzOffset}`);
       const isUpcoming = eventDate >= today;
+
+      const displayDate = new Date(party.date).toLocaleDateString('en-US', {
+        month: 'long', day: 'numeric', year: 'numeric'
+      });
 
       const eventHTML = `
         <div class="event" data-date="${party.date}">
           <h3><a href="${party.link}">${party.title}</a></h3>
-          <p>Date: ${new Date(party.date).toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'})}<br>Location: ${party.location || 'Fresno, CA'}</p>
+          <p>Date: ${displayDate}<br>Location: ${party.location || 'Fresno, CA'}</p>
           <p>${party.desc || ''}</p>
           <a href="${party.sls}" target="_blank">${party.slsText}</a>
           ${party.thumbnail || ''}
