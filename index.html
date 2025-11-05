@@ -167,7 +167,6 @@
 
   <script>
     // ADD NEW PARTIES HERE
-    // EXAMPLE:
     /*
     {
       date: "2026-02-14",
@@ -176,7 +175,7 @@
       desc: "Red lights, red hearts, red hot fun.",
       link: "payment.html",
       sls: "#",
-      slsText: "View on SLS (link coming soon)"
+      slsText: "View on SLS"
     },
     */
 
@@ -228,21 +227,31 @@
       }
     ];
 
+    // FORCE LOCAL DATE — FIXES "January 2" BUG
+    function parseLocalDate(dateStr) {
+      const [y, m, d] = dateStr.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
+
     // SORT BY DATE
-    allParties.sort((a, b) => new Date(a.date) - new Date(b.date));
+    allParties.sort((a, b) => parseLocalDate(a.date) - parseLocalDate(b.date));
 
     const upcomingContainer = document.getElementById('upcoming-container');
     const pastContainer = document.getElementById('past-container');
-    let nextEventStart = null;
+    let nextEventEnd = null;
 
     allParties.forEach(party => {
-      // PARTY STARTS AT 8:00 PM LOCAL TIME
-      const eventStart = new Date(party.date + 'T20:00:00');
+      const eventDate = parseLocalDate(party.date);
 
-      const now = Date.now();
-      const isUpcoming = now < eventStart.getTime();
+      // EVENT ENDS AT 2:00 AM NEXT DAY
+      const eventEnd = new Date(eventDate);
+      eventEnd.setDate(eventEnd.getDate() + 1);
+      eventEnd.setHours(2, 0, 0, 0);
 
-      const displayDate = new Date(party.date).toLocaleDateString('en-US', {
+      const now = new Date();
+      const isUpcoming = now < eventEnd;
+
+      const displayDate = eventDate.toLocaleDateString('en-US', {
         month: 'long', day: 'numeric', year: 'numeric'
       });
 
@@ -258,22 +267,22 @@
 
       if (isUpcoming) {
         upcomingContainer.insertAdjacentHTML('beforeend', eventHTML);
-        if (!nextEventStart || eventStart < nextEventStart) {
-          nextEventStart = eventStart;
+        if (!nextEventEnd || eventEnd < nextEventEnd) {
+          nextEventEnd = eventEnd;
         }
       } else {
         pastContainer.insertAdjacentHTML('beforeend', eventHTML);
       }
     });
 
-    // COUNTDOWN TO NEXT EVENT START
+    // COUNTDOWN TO END OF NEXT EVENT
     const countdownEl = document.getElementById('countdown');
     function updateCountdown() {
-      if (!nextEventStart) {
+      if (!nextEventEnd) {
         countdownEl.textContent = 'No upcoming events';
         return;
       }
-      const diff = nextEventStart - Date.now();
+      const diff = nextEventEnd - Date.now();
       if (diff <= 0) {
         location.reload();
         return;
@@ -287,7 +296,7 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // LASERS - NEVER STOP
+    // LASERS
     const lasers = document.querySelectorAll('.laser');
     lasers.forEach(laser => {
       let currentAngle = Math.random() * 360;
