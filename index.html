@@ -53,23 +53,19 @@
     .wall-left{left:0;transform:rotateY(90deg) translateZ(-150px);}
     .wall-right{right:0;transform:rotateY(-90deg) translateZ(-150px);}
 
-    /* LIGHTS - BEAMS - REMOVED (TOO THICK) */
-
-    /* LASERS - THIN, FULL-SCREEN, MULTI-COLOR */
+    /* LASERS - THIN, FULL-SCREEN, RANDOM MOVEMENT */
     .laser{
       position:absolute;top:50%;left:50%;width:1px;height:400%;
       background:currentColor;
       box-shadow:0 0 15px currentColor,0 0 30px currentColor;
       transform:translate(-50%,-50%) rotate(0deg);
-      animation:laserSweep 10s linear infinite;
       opacity:0.9;
     }
-    .laser1{color:#00ffff;animation-delay:0s;}   /* CYAN */
-    .laser2{color:#ff00ff;animation-delay:2s;}   /* MAGENTA */
-    .laser3{color:#00ff00;animation-delay:4s;}   /* LIME */
-    .laser4{color:#ff4500;animation-delay:6s;}   /* ORANGE-RED */
-    .laser5{color:#ffff00;animation-delay:8s;}   /* YELLOW */
-    @keyframes laserSweep{0%{transform:translate(-50%,-50%) rotate(0deg);}100%{transform:translate(-50%,-50%) rotate(360deg);}}
+    .laser1{color:#00ffff;}
+    .laser2{color:#ff00ff;}
+    .laser3{color:#00ff00;}
+    .laser4{color:#ff4500;}
+    .laser5{color:#ffff00;}
 
     /* SPINNING SIGN - TOP-LEFT */
     .sign{
@@ -156,7 +152,7 @@
     <div class="wall wall-back"></div>
     <div class="wall wall-left"></div>
     <div class="wall wall-right"></div>
-    <!-- THIN FULL-SCREEN LASERS - 5 COLORS -->
+    <!-- THIN FULL-SCREEN LASERS - RANDOM MOVEMENT -->
     <div class="laser laser1"></div>
     <div class="laser laser2"></div>
     <div class="laser laser3"></div>
@@ -185,66 +181,115 @@
       </div>
       <div class="events">
         <h2>Upcoming Parties</h2>
-        <div class="event" data-date="2026-01-03">
-          <h3><a href="payment.html">New Year, Newbie Supermoon Party!</a></h3>
-          <p>Date: January 3, 2026<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
-          <p>Kick off 2026 with a supermoon glow! Newbie-friendly. 8 PM – 2 AM. Doors close 10 PM. BYOB.</p>
-          <a href="#" target="_blank">View on SLS (link coming soon)</a>
-        </div>
-        <div class="event" data-date="2025-11-15">
-          <h3><a href="payment.html">NEON GLOW PARTY</a></h3>
-          <p>Date: November 15, 2025<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
-          <p>Light up the night! Dress in vibrant neon. 8 PM – 2 AM. Doors close 10 PM. BYOB.</p>
-          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642" target="_blank">View on SLS</a>
-        </div>
+        <!-- EVENTS WILL BE INSERTED HERE BY JS -->
+        <div id="upcoming-events"></div>
+
         <h2 style="margin-top:40px;">Past Events</h2>
-        <div class="event" data-date="2025-10-04">
-          <h3><a href="payment.html">Oktoberfest Party</a></h3>
-          <p>Date: October 4, 2025<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
-          <p>Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.</p>
-          <a href="https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628" target="_blank">View on SLS</a>
-        </div>
-        <div class="event" data-date="2025-07-20">
-          <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
-          <p>Date: July 20, 2025<br>Location: Fresno, CA</p>
-          <p>Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
-          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
-        </div>
-        <div class="event" data-date="2025-05-31">
-          <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
-          <p>Date: May 31, 2025<br>Location: Fresno, CA</p>
-          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
-          <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="thumbnail">
-        </div>
+        <!-- PAST EVENTS WILL BE INSERTED HERE BY JS -->
+        <div id="past-events"></div>
       </div>
     </div>
   </div>
 
-  <!-- COUNTDOWN -->
+  <!-- COUNTDOWN + EVENT SORTING -->
   <script>
-    const events = document.querySelectorAll('.event[data-date]');
+    // Event data
+    const eventData = [
+      {
+        date: "2026-01-03",
+        title: "New Year, Newbie Supermoon Party!",
+        location: "1838 E. Everglade Ave, Fresno, CA 93720",
+        desc: "Kick off 2026 with a supermoon glow! Newbie-friendly. 8 PM – 2 AM. Doors close 10 PM. BYOB.",
+        link: "#",
+        slsLink: "View on SLS (link coming soon)"
+      },
+      {
+        date: "2025-11-15",
+        title: "NEON GLOW PARTY",
+        location: "1838 E. Everglade Ave, Fresno, CA 93720",
+        desc: "Light up the night! Dress in vibrant neon. 8 PM – 2 AM. Doors close 10 PM. BYOB.",
+        link: "payment.html",
+        slsLink: '<a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642" target="_blank">View on SLS</a>'
+      },
+      {
+        date: "2025-10-04",
+        title: "Oktoberfest Party",
+        location: "1838 E. Everglade Ave, Fresno, CA 93720",
+        desc: "Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.",
+        link: "payment.html",
+        slsLink: '<a href="https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628" target="_blank">View on SLS</a>'
+      },
+      {
+        date: "2025-07-20",
+        title: "Sunday Funday Pool Party",
+        location: "Fresno, CA",
+        desc: "Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB",
+        link: "payment.html",
+        slsLink: '<a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>'
+      },
+      {
+        date: "2025-05-31",
+        title: "Skinny Dipping Pool Party",
+        location: "Fresno, CA",
+        link: "payment.html",
+        slsLink: '<a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>',
+        thumbnail: '<img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="thumbnail">'
+      }
+    ];
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    // Sort events by date
+    const sortedEvents = eventData.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    const upcomingContainer = document.getElementById('upcoming-events');
+    const pastContainer = document.getElementById('past-events');
     const countdownEl = document.getElementById('countdown');
+
     let nextEvent = null;
-    function findNextEvent() {
-      const now = new Date();
-      let closest = null;
-      events.forEach(el => {
-        const eventDate = new Date(el.dataset.date + 'T20:00:00-08:00');
-        if (eventDate > now && (!closest || eventDate < closest.date)) {
-          closest = { el, date: eventDate };
+
+    // Render events
+    sortedEvents.forEach(event => {
+      const eventDate = new Date(event.date + 'T20:00:00-08:00');
+      const isUpcoming = eventDate >= today;
+
+      const eventHTML = `
+        <div class="event" data-date="${event.date}">
+          <h3><a href="${event.link}">${event.title}</a></h3>
+          <p>Date: ${formatDate(event.date)}<br>Location: ${event.location || 'Fresno, CA'}</p>
+          <p>${event.desc || ''}</p>
+          ${event.slsLink}
+          ${event.thumbnail || ''}
+        </div>
+      `;
+
+      if (isUpcoming) {
+        upcomingContainer.insertAdjacentHTML('beforeend', eventHTML);
+        // Track closest upcoming for countdown
+        if (!nextEvent || eventDate < nextEvent.date) {
+          nextEvent = { date: eventDate, el: null };
         }
-      });
-      return closest;
+      } else {
+        pastContainer.insertAdjacentHTML('beforeend', eventHTML);
+      }
+    });
+
+    // Format date helper
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     }
+
+    // Countdown
     function updateCountdown() {
-      nextEvent = findNextEvent();
       if (!nextEvent) {
         countdownEl.textContent = 'No upcoming events';
         return;
       }
       const diff = nextEvent.date - Date.now();
       if (diff <= 0) {
-        updateCountdown();
+        location.reload(); // Refresh to update list
         return;
       }
       const d = Math.floor(diff / 86400000);
@@ -255,6 +300,19 @@
     }
     updateCountdown();
     setInterval(updateCountdown, 1000);
+
+    // RANDOM LASER MOVEMENT
+    const lasers = document.querySelectorAll('.laser');
+    lasers.forEach((laser, i) => {
+      function randomMove() {
+        const angle = Math.random() * 360;
+        const duration = 3000 + Math.random() * 4000; // 3-7s
+        laser.style.transition = `transform ${duration}ms ease-in-out`;
+        laser.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+        setTimeout(randomMove, duration);
+      }
+      setTimeout(randomMove, i * 800); // Stagger start
+    });
   </script>
 </body>
 </html>
