@@ -49,7 +49,6 @@
       box-shadow:0 0 15px currentColor,0 0 30px currentColor;
       transform:translate(-50%,-50%) rotate(0deg);
       opacity:0.9;
-      transition:transform 0s linear; /* Will be overridden per-laser */
     }
     .laser1{color:#00ffff;}
     .laser2{color:#ff00ff;}
@@ -161,72 +160,111 @@
         <div id="upcoming-container"></div>
 
         <h2 style="margin-top:40px;">Past Events</h2>
-        <div class="event" data-date="2025-10-04">
-          <h3><a href="payment.html">Oktoberfest Party</a></h3>
-          <p>Date: October 4, 2025<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
-          <p>Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.</p>
-          <a href="https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628" target="_blank">View on SLS</a>
-        </div>
-        <div class="event" data-date="2025-07-20">
-          <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
-          <p>Date: July 20, 2025<br>Location: Fresno, CA</p>
-          <p>Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
-          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
-        </div>
-        <div class="event" data-date="2025-05-31">
-          <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
-          <p>Date: May 31, 2025<br>Location: Fresno, CA</p>
-          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
-          <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="thumbnail">
-        </div>
+        <div id="past-container"></div>
       </div>
     </div>
   </div>
 
+  <!-- FULL AUTO: ADD PARTY → IT SORTS ITSELF -->
   <script>
-    // === UPCOMING EVENTS - CLOSEST ON TOP ===
-    const upcomingEvents = [
+    // ADD NEW PARTIES HERE — THAT'S IT
+    // EXAMPLE: How to add a new party (copy-paste and edit):
+    /*
+    {
+      date: "2026-02-14",                     // YYYY-MM-DD
+      title: "Valentine's Day Massacre",      // Party name
+      location: "1838 E. Everglade Ave, Fresno, CA 93720",
+      desc: "Red lights, red hearts, red hot fun.",  // Optional description
+      link: "payment.html",                   // RSVP/payment link
+      sls: "https://www.swinglifestyle.com/...", // SLS link (or "#" if not ready)
+      slsText: "View on SLS",                 // Text for SLS link
+      thumbnail: '<img src="images/valentines.jpg" alt="Valentine Party" class="thumbnail">' // Optional image
+    },
+    */
+
+    const allParties = [
       {
         date: "2026-01-03",
         title: "New Year, Newbie Supermoon Party!",
         location: "1838 E. Everglade Ave, Fresno, CA 93720",
         desc: "Kick off 2026 with a supermoon glow! Newbie-friendly. 8 PM – 2 AM. Doors close 10 PM. BYOB.",
         link: "payment.html",
-        sls: "#"
+        sls: "#",
+        slsText: "View on SLS (link coming soon)"
       },
       {
         date: "2025-11-15",
         title: "NEON GLOW PARTY",
         location: "1838 E. Everglade Ave, Fresno, CA 93720",
-        desc: "Light up the night! Dress in vibrant neon. 8 PM – 2 AM. Doors close 10 PM. BYOB.",
+        desc: "Light up the night with black lights! Dress in vibrant neon! 8 PM – 2 AM. Doors close 10 PM. BYOB.",
         link: "payment.html",
-        sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642"
+        sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642",
+        slsText: "View on SLS"
+      },
+      {
+        date: "2025-10-04",
+        title: "Oktoberfest Party",
+        location: "1838 E. Everglade Ave, Fresno, CA 93720",
+        desc: "Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.",
+        link: "payment.html",
+        sls: "https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628",
+        slsText: "View on SLS"
+      },
+      {
+        date: "2025-07-20",
+        title: "Sunday Funday Pool Party",
+        location: "Fresno, CA",
+        desc: "Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB",
+        link: "payment.html",
+        sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723",
+        slsText: "View on SLS"
+      },
+      {
+        date: "2025-05-31",
+        title: "Skinny Dipping Pool Party",
+        location: "Fresno, CA",
+        link: "payment.html",
+        sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639",
+        slsText: "View on SLS",
+        thumbnail: '<img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="thumbnail">'
       }
     ];
 
-    upcomingEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    const container = document.getElementById('upcoming-container');
+    // Sort all by date
+    allParties.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    const upcomingContainer = document.getElementById('upcoming-container');
+    const pastContainer = document.getElementById('past-container');
     let nextEventDate = null;
 
-    upcomingEvents.forEach(event => {
+    allParties.forEach(party => {
+      const eventDate = new Date(party.date + 'T20:00:00-08:00');
+      const isUpcoming = eventDate >= today;
+
       const eventHTML = `
-        <div class="event" data-date="${event.date}">
-          <h3><a href="${event.link}">${event.title}</a></h3>
-          <p>Date: ${new Date(event.date).toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'})}<br>Location: ${event.location}</p>
-          <p>${event.desc}</p>
-          <a href="${event.sls}" target="_blank">${event.sls === "#" ? "View on SLS (link coming soon)" : "View on SLS"}</a>
+        <div class="event" data-date="${party.date}">
+          <h3><a href="${party.link}">${party.title}</a></h3>
+          <p>Date: ${new Date(party.date).toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'})}<br>Location: ${party.location || 'Fresno, CA'}</p>
+          <p>${party.desc || ''}</p>
+          <a href="${party.sls}" target="_blank">${party.slsText}</a>
+          ${party.thumbnail || ''}
         </div>
       `;
-      container.insertAdjacentHTML('beforeend', eventHTML);
 
-      const thisDate = new Date(event.date + 'T20:00:00-08:00');
-      if (!nextEventDate || thisDate < nextEventDate) {
-        nextEventDate = thisDate;
+      if (isUpcoming) {
+        upcomingContainer.insertAdjacentHTML('beforeend', eventHTML);
+        if (!nextEventDate || eventDate < nextEventDate) {
+          nextEventDate = eventDate;
+        }
+      } else {
+        pastContainer.insertAdjacentHTML('beforeend', eventHTML);
       }
     });
 
-    // === COUNTDOWN ===
+    // COUNTDOWN
     const countdownEl = document.getElementById('countdown');
     function updateCountdown() {
       if (!nextEventDate) {
@@ -247,7 +285,7 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // === LASERS: NO STOPS, NO DELAYS, RANDOM ANGLES FROM START, SPEED RAMPING ===
+    // LASERS - RANDOM, NO DELAYS, NEVER STOP
     const lasers = document.querySelectorAll('.laser');
     lasers.forEach(laser => {
       let currentAngle = Math.random() * 360;
@@ -255,7 +293,7 @@
       let isAnimating = false;
 
       function getRandomDuration() {
-        return 3000 + Math.random() * 4000; // 3–7 seconds
+        return 3000 + Math.random() * 4000;
       }
 
       function animate() {
@@ -271,13 +309,12 @@
         setTimeout(() => {
           currentAngle = targetAngle;
           isAnimating = false;
-          animate(); // Chain next move immediately
+          animate();
         }, duration);
       }
 
-      // Start immediately at random angle
       laser.style.transform = `translate(-50%, -50%) rotate(${currentAngle}deg)`;
-      setTimeout(animate, 0); // Start first animation right away
+      setTimeout(animate, 0);
     });
   </script>
 </body>
