@@ -166,8 +166,8 @@
   </div>
 
   <script>
-    // ADD NEW PARTIES HERE — THAT'S IT
-    // EXAMPLE: How to add a new party (copy-paste and edit):
+    // ADD NEW PARTIES HERE
+    // EXAMPLE:
     /*
     {
       date: "2026-02-14",
@@ -175,9 +175,8 @@
       location: "1838 E. Everglade Ave, Fresno, CA 93720",
       desc: "Red lights, red hearts, red hot fun.",
       link: "payment.html",
-      sls: "https://www.swinglifestyle.com/...",
-      slsText: "View on SLS",
-      thumbnail: '<img src="images/valentines.jpg" alt="Valentine Party" class="thumbnail">'
+      sls: "#",
+      slsText: "View on SLS (link coming soon)"
     },
     */
 
@@ -229,28 +228,19 @@
       }
     ];
 
-    // DYNAMIC PST/PDT OFFSET — FIXES DATE DRIFT
-    function getPSTPDTOffset(dateStr) {
-      const date = new Date(dateStr);
-      const jan = new Date(date.getFullYear(), 0, 1);
-      const jul = new Date(date.getFullYear(), 6, 1);
-      const stdOffset = Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
-      return date.getTimezoneOffset() < stdOffset ? '-07:00' : '-08:00'; // PDT if DST
-    }
-
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
+    // SORT BY DATE
     allParties.sort((a, b) => new Date(a.date) - new Date(b.date));
 
     const upcomingContainer = document.getElementById('upcoming-container');
     const pastContainer = document.getElementById('past-container');
-    let nextEventDate = null;
+    let nextEventStart = null;
 
     allParties.forEach(party => {
-      const tzOffset = getPSTPDTOffset(party.date);
-      const eventDate = new Date(party.date + `T20:00:00${tzOffset}`);
-      const isUpcoming = eventDate >= today;
+      // PARTY STARTS AT 8:00 PM LOCAL TIME
+      const eventStart = new Date(party.date + 'T20:00:00');
+
+      const now = Date.now();
+      const isUpcoming = now < eventStart.getTime();
 
       const displayDate = new Date(party.date).toLocaleDateString('en-US', {
         month: 'long', day: 'numeric', year: 'numeric'
@@ -268,22 +258,22 @@
 
       if (isUpcoming) {
         upcomingContainer.insertAdjacentHTML('beforeend', eventHTML);
-        if (!nextEventDate || eventDate < nextEventDate) {
-          nextEventDate = eventDate;
+        if (!nextEventStart || eventStart < nextEventStart) {
+          nextEventStart = eventStart;
         }
       } else {
         pastContainer.insertAdjacentHTML('beforeend', eventHTML);
       }
     });
 
-    // COUNTDOWN
+    // COUNTDOWN TO NEXT EVENT START
     const countdownEl = document.getElementById('countdown');
     function updateCountdown() {
-      if (!nextEventDate) {
+      if (!nextEventStart) {
         countdownEl.textContent = 'No upcoming events';
         return;
       }
-      const diff = nextEventDate - Date.now();
+      const diff = nextEventStart - Date.now();
       if (diff <= 0) {
         location.reload();
         return;
@@ -297,11 +287,10 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // LASERS - RANDOM, NO DELAYS, NEVER STOP
+    // LASERS - NEVER STOP
     const lasers = document.querySelectorAll('.laser');
     lasers.forEach(laser => {
       let currentAngle = Math.random() * 360;
-      let targetAngle = currentAngle;
       let isAnimating = false;
 
       function getRandomDuration() {
@@ -311,13 +300,10 @@
       function animate() {
         if (isAnimating) return;
         isAnimating = true;
-
-        targetAngle = Math.random() * 360;
+        const targetAngle = Math.random() * 360;
         const duration = getRandomDuration();
-
         laser.style.transition = `transform ${duration}ms ease-in-out`;
         laser.style.transform = `translate(-50%, -50%) rotate(${targetAngle}deg)`;
-
         setTimeout(() => {
           currentAngle = targetAngle;
           isAnimating = false;
