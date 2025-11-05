@@ -165,20 +165,19 @@
     </div>
   </div>
 
-  <!-- FULL AUTO: ADD PARTY → IT SORTS ITSELF -->
   <script>
     // ADD NEW PARTIES HERE — THAT'S IT
     // EXAMPLE: How to add a new party (copy-paste and edit):
     /*
     {
-      date: "2026-02-14",                     // YYYY-MM-DD
-      title: "Valentine's Day Massacre",      // Party name
+      date: "2026-02-14",
+      title: "Valentine's Day Massacre",
       location: "1838 E. Everglade Ave, Fresno, CA 93720",
-      desc: "Red lights, red hearts, red hot fun.",  // Optional description
-      link: "payment.html",                   // RSVP/payment link
-      sls: "https://www.swinglifestyle.com/...", // SLS link (or "#" if not ready)
-      slsText: "View on SLS",                 // Text for SLS link
-      thumbnail: '<img src="images/valentines.jpg" alt="Valentine Party" class="thumbnail">' // Optional image
+      desc: "Red lights, red hearts, red hot fun.",
+      link: "payment.html",
+      sls: "https://www.swinglifestyle.com/...",
+      slsText: "View on SLS",
+      thumbnail: '<img src="images/valentines.jpg" alt="Valentine Party" class="thumbnail">'
     },
     */
 
@@ -230,8 +229,8 @@
       }
     ];
 
-    // DYNAMIC PST/PDT OFFSET — NO MORE DATE SHIFT
-    function getPSTPDT(dateStr) {
+    // DYNAMIC PST/PDT OFFSET — FIXES DATE DRIFT
+    function getPSTPDTOffset(dateStr) {
       const date = new Date(dateStr);
       const jan = new Date(date.getFullYear(), 0, 1);
       const jul = new Date(date.getFullYear(), 6, 1);
@@ -242,7 +241,6 @@
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    // Sort all by date
     allParties.sort((a, b) => new Date(a.date) - new Date(b.date));
 
     const upcomingContainer = document.getElementById('upcoming-container');
@@ -250,7 +248,7 @@
     let nextEventDate = null;
 
     allParties.forEach(party => {
-      const tzOffset = getPSTPDT(party.date);
+      const tzOffset = getPSTPDTOffset(party.date);
       const eventDate = new Date(party.date + `T20:00:00${tzOffset}`);
       const isUpcoming = eventDate >= today;
 
