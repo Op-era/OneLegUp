@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>One Leg Up - Swingers Club</title>
-  <!-- ORIGINAL FONT -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
@@ -15,7 +14,7 @@
       color:#fff;
     }
 
-    /* 3D ROOM - LASERS, FOG, LIGHTS - VISIBLE BEHIND UI */
+    /* 3D ROOM - LASERS, FOG, LIGHTS */
     #club-room{
       position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;
       perspective:1500px;
@@ -23,7 +22,6 @@
       pointer-events:none;
     }
 
-    /* FOG */
     .fog{
       position:absolute;top:0;left:0;width:100%;height:100%;
       background:linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0.2));
@@ -33,7 +31,6 @@
     }
     @keyframes fogPulse{0%,100%{opacity:0.7;}50%{opacity:0.4;}}
 
-    /* FLOOR */
     .floor{
       position:absolute;bottom:0;left:50%;width:300%;height:100%;
       background:repeating-linear-gradient(0deg, #111 0px, #111 20px, #00ff00 20px, #00ff00 40px);
@@ -43,7 +40,6 @@
     }
     @keyframes floorGlow{0%,100%{box-shadow:0 0 50px #00ff00;}50%{box-shadow:0 0 100px #00ff00,0 0 200px #00ff00;}}
 
-    /* WALLS - STATIC */
     .wall{
       position:absolute;width:300%;height:100%;
       background:#1a0033;
@@ -67,7 +63,6 @@
     .laser4{color:#ff4500;}
     .laser5{color:#ffff00;}
 
-    /* SPINNING SIGN - TOP-LEFT */
     .sign{
       position:fixed;top:20px;left:20px;
       width:200px;height:60px;
@@ -81,7 +76,6 @@
     }
     @keyframes spinSign{0%{transform:rotateY(0deg);}100%{transform:rotateY(360deg);}}
 
-    /* UI - ON TOP */
     .overlay{
       position:relative;z-index:10;pointer-events:none;
       min-height:100vh;padding:80px 50px 40px 50px;
@@ -127,7 +121,6 @@
     @keyframes neonPulse{0%,100%{text-shadow:0 0 10px #ff00ff,0 0 20px #ff00ff}50%{text-shadow:0 0 15px #00ffff,0 0 25px #00ffff}}
     @keyframes flashGrow{0%,100%{transform:scale(1);opacity:1;text-shadow:0 0 10px #ff0000,0 0 20px #ff0000}50%{transform:scale(1.05);opacity:.9;text-shadow:0 0 25px #ff0000,0 0 35px #ff0000}}
 
-    /* BLACK SCROLLBAR */
     ::-webkit-scrollbar{width:12px;}
     ::-webkit-scrollbar-track{background:#000;}
     ::-webkit-scrollbar-thumb{background:#333;border:2px solid #000;}
@@ -145,14 +138,12 @@
 </head>
 <body>
 
-  <!-- 3D BACKGROUND - LASERS, FOG -->
   <div id="club-room">
     <div class="fog"></div>
     <div class="floor"></div>
     <div class="wall wall-back"></div>
     <div class="wall wall-left"></div>
     <div class="wall wall-right"></div>
-    <!-- THIN FULL-SCREEN LASERS - RANDOM MOVEMENT -->
     <div class="laser laser1"></div>
     <div class="laser laser2"></div>
     <div class="laser laser3"></div>
@@ -160,10 +151,8 @@
     <div class="laser laser5"></div>
   </div>
 
-  <!-- SPINNING SIGN - TOP-LEFT -->
   <div class="sign">One Leg Up</div>
 
-  <!-- UI - ON TOP -->
   <div class="overlay">
     <div class="header">
       <h1 class="site-title">One Leg Up</h1>
@@ -181,115 +170,87 @@
       </div>
       <div class="events">
         <h2>Upcoming Parties</h2>
-        <!-- EVENTS WILL BE INSERTED HERE BY JS -->
+        <!-- UPCOMING EVENTS INSERTED HERE -->
         <div id="upcoming-events"></div>
 
         <h2 style="margin-top:40px;">Past Events</h2>
-        <!-- PAST EVENTS WILL BE INSERTED HERE BY JS -->
-        <div id="past-events"></div>
+        <div class="event" data-date="2025-10-04">
+          <h3><a href="payment.html">Oktoberfest Party</a></h3>
+          <p>Date: October 4, 2025<br>Location: 1838 E. Everglade Ave, Fresno, CA 93720</p>
+          <p>Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.</p>
+          <a href="https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628" target="_blank">View on SLS</a>
+        </div>
+        <div class="event" data-date="2025-07-20">
+          <h3><a href="payment.html">Sunday Funday Pool Party</a></h3>
+          <p>Date: July 20, 2025<br>Location: Fresno, CA</p>
+          <p>Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB</p>
+          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>
+        </div>
+        <div class="event" data-date="2025-05-31">
+          <h3><a href="payment.html">Skinny Dipping Pool Party</a></h3>
+          <p>Date: May 31, 2025<br>Location: Fresno, CA</p>
+          <a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>
+          <img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="thumbnail">
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- COUNTDOWN + EVENT SORTING -->
   <script>
-    // Event data
-    const eventData = [
-      {
-        date: "2026-01-03",
-        title: "New Year, Newbie Supermoon Party!",
-        location: "1838 E. Everglade Ave, Fresno, CA 93720",
-        desc: "Kick off 2026 with a supermoon glow! Newbie-friendly. 8 PM – 2 AM. Doors close 10 PM. BYOB.",
-        link: "#",
-        slsLink: "View on SLS (link coming soon)"
-      },
+    // Event data - only upcoming
+    const upcomingEvents = [
       {
         date: "2025-11-15",
         title: "NEON GLOW PARTY",
         location: "1838 E. Everglade Ave, Fresno, CA 93720",
         desc: "Light up the night! Dress in vibrant neon. 8 PM – 2 AM. Doors close 10 PM. BYOB.",
         link: "payment.html",
-        slsLink: '<a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642" target="_blank">View on SLS</a>'
+        sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642"
       },
       {
-        date: "2025-10-04",
-        title: "Oktoberfest Party",
+        date: "2026-01-03",
+        title: "New Year, Newbie Supermoon Party!",
         location: "1838 E. Everglade Ave, Fresno, CA 93720",
-        desc: "Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.",
+        desc: "Kick off 2026 with a supermoon glow! Newbie-friendly. 8 PM – 2 AM. Doors close 10 PM. BYOB.",
         link: "payment.html",
-        slsLink: '<a href="https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628" target="_blank">View on SLS</a>'
-      },
-      {
-        date: "2025-07-20",
-        title: "Sunday Funday Pool Party",
-        location: "Fresno, CA",
-        desc: "Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB",
-        link: "payment.html",
-        slsLink: '<a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723" target="_blank">View on SLS</a>'
-      },
-      {
-        date: "2025-05-31",
-        title: "Skinny Dipping Pool Party",
-        location: "Fresno, CA",
-        link: "payment.html",
-        slsLink: '<a href="https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639" target="_blank">View on SLS</a>',
-        thumbnail: '<img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="thumbnail">'
+        sls: "#"
       }
     ];
 
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    // Sort by date
+    upcomingEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    // Sort events by date
-    const sortedEvents = eventData.sort((a, b) => new Date(a.date) - new Date(b.date));
+    const container = document.getElementById('upcoming-events');
+    let nextEventDate = null;
 
-    const upcomingContainer = document.getElementById('upcoming-events');
-    const pastContainer = document.getElementById('past-events');
-    const countdownEl = document.getElementById('countdown');
-
-    let nextEvent = null;
-
-    // Render events
-    sortedEvents.forEach(event => {
-      const eventDate = new Date(event.date + 'T20:00:00-08:00');
-      const isUpcoming = eventDate >= today;
-
+    upcomingEvents.forEach(event => {
       const eventHTML = `
         <div class="event" data-date="${event.date}">
           <h3><a href="${event.link}">${event.title}</a></h3>
-          <p>Date: ${formatDate(event.date)}<br>Location: ${event.location || 'Fresno, CA'}</p>
-          <p>${event.desc || ''}</p>
-          ${event.slsLink}
-          ${event.thumbnail || ''}
+          <p>Date: ${new Date(event.date).toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'})}<br>Location: ${event.location}</p>
+          <p>${event.desc}</p>
+          <a href="${event.sls}" target="_blank">${event.sls === "#" ? "View on SLS (link coming soon)" : "View on SLS"}</a>
         </div>
       `;
+      container.insertAdjacentHTML('beforeend', eventHTML);
 
-      if (isUpcoming) {
-        upcomingContainer.insertAdjacentHTML('beforeend', eventHTML);
-        // Track closest upcoming for countdown
-        if (!nextEvent || eventDate < nextEvent.date) {
-          nextEvent = { date: eventDate, el: null };
-        }
-      } else {
-        pastContainer.insertAdjacentHTML('beforeend', eventHTML);
+      // Track closest for countdown
+      const thisDate = new Date(event.date + 'T20:00:00-08:00');
+      if (!nextEventDate || thisDate < nextEventDate) {
+        nextEventDate = thisDate;
       }
     });
 
-    // Format date helper
-    function formatDate(dateStr) {
-      const date = new Date(dateStr);
-      return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-    }
-
     // Countdown
+    const countdownEl = document.getElementById('countdown');
     function updateCountdown() {
-      if (!nextEvent) {
+      if (!nextEventDate) {
         countdownEl.textContent = 'No upcoming events';
         return;
       }
-      const diff = nextEvent.date - Date.now();
+      const diff = nextEventDate - Date.now();
       if (diff <= 0) {
-        location.reload(); // Refresh to update list
+        location.reload();
         return;
       }
       const d = Math.floor(diff / 86400000);
@@ -304,14 +265,14 @@
     // RANDOM LASER MOVEMENT
     const lasers = document.querySelectorAll('.laser');
     lasers.forEach((laser, i) => {
-      function randomMove() {
+      function move() {
         const angle = Math.random() * 360;
-        const duration = 3000 + Math.random() * 4000; // 3-7s
+        const duration = 3000 + Math.random() * 4000;
         laser.style.transition = `transform ${duration}ms ease-in-out`;
         laser.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
-        setTimeout(randomMove, duration);
+        setTimeout(move, duration);
       }
-      setTimeout(randomMove, i * 800); // Stagger start
+      setTimeout(move, i * 800);
     });
   </script>
 </body>
