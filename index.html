@@ -89,9 +89,14 @@
       margin-top:20px;padding:12px 30px;background:#ff00ff;
       color:#000;font-weight:600;text-decoration:none;border-radius:8px;
       box-shadow:0 0 12px #ff00ff;transition:background .3s,box-shadow .3s;
+      font-size:1.1rem;
     }
     .rsvp-button:hover{background:#00ff00;box-shadow:0 0 18px #00ff00;}
-    .countdown{margin-top:20px;font-size:1.6rem;color:#00ffff;text-shadow:0 0 10px #00 låffff;}
+    .rsvp-note{
+      margin-top:10px;font-size:0.9rem;color:#00ffff;text-align:center;
+      max-width:300px;text-shadow:0 0 5px #00ffff;
+    }
+    .countdown{margin-top:20px;font-size:1.6rem;color:#00ffff;text-shadow:0 0 10px #00ffff;}
     .flyer{max-width:80%;margin-top:20px;border-radius:12px;box-shadow:0 0 20px #00ff00;}
     .events{
       flex:1 1 35%;padding:20px;overflow-y:auto;max-height:70vh;
@@ -117,7 +122,7 @@
       .content{flex-direction:column;}.left,.events{width:100%;}
       .sign{width:140px;height:40px;font-size:1.3rem;}
       .notice{font-size:1.1rem;padding:10px 15px;}
-      .rsvp-button{font-size:.9rem;padding:10px 20px;}
+      .rsvp-button{font-size:1rem;padding:10px 20px;}
       .countdown{font-size:1.3rem;}
       .overlay{padding:70px 20px 40px 20px;}
     }
@@ -149,9 +154,12 @@
         <div class="notice">
           All pay will be cash in envelopes at the door.
         </div>
-        <a href="sms:15597875801?body=RSVP%20-%20My%20SLS%20username%20is%3A%20" class="rsvp-button">
-          Text to RSVP (include your SLS username)
+        <a href="sms:15597875801" class="rsvp-button">
+          Text 559-787-5801 for address
         </a>
+        <div class="rsvp-note">
+          You must text the number to receive the party address.
+        </div>
         <div class="countdown" id="countdown">Loading...</div>
         <img src="images/neonglow.jpg" alt="Neon Glow Party Flyer" class="flyer">
       </div>
@@ -171,8 +179,7 @@
     {
       date: "2026-02-14",
       title: "Valentine's Day Massacre",
-      location: "1838 E. Everglade Ave, Fresno, CA 93720",
-      desc: "Red lights, red hearts, red hot fun.",
+      desc: "Red lights, red hearts, red hot fun.<br><strong>Cross streets: Maple & Shepherd</strong>",
       link: "payment.html",
       sls: "#",
       slsText: "View on SLS"
@@ -183,8 +190,7 @@
       {
         date: "2026-01-03",
         title: "New Year, Newbie Supermoon Party!",
-        location: "1838 E. Everglade Ave, Fresno, CA 93720",
-        desc: "Kick off 2026 with a supermoon glow! Newbie-friendly. 8 PM – 2 AM. Doors close 10 PM. BYOB.",
+        desc: "Kick off 2026 with a supermoon glow! Newbie-friendly. 8 PM – 2 AM. Doors close 10 PM. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
         link: "payment.html",
         sls: "#",
         slsText: "View on SLS (link coming soon)"
@@ -192,8 +198,7 @@
       {
         date: "2025-11-15",
         title: "NEON GLOW PARTY",
-        location: "1838 E. Everglade Ave, Fresno, CA 93720",
-        desc: "Light up the night! Dress in vibrant neon. 8 PM – 2 AM. Doors close 10 PM. BYOB.",
+        desc: "Light up the night! Dress in vibrant neon. 8 PM – 2 AM. Doors close 10 PM. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
         link: "payment.html",
         sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642",
         slsText: "View on SLS"
@@ -201,8 +206,7 @@
       {
         date: "2025-10-04",
         title: "Oktoberfest Party",
-        location: "1838 E. Everglade Ave, Fresno, CA 93720",
-        desc: "Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.",
+        desc: "Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
         link: "payment.html",
         sls: "https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628",
         slsText: "View on SLS"
@@ -210,8 +214,7 @@
       {
         date: "2025-07-20",
         title: "Sunday Funday Pool Party",
-        location: "Fresno, CA",
-        desc: "Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB",
+        desc: "Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB<br><strong>Cross streets: Maple & Shepherd</strong>",
         link: "payment.html",
         sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723",
         slsText: "View on SLS"
@@ -219,7 +222,7 @@
       {
         date: "2025-05-31",
         title: "Skinny Dipping Pool Party",
-        location: "Fresno, CA",
+        desc: "<strong>Cross streets: Maple & Shepherd</strong>",
         link: "payment.html",
         sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639",
         slsText: "View on SLS",
@@ -257,7 +260,7 @@
       const eventHTML = `
         <div class="event" data-date="${party.date}">
           <h3><a href="${party.link}">${party.title}</a></h3>
-          <p>Date: ${displayDate}<br>Location: ${party.location || 'Fresno, CA'}</p>
+          <p>Date: ${displayDate}</p>
           <p>${party.desc || ''}</p>
           <a href="${party.sls}" target="_blank">${party.slsText}</a>
           ${party.thumbnail || ''}
