@@ -145,8 +145,6 @@
       text-shadow:0 0 10px #ff00ff;animation:neonPulse 3s ease infinite!important;
       margin-bottom:8px;
     }
-    .event h3 a{color:inherit!important;text-decoration:none;}
-    .event h3 a:hover{color:#00ff00!important;text-shadow:0 0 10px #00ff00;}
     .event p{
       font-size:0.95rem;color:#00ffff;
       text-shadow:0 0 5px #00ffff;margin:6px 0;
@@ -234,17 +232,15 @@
     const allParties = [
       {
         date: "2026-01-03",
-        title: "New Year, Newbie Supermoon Party!",
-        desc: "Kick off 2026 with a supermoon glow! Newbie-friendly. 8 PM – 2 AM. Doors close 10 PM. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
-        link: "payment.html",
+        title: "TBD",
+        desc: "Are you new to the lifestyle? This party is for you! 8 PM to 2 AM. Doors close 10 PM. BYOB. Ask us questions and learn from our experience!<br><strong>Cross streets: Maple & Shepherd</strong>",
         sls: "#",
         slsText: "View on SLS (link coming soon)"
       },
       {
         date: "2025-11-15",
         title: "NEON GLOW PARTY",
-        desc: "Light up the night! Dress in vibrant neon. 8 PM – 2 AM. Doors close 10 PM. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
-        link: "payment.html",
+        desc: "Light up the night! Dress in vibrant neon. 8 PM to 2 AM. Doors close 10 PM. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
         sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642",
         slsText: "View on SLS"
       },
@@ -252,7 +248,6 @@
         date: "2025-10-04",
         title: "Oktoberfest Party",
         desc: "Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
-        link: "payment.html",
         sls: "https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628",
         slsText: "View on SLS"
       },
@@ -260,7 +255,6 @@
         date: "2025-07-20",
         title: "Sunday Funday Pool Party",
         desc: "Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB<br><strong>Cross streets: Maple & Shepherd</strong>",
-        link: "payment.html",
         sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723",
         slsText: "View on SLS"
       },
@@ -268,7 +262,6 @@
         date: "2025-05-31",
         title: "Skinny Dipping Pool Party",
         desc: "<strong>Cross streets: Maple & Shepherd</strong>",
-        link: "payment.html",
         sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639",
         slsText: "View on SLS"
       }
@@ -291,6 +284,8 @@
       eventEnd.setDate(eventEnd.getDate() + 1);
       eventEnd.setHours(2, 0, 0, 0);
 
+);
+
       const now = new Date();
       const isUpcoming = now < eventEnd;
 
@@ -300,7 +295,7 @@
 
       const eventHTML = `
         <div class="event" data-date="${party.date}">
-          <h3><a href="${party.link}">${party.title}</a></h3>
+          <h3>${party.title}</h3>
           <p>Date: ${displayDate}</p>
           <p>${party.desc || ''}</p>
           <a href="${party.sls}" target="_blank">${party.slsText}</a>
