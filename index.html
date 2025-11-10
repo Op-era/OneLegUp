@@ -231,8 +231,8 @@
   <script>
     const allParties = [
       {
-        date: "2026-01-03",
-        title: "TBD",
+        date: "TBD",
+        title: "Newbie-Friendly Party",
         desc: "Are you new to the lifestyle? This party is for you! 8 PM to 2 AM. Doors close 10 PM. BYOB. Ask us questions and learn from our experience!<br><strong>Cross streets: Maple & Shepherd</strong>",
         sls: "#",
         slsText: "View on SLS (link coming soon)"
@@ -268,30 +268,33 @@
     ];
 
     function parseLocalDate(dateStr) {
+      if (dateStr === "TBD") return null;
       const [y, m, d] = dateStr.split('-').map(Number);
       return new Date(y, m - 1, d);
     }
 
-    allParties.sort((a, b) => parseLocalDate(a.date) - parseLocalDate(b.date));
+    // Sort real dates, keep TBD at the top of Upcoming
+    const now = new Date();
+    let nextEventEnd = null;
 
     const upcomingContainer = document.getElementById('upcoming-container');
     const pastContainer = document.getElementById('past-container');
-    let nextEventEnd = null;
 
     allParties.forEach(party => {
-      const eventDate = parseLocalDate(party.date);
-      const eventEnd = new Date(eventDate);
-      eventEnd.setDate(eventEnd.getDate() + 1);
-      eventEnd.setHours(2, 0, 0, 0);
-
-);
-
-      const now = new Date();
-      const isUpcoming = now < eventEnd;
-
-      const displayDate = eventDate.toLocaleDateString('en-US', {
+      let eventDate = parseLocalDate(party.date);
+      let isTBD = party.date === "TBD";
+      let displayDate = isTBD ? "TBD" : eventDate.toLocaleDateString('en-US', {
         month: 'long', day: 'numeric', year: 'numeric'
       });
+
+      let eventEnd = null;
+      if (!isTBD) {
+        eventEnd = new Date(eventDate);
+        eventEnd.setDate(eventEnd.getDate() + 1);
+        eventEnd.setHours(2, 0, 0, 0);
+      }
+
+      const isUpcoming = isTBD || now < eventEnd;
 
       const eventHTML = `
         <div class="event" data-date="${party.date}">
@@ -304,7 +307,7 @@
 
       if (isUpcoming) {
         upcomingContainer.insertAdjacentHTML('beforeend', eventHTML);
-        if (!nextEventEnd || eventEnd < nextEventEnd) {
+        if (!isTBD && (!nextEventEnd || eventEnd < nextEventEnd)) {
           nextEventEnd = eventEnd;
         }
       } else {
@@ -312,10 +315,11 @@
       }
     });
 
+    // Countdown only uses real upcoming events
     const countdownEl = document.getElementById('countdown');
     function updateCountdown() {
       if (!nextEventEnd) {
-        countdownEl.textContent = 'No upcoming events';
+        countdownEl.textContent = 'No upcoming dated events';
         return;
       }
       const diff = nextEventEnd - Date.now();
@@ -332,6 +336,7 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
+    // Lasers animation
     const lasers = document.querySelectorAll('.laser');
     lasers.forEach(laser => {
       let currentAngle = Math.random() * 360;
