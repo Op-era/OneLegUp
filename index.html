@@ -96,6 +96,14 @@
       margin-top:10px;font-size:0.9rem;color:#00ffff;text-align:center;
       max-width:300px;text-shadow:0 0 5px #00ffff;
     }
+    .pricing{
+      margin-top:15px;font-size:1.2rem;color:#00ff00;text-align:center;
+      text-shadow:0 0 8px #00ff00;
+    }
+    .pricing-note{
+      margin-top:5px;font-size:0.75rem;color:#aaa;text-align:center;
+      max-width:300px;
+    }
     .countdown{margin-top:20px;font-size:1.6rem;color:#00ffff;text-shadow:0 0 10px #00ffff;}
     .flyer{max-width:80%;margin-top:20px;border-radius:12px;box-shadow:0 0 20px #00ff00;}
     .events{
@@ -125,6 +133,8 @@
       .rsvp-button{font-size:1rem;padding:10px 20px;}
       .countdown{font-size:1.3rem;}
       .overlay{padding:70px 20px 40px 20px;}
+      .pricing{font-size:1rem;}
+      .pricing-note{font-size:0.7rem;}
     }
   </style>
 </head>
@@ -160,6 +170,12 @@
         <div class="rsvp-note">
           You must text the number to receive the party address.
         </div>
+        <div class="pricing">
+          Single Males $80*, Single Females $40
+        </div>
+        <div class="pricing-note">
+          * ask about a discount for bartending for 2 hours.
+        </div>
         <div class="countdown" id="countdown">Loading...</div>
         <img src="images/neonglow.jpg" alt="Neon Glow Party Flyer" class="flyer">
       </div>
@@ -188,18 +204,16 @@
 
     const allParties = [
       {
-        date: "2026-01-03",
-        title: "New Year, Newbie Supermoon Party!",
-        desc: "Kick off 2026 with a supermoon glow! Newbie-friendly. 8 PM – 2 AM. Doors close 10 PM. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
-        link: "payment.html",
+        date: "TBD",
+        title: "Newbie Party!",
+        desc: "Are you new to the lifestyle? This party is for you! 8 PM – 2 AM. Doors close 10 PM. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
         sls: "#",
         slsText: "View on SLS (link coming soon)"
       },
       {
         date: "2025-11-15",
         title: "NEON GLOW PARTY",
-        desc: "Light up the night! Dress in vibrant neon. 8 PM – 2 AM. Doors close 10 PM. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
-        link: "payment.html",
+        desc: "Light up the night! Dress in vibrant neon. 8 PM – 2 AM. Doors close 10 PM. BYOB. Come to our meet and greet and ask us questions. Learn from our experience!<br><strong>Cross streets: Maple & Shepherd</strong>",
         sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642",
         slsText: "View on SLS"
       },
@@ -207,15 +221,13 @@
         date: "2025-10-04",
         title: "Oktoberfest Party",
         desc: "Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
-        link: "payment.html",
         sls: "https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628",
         slsText: "View on SLS"
       },
       {
         date: "2025-07-20",
         title: "Sunday Funday Pool Party",
-        desc: "Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB<br><strong>Cross streets: Maple & Shepherd</strong>",
-        link: "payment.html",
+        desc: "Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a  relaxed, vibrant atmosphere. Mixers will be provided. BYOB<br><strong>Cross streets: Maple & Shepherd</strong>",
         sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723",
         slsText: "View on SLS"
       },
@@ -223,10 +235,9 @@
         date: "2025-05-31",
         title: "Skinny Dipping Pool Party",
         desc: "<strong>Cross streets: Maple & Shepherd</strong>",
-        link: "payment.html",
         sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639",
-        slsText: "View on SLS",
-        thumbnail: '<img src="images/pool_party.jpg" alt="Skinny Dipping Pool Party Thumbnail" class="thumbnail">'
+        slsText: "View on SLS"
+        // thumbnail removed
       }
     ];
 
