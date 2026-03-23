@@ -163,24 +163,73 @@
         min-height:0;
       }
       .left{
-        flex:1 1 58%;
+        flex:1 1 54%;
         padding:0;
+        display:grid;
+        grid-template-columns:minmax(0, 320px) minmax(0, 1fr);
+        grid-template-areas:"flyer info";
+        gap:14px;
+        justify-content:flex-start;
+        align-items:start;
+      }
+      .flyer-wrap{
+        grid-area:flyer;
+        flex:0 0 auto;
         justify-content:flex-start;
       }
-      .flyer-wrap{flex:0 0 auto;}
-      .info-stack{flex:1 1 auto;justify-content:flex-start;}
+      .info-stack{
+        grid-area:info;
+        width:100%;
+        display:flex;
+        flex-direction:column;
+        align-items:stretch;
+        gap:8px;
+        max-width:none;
+      }
       .events{
-        flex:1 1 42%;
+        flex:1 1 46%;
         max-height:calc(100vh - 180px);
         overflow-y:auto;
       }
       .sign{width:200px;height:60px;font-size:1.8rem;top:20px;left:20px;}
-      .notice{font-size:1rem;padding:10px 14px;margin:8px 0 6px;}
-      .rsvp-button{font-size:0.96rem;padding:11px 22px;min-width:auto;}
-      .pricing{font-size:1rem;max-width:100%;margin-top:10px;}
-      .pricing-note{font-size:0.66rem;max-width:100%;}
-      .countdown{font-size:1.1rem;max-width:100%;margin-top:10px;}
-      .flyer{width:min(100%, 360px);margin:0 auto 10px;}
+      .notice{
+        font-size:0.98rem;
+        padding:10px 14px;
+        margin:6px 0 0;
+      }
+      .rsvp-button{
+        font-size:0.96rem;
+        padding:11px 22px;
+        min-width:auto;
+        margin-top:0;
+      }
+      .rsvp-note{
+        max-width:none;
+        margin-top:0;
+        text-align:left;
+      }
+      .pricing{
+        font-size:1rem;
+        max-width:none;
+        margin-top:0;
+        text-align:left;
+      }
+      .pricing-note{
+        font-size:0.66rem;
+        max-width:none;
+        text-align:left;
+        margin-top:0;
+      }
+      .countdown{
+        font-size:1.05rem;
+        max-width:none;
+        margin-top:0;
+        text-align:left;
+      }
+      .flyer{
+        width:min(100%, 330px);
+        margin:0 0 10px;
+      }
     }
   </style>
 </head>
