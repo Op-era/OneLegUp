@@ -165,8 +165,8 @@
       .site-title{font-size:1.9rem;}
       .content{
         display:grid;
-        grid-template-columns:minmax(0, 1.18fr) minmax(340px, 0.82fr);
-        align-items:stretch;
+        grid-template-columns:minmax(0, 1.08fr) minmax(340px, 0.92fr);
+        align-items:start;
         gap:16px;
         margin-top:8px;
         flex:1 1 auto;
@@ -175,37 +175,40 @@
       .left{
         padding:0;
         display:grid;
-        grid-template-columns:minmax(360px, 410px) minmax(0, 1fr);
-        grid-template-areas:"flyer info";
-        gap:14px;
-        justify-content:flex-start;
+        grid-template-columns:minmax(0, 1fr);
+        grid-template-areas:
+          "flyer"
+          "info";
+        gap:10px;
         align-items:start;
       }
       .flyer-wrap{
         grid-area:flyer;
-        flex:0 0 auto;
-        justify-content:flex-start;
+        justify-content:center;
       }
       .info-stack{
         grid-area:info;
         width:100%;
-        display:flex;
-        flex-direction:column;
+        display:grid;
+        grid-template-columns:minmax(0, 1fr) minmax(0, 1fr);
         align-items:stretch;
-        gap:8px;
+        gap:8px 12px;
         max-width:none;
       }
       .events{
+        grid-column:2;
         max-height:calc(100vh - 180px);
         overflow-y:auto;
       }
       .sign{width:200px;height:60px;font-size:1.8rem;top:20px;left:20px;}
       .notice{
+        grid-column:1 / -1;
         font-size:0.98rem;
         padding:10px 14px;
         margin:6px 0 0;
       }
       .rsvp-button{
+        grid-column:1 / -1;
         font-size:0.96rem;
         padding:11px 22px;
         min-width:auto;
@@ -235,8 +238,8 @@
         text-align:left;
       }
       .flyer{
-        width:min(100%, 400px);
-        margin:0 0 10px;
+        width:min(100%, 460px);
+        margin:0 auto 8px;
       }
     }
   </style>
