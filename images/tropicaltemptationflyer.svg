@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1600" role="img" aria-labelledby="title desc">
+  <title id="title">Tropical Temptation flyer</title>
+  <desc id="desc">A tropical styled event poster for One Leg Up featuring palm leaves, warm sunset colors, and event details.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0b4a56"/>
+      <stop offset="32%" stop-color="#146e70"/>
+      <stop offset="58%" stop-color="#f28f5a"/>
+      <stop offset="76%" stop-color="#ebb86b"/>
+      <stop offset="100%" stop-color="#0a6470"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="50%" cy="28%" r="42%">
+      <stop offset="0%" stop-color="#ffe39a" stop-opacity="0.95"/>
+      <stop offset="45%" stop-color="#ffc56d" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#ffc56d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#158292" stop-opacity="0.2"/>
+      <stop offset="22%" stop-color="#14889a" stop-opacity="0.55"/>
+      <stop offset="58%" stop-color="#0c6874" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#083f4b" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="reflection" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffd98b" stop-opacity="0.75"/>
+      <stop offset="35%" stop-color="#ffaf70" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#ffaf70" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a393d" stop-opacity="0.82"/>
+      <stop offset="100%" stop-color="#06242b" stop-opacity="0.92"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#06242b" flood-opacity="0.35"/>
+    </filter>
+    <filter id="softBlur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <style>
+      .serif { font-family: Georgia, 'Times New Roman', serif; }
+      .sans { font-family: Arial, Helvetica, sans-serif; }
+      .smallcaps { letter-spacing: 8px; text-transform: uppercase; }
+      .cream { fill: #fff7e7; }
+      .sand { fill: #ffe3a7; }
+      .mint { fill: #bff6de; }
+      .deep { fill: #083138; }
+    </style>
+  </defs>
+
+  <rect width="1080" height="1600" fill="url(#bg)"/>
+  <rect width="1080" height="1600" fill="url(#sun)"/>
+  <rect x="0" y="660" width="1080" height="940" fill="url(#water)"/>
+
+  <g opacity="0.24" filter="url(#softBlur)">
+    <ellipse cx="540" cy="420" rx="280" ry="210" fill="#fff4be"/>
+  </g>
+
+  <g opacity="0.2">
+    <circle cx="540" cy="420" r="270" fill="#fff1bc"/>
+    <circle cx="540" cy="420" r="220" fill="#ffd987"/>
+  </g>
+
+  <rect x="0" y="652" width="1080" height="8" fill="#fff2be" fill-opacity="0.35"/>
+
+  <g opacity="0.38">
+    <path d="M470 658c24 46 46 115 62 208-51 0-101 0-152 0 37-90 67-159 90-208z" fill="url(#reflection)"/>
+    <path d="M610 658c-24 46-46 115-62 208 51 0 101 0 152 0-37-90-67-159-90-208z" fill="url(#reflection)"/>
+  </g>
+
+  <g stroke="#d8f7eb" stroke-opacity="0.12" stroke-width="3">
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="-18 0;18 0;-18 0" dur="8s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.85;1;0.85" dur="6s" repeatCount="indefinite"/>
+      <path d="M0 742c94 18 188 18 282 0s188-18 282 0 188 18 282 0 188-18 282 0"/>
+      <path d="M0 900c94 18 188 18 282 0s188-18 282 0 188 18 282 0 188-18 282 0"/>
+      <path d="M0 1082c94 18 188 18 282 0s188-18 282 0 188 18 282 0 188-18 282 0"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="14 0;-14 0;14 0" dur="10s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.7;0.95;0.7" dur="7s" repeatCount="indefinite"/>
+      <path d="M0 820c94 18 188 18 282 0s188-18 282 0 188 18 282 0 188-18 282 0"/>
+      <path d="M0 988c94 18 188 18 282 0s188-18 282 0 188 18 282 0 188-18 282 0"/>
+    </g>
+  </g>
+
+  <g fill="#062b31" opacity="0.92">
+    <path d="M62 646c52-12 108-17 168-16 50 1 98 6 146 16-26 7-55 12-86 15-32 4-69 6-112 6-49 0-88-2-116-5z"/>
+    <path d="M708 646c52-12 108-17 168-16 50 1 98 6 146 16-26 7-55 12-86 15-32 4-69 6-112 6-49 0-88-2-116-5z"/>
+  </g>
+
+  <g fill="#07343b" opacity="0.98">
+    <rect x="168" y="346" width="16" height="360" rx="8"/>
+    <path d="M176 372c-56-34-93-74-112-120 62 6 111 32 148 78-12 17-24 31-36 42z"/>
+    <path d="M178 412c-72-10-128-38-168-84 68-14 128-4 180 28-2 20-6 39-12 56z"/>
+    <path d="M178 450c64-28 122-36 172-24-46 44-102 71-168 82-7-20-8-39-4-58z"/>
+    <path d="M176 492c-54 11-103 4-148-20 38-33 86-48 146-46 3 21 3 43 2 66z"/>
+
+    <rect x="878" y="334" width="18" height="378" rx="9"/>
+    <path d="M888 364c52-42 92-88 118-138-67 13-118 46-154 98 12 16 24 30 36 40z"/>
+    <path d="M888 406c73-20 128-56 166-106-72-5-131 12-178 50 2 19 7 37 12 56z"/>
+    <path d="M888 446c-62-33-119-45-170-38 42 49 96 82 163 99 8-19 10-39 7-61z"/>
+    <path d="M888 492c56 7 104-5 145-33-40-29-89-40-148-34-1 23 0 45 3 67z"/>
+  </g>
+
+  <g fill="#0a4049" opacity="0.34">
+    <rect x="176" y="706" width="10" height="124" rx="5"/>
+    <path d="M182 720c-36-24-60-50-72-80 40 4 72 22 96 52-8 11-16 20-24 28z"/>
+    <path d="M182 748c44 5 79-4 106-28-29-15-63-20-101-14-2 14-4 28-5 42z"/>
+    <rect x="884" y="708" width="10" height="126" rx="5"/>
+    <path d="M889 722c34-27 56-57 66-88-40 8-70 28-92 59 8 10 16 19 26 29z"/>
+    <path d="M889 748c-43 2-78-10-104-36 30-12 63-13 101-4 2 13 3 27 3 40z"/>
+  </g>
+
+  <rect x="86" y="74" width="908" height="1452" rx="42" fill="none" stroke="#fff2cf" stroke-opacity="0.45" stroke-width="4"/>
+
+  <g filter="url(#shadow)">
+    <rect x="118" y="725" width="844" height="690" rx="34" fill="url(#panel)"/>
+  </g>
+
+  <text x="540" y="170" text-anchor="middle" class="sans mint smallcaps" font-size="34" font-weight="700">One Leg Up</text>
+  <text x="540" y="258" text-anchor="middle" class="sans cream smallcaps" font-size="24" font-weight="700">Adults Only Poolside Social</text>
+
+  <text x="540" y="450" text-anchor="middle" class="serif cream" font-size="128" font-weight="700">Tropical</text>
+  <text x="540" y="566" text-anchor="middle" class="serif sand" font-size="132" font-weight="700">Temptation</text>
+
+  <text x="540" y="638" text-anchor="middle" class="sans deep" font-size="30" font-weight="700" letter-spacing="6">SUNSET HEAT. POOLSIDE ENERGY. ADULTS ONLY.</text>
+
+  <g transform="translate(200 790)">
+    <text x="0" y="0" class="sans mint smallcaps" font-size="28" font-weight="700">Featured Night</text>
+    <text x="0" y="82" class="serif cream" font-size="78" font-weight="700">April 18th, 2026</text>
+    <text x="0" y="148" class="sans sand" font-size="34" font-weight="700" letter-spacing="3">4 PM to Midnight</text>
+
+    <line x1="0" y1="194" x2="680" y2="194" stroke="#ffffff" stroke-opacity="0.18" stroke-width="2"/>
+
+    <text x="0" y="272" class="sans mint smallcaps" font-size="26" font-weight="700">Location</text>
+    <text x="0" y="334" class="sans cream" font-size="38" font-weight="700">1838 East Everglade Ave</text>
+    <text x="0" y="384" class="sans cream" font-size="38" font-weight="700">Fresno, CA 93720</text>
+
+    <line x1="0" y1="438" x2="680" y2="438" stroke="#ffffff" stroke-opacity="0.18" stroke-width="2"/>
+
+    <text x="0" y="516" class="sans mint smallcaps" font-size="26" font-weight="700">What To Expect</text>
+    <text x="0" y="578" class="sans cream" font-size="32">Mixers provided</text>
+    <text x="0" y="626" class="sans cream" font-size="32">BYOB poolside energy</text>
+    <text x="0" y="674" class="sans cream" font-size="32">Sexy, social, tropical atmosphere</text>
+  </g>
+
+  <g transform="translate(138 1450)">
+    <rect x="0" y="-44" width="804" height="56" rx="18" fill="#fff2cf" fill-opacity="0.16" stroke="#fff2cf" stroke-opacity="0.25"/>
+    <text x="402" y="-8" text-anchor="middle" class="sans cream" font-size="26" font-weight="700" letter-spacing="2">TEXT TO RSVP: (559) 549-3882</text>
+  </g>
+  <text x="540" y="1560" text-anchor="middle" class="sans deep" font-size="22" font-weight="700" letter-spacing="3">PAYMENT REQUIRED IN ADVANCE FOR SINGLE MALES</text>
+</svg>
