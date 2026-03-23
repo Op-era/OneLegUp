@@ -31,19 +31,19 @@
       bottom:0;
       z-index:2;
       pointer-events:none;
-      opacity:0.92;
-      filter:brightness(0.12) saturate(0.8);
+      opacity:0.98;
+      filter:brightness(0.05) saturate(0.45) contrast(1.2);
       transform-origin:bottom center;
     }
     .palm-decor.left{
-      left:-2%;
-      height:62%;
-      transform:scaleX(1);
+      left:-5%;
+      height:72%;
+      transform:scaleX(1) rotate(-1.5deg);
     }
     .palm-decor.right{
-      right:-4%;
-      height:68%;
-      transform:scaleX(-1);
+      right:-7%;
+      height:78%;
+      transform:scaleX(-1) rotate(-1deg);
     }
     .sign{
       position:fixed;top:15px;left:15px;
@@ -165,8 +165,8 @@
 
   <div id="club-room">
     <canvas id="water-scene" aria-hidden="true"></canvas>
-    <img src="images/palm-open-source.svg" alt="" class="palm-decor left" aria-hidden="true">
-    <img src="images/palm-open-source.svg" alt="" class="palm-decor right" aria-hidden="true">
+    <img src="images/palm-tree-better.svg" alt="" class="palm-decor left" aria-hidden="true">
+    <img src="images/palm-tree-better.svg" alt="" class="palm-decor right" aria-hidden="true">
   </div>
 
   <div class="sign">One Leg Up</div>
@@ -378,11 +378,11 @@
           float aspect = u_resolution.x / max(u_resolution.y, 1.0);
           float horizon = 0.5;
 
-          vec3 skyTop = vec3(0.36, 0.58, 0.66);
-          vec3 skyMid = vec3(0.95, 0.60, 0.39);
-          vec3 skyWarm = vec3(0.95, 0.78, 0.47);
-          vec3 waterTop = vec3(0.17, 0.53, 0.56);
-          vec3 waterDeep = vec3(0.04, 0.15, 0.20);
+          vec3 skyTop = vec3(0.11, 0.08, 0.20);
+          vec3 skyMid = vec3(0.42, 0.17, 0.42);
+          vec3 skyWarm = vec3(0.96, 0.45, 0.18);
+          vec3 waterTop = vec3(0.18, 0.16, 0.30);
+          vec3 waterDeep = vec3(0.03, 0.07, 0.13);
           vec3 color;
 
           vec2 sunPos = vec2(0.5, 0.29);
@@ -407,22 +407,22 @@
             float verticalBeam = smoothstep(0.18, 0.0, abs(reflectedUv.x - sunPos.x + ripple * 0.8));
             reflection *= mix(1.1, 0.05, t);
 
-            color += vec3(1.0, 0.82, 0.48) * reflection * 0.95;
-            color += vec3(1.0, 0.92, 0.72) * verticalBeam * (0.12 + (1.0 - t) * 0.28);
+            color += vec3(0.98, 0.52, 0.22) * reflection * 1.02;
+            color += vec3(0.92, 0.54, 0.80) * verticalBeam * (0.08 + (1.0 - t) * 0.22);
 
             float lineWave = sin(uv.x * 120.0 + u_time * 1.4 + t * 20.0) * 0.5 + 0.5;
             float glint = smoothstep(0.72, 1.0, lineWave) * (1.0 - t) * 0.12;
-            color += vec3(glint);
+            color += vec3(glint * 0.8, glint * 0.55, glint);
           } else {
             float t = uv.y / horizon;
             color = mix(skyWarm, skyTop, smoothstep(0.0, 1.0, t));
             color = mix(color, skyMid, smoothstep(0.1, 0.82, t));
-            color += vec3(1.0, 0.86, 0.56) * sunGlow * 0.42;
-            color += vec3(1.0, 0.95, 0.72) * sunCore * 0.62;
+            color += vec3(1.0, 0.58, 0.24) * sunGlow * 0.46;
+            color += vec3(1.0, 0.82, 0.58) * sunCore * 0.44;
           }
 
           float horizonGlow = smoothstep(0.018, 0.0, abs(uv.y - horizon));
-          color += vec3(1.0, 0.91, 0.68) * horizonGlow * 0.36;
+          color += vec3(0.96, 0.56, 0.28) * horizonGlow * 0.42;
 
           float island = smoothstep(0.49, 0.505, uv.y + 0.012 * sin(uv.x * 10.0) + 0.008 * sin(uv.x * 27.0));
           color = mix(color, vec3(0.05, 0.11, 0.14), island * 0.92 * step(horizon - 0.03, uv.y));
