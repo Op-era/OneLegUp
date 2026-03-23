@@ -1,1240 +1,367 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>One Leg Up | Tropical Temptation</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One Leg Up - Swingers Club</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg-deep: #143d4a;
-      --bg-mid: #1b6f74;
-      --bg-sand: #f3cf88;
-      --card: rgba(15, 45, 52, 0.7);
-      --card-border: rgba(255, 243, 213, 0.18);
-      --text: #fff8ea;
-      --muted: #f5e6c9;
-      --accent: #f08e56;
-      --accent-strong: #d85f3c;
-      --teal: #bfe7d0;
-      --shadow: 0 28px 64px rgba(18, 39, 46, 0.28);
-      --max: 1180px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: 'Manrope', sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 50% 18%, rgba(255, 229, 158, 0.95), rgba(255, 201, 111, 0.28) 18%, transparent 36%),
-        linear-gradient(180deg, #4e8790 0%, #ef9961 34%, #f2c577 49%, #1f7d88 50%, #155f6d 68%, #103f4e 100%);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(180deg, rgba(255, 247, 220, 0.12) 0%, rgba(255, 247, 220, 0) 42%),
-        repeating-linear-gradient(
-          0deg,
-          rgba(216, 246, 240, 0.11) 0,
-          rgba(216, 246, 240, 0.11) 2px,
-          transparent 2px,
-          transparent 34px
-        );
-      opacity: 0.42;
-      z-index: 0;
-    }
-
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 50% 0 0;
-      pointer-events: none;
-      background:
-        repeating-linear-gradient(
-          180deg,
-          rgba(255, 240, 196, 0.08) 0,
-          rgba(255, 240, 196, 0.08) 2px,
-          transparent 2px,
-          transparent 24px
-        ),
-        linear-gradient(180deg, rgba(255, 198, 119, 0.16), rgba(14, 74, 88, 0.08));
-      opacity: 0.48;
-      z-index: 0;
-      animation: water-shimmer 12s linear infinite;
-    }
-
-    @keyframes water-shimmer {
-      0% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(10px);
-      }
-      100% {
-        transform: translateY(0);
-      }
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    .page-shell {
-      position: relative;
-      z-index: 1;
-      width: min(calc(100% - 24px), 1280px);
-      margin: 12px auto;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 32px;
-      overflow: hidden;
-      backdrop-filter: blur(16px);
-      background:
-        linear-gradient(180deg, rgba(255, 241, 211, 0.08), rgba(255, 241, 211, 0.02) 26%, rgba(12, 50, 59, 0.24) 52%, rgba(8, 31, 38, 0.42) 100%);
-      box-shadow: var(--shadow);
-    }
-
-    .nav {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 28px;
-      background: rgba(17, 51, 59, 0.64);
-      backdrop-filter: blur(18px);
-      border-bottom: 1px solid rgba(255, 239, 209, 0.12);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .brand-mark {
-      width: 48px;
-      height: 48px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, rgba(242, 184, 103, 0.95), rgba(228, 124, 74, 0.95));
-      display: grid;
-      place-items: center;
-      color: white;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      box-shadow: 0 14px 28px rgba(228, 124, 74, 0.24);
-    }
-
-    .brand-copy h1,
-    .section-title,
-    .hero-copy h2,
-    .flyer-copy h3 {
-      font-family: 'Playfair Display', serif;
-    }
-
-    .brand-copy h1 {
-      font-size: 1.35rem;
-      line-height: 1;
-    }
-
-    .brand-copy p {
-      color: var(--teal);
-      font-size: 0.76rem;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      margin-top: 5px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .nav-links a {
-      padding: 10px 16px;
-      border-radius: 999px;
-      color: var(--muted);
-      font-size: 0.95rem;
-      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-    }
-
-    .nav-links a:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: white;
-      transform: translateY(-1px);
-    }
-
-    .section {
-      width: min(calc(100% - 40px), var(--max));
-      margin: 0 auto;
-      padding: 72px 0;
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 34px;
-      align-items: center;
-      padding-top: 56px;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 16px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      color: var(--teal);
-      font-size: 0.84rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      margin-bottom: 18px;
-    }
-
-    .hero-copy h2 {
-      font-size: clamp(3rem, 7vw, 6rem);
-      line-height: 0.9;
-      margin-bottom: 20px;
-      text-shadow: 0 10px 32px rgba(0, 0, 0, 0.26);
-    }
-
-    .hero-copy p {
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.7;
-      max-width: 620px;
-    }
-
-    .hero-meta {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      margin-top: 26px;
-    }
-
-    .hero-meta-card,
-    .info-card,
-    .price-card,
-    .story-card,
-    .contact-card {
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      backdrop-filter: blur(18px);
-      box-shadow: var(--shadow);
-    }
-
-    .hero-meta-card {
-      padding: 18px 18px 20px;
-    }
-
-    .hero-meta-card span {
-      display: block;
-      color: var(--teal);
-      font-size: 0.76rem;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    .hero-meta-card strong {
-      display: block;
-      font-size: 1rem;
-      line-height: 1.45;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin-top: 28px;
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 14px 22px;
-      border-radius: 999px;
-      font-weight: 800;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-    }
-
-    .button:hover {
-      transform: translateY(-2px);
-    }
-
-    .button-primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-      color: white;
-      box-shadow: 0 18px 34px rgba(255, 92, 138, 0.26);
-    }
-
-    .button-secondary {
-      background: rgba(255, 248, 231, 0.08);
-      border: 1px solid rgba(255, 240, 207, 0.16);
-      color: white;
-    }
-
-    .flyer-card {
-      position: relative;
-      min-height: 720px;
-      border-radius: 32px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      cursor: pointer;
-    }
-
-    .flyer-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .flyer-copy {
-      position: absolute;
-      inset: auto 0 0 0;
-      padding: 32px 28px;
-      background: linear-gradient(180deg, rgba(10, 35, 40, 0.02) 0%, rgba(11, 45, 48, 0.68) 58%, rgba(8, 31, 36, 0.92) 100%);
-    }
-
-    .flyer-copy h3 {
-      font-size: clamp(2.2rem, 5vw, 4.2rem);
-      line-height: 0.9;
-      margin-bottom: 14px;
-    }
-
-    .flyer-copy p {
-      color: #fff7e8;
-      font-size: 1rem;
-      line-height: 1.6;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 20px;
-      margin-bottom: 28px;
-    }
-
-    .section-title {
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      line-height: 0.96;
-    }
-
-    .section-subtitle {
-      color: var(--muted);
-      max-width: 580px;
-      line-height: 1.7;
-    }
-
-    .info-grid,
-    .prices-grid,
-    .story-grid,
-    .contact-grid {
-      display: grid;
-      gap: 18px;
-    }
-
-    .info-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .info-card,
-    .price-card,
-    .story-card,
-    .contact-card {
-      padding: 24px;
-    }
-
-    .card-label {
-      display: inline-block;
-      margin-bottom: 12px;
-      color: var(--teal);
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      font-weight: 800;
-    }
-
-    .info-card h3,
-    .price-card h3,
-    .story-card h3,
-    .contact-card h3 {
-      font-size: 1.2rem;
-      margin-bottom: 12px;
-    }
-
-    .info-card p,
-    .price-card p,
-    .story-card p,
-    .contact-card p,
-    .story-card li {
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    .prices-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .price-tag {
-      font-size: 2.3rem;
-      font-weight: 800;
-      margin-bottom: 8px;
-      color: #fff;
-    }
-
-    .price-buttons {
-      display: grid;
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .pay-link {
-      display: block;
-      width: 100%;
-      text-align: center;
-      padding: 13px 16px;
-      border-radius: 14px;
-      background: rgba(243, 207, 136, 0.14);
-      border: 1px solid rgba(243, 207, 136, 0.26);
-      color: white;
-      font-weight: 700;
-      transition: background 0.2s ease, transform 0.2s ease;
-    }
-
-    .pay-link:hover {
-      background: rgba(240, 142, 86, 0.2);
-      transform: translateY(-1px);
-    }
-
-    .story-grid {
-      grid-template-columns: 1.05fr 0.95fr;
-    }
-
-    .story-card ul {
-      padding-left: 18px;
-      margin-top: 10px;
-    }
-
-    .story-card li + li {
-      margin-top: 8px;
-    }
-
-    .contact-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .contact-card a.inline-link {
-      color: var(--teal);
-      font-weight: 800;
-    }
-
-    .details-layout {
-      display: grid;
-      grid-template-columns: 0.92fr 1.08fr;
-      gap: 18px;
-      margin-top: 18px;
-    }
-
-    .details-intro {
-      padding: 24px;
-    }
-
-    .details-intro p {
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    .accordion-list {
-      display: grid;
-      gap: 14px;
-    }
-
-    .accordion-item {
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-
-    .accordion-trigger {
-      width: 100%;
-      border: 0;
-      background: transparent;
-      color: white;
-      text-align: left;
-      padding: 20px 22px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      cursor: pointer;
-      font: inherit;
-    }
-
-    .accordion-trigger:hover {
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .accordion-title {
-      font-size: 1.05rem;
-      font-weight: 800;
-    }
-
-    .accordion-kicker {
-      display: block;
-      color: var(--teal);
-      font-size: 0.76rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      margin-bottom: 7px;
-      font-weight: 800;
-    }
-
-    .accordion-icon {
-      flex: 0 0 auto;
-      width: 36px;
-      height: 36px;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
-      background: rgba(255, 255, 255, 0.08);
-      font-size: 1.4rem;
-      line-height: 1;
-      transition: transform 0.2s ease, background 0.2s ease;
-    }
-
-    .accordion-item.open .accordion-icon {
-      transform: rotate(45deg);
-      background: rgba(240, 142, 86, 0.18);
-    }
-
-    .accordion-panel {
-      display: none;
-      padding: 0 22px 22px;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    .accordion-item.open .accordion-panel {
-      display: block;
-    }
-
-    .info-spotlight {
-      display: grid;
-      grid-template-columns: 0.9fr 1.1fr;
-      gap: 18px;
-      margin-top: 22px;
-    }
-
-    .spotlight-card {
-      padding: 24px;
-    }
-
-    .spotlight-card p {
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    .spotlight-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .spotlight-chip {
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.06);
-      color: white;
-      padding: 10px 16px;
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-    }
-
-    .spotlight-chip:hover,
-    .spotlight-chip.active {
-      transform: translateY(-1px);
-      background: rgba(240, 142, 86, 0.16);
-      border-color: rgba(240, 142, 86, 0.4);
-    }
-
-    .spotlight-panel {
-      padding: 24px;
-      min-height: 100%;
-    }
-
-    .spotlight-kicker {
-      display: inline-block;
-      margin-bottom: 10px;
-      color: var(--teal);
-      font-size: 0.76rem;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      font-weight: 800;
-    }
-
-    .spotlight-panel h3 {
-      font-size: 1.3rem;
-      margin-bottom: 12px;
-    }
-
-    .spotlight-panel p {
-      color: var(--muted);
-      line-height: 1.75;
-    }
-
-    .spotlight-list {
-      list-style: none;
-      display: grid;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .spotlight-list li {
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text);
-      line-height: 1.6;
-    }
-
-    .spotlight-list strong {
-      color: var(--teal);
-    }
-
-    .flyer-lightbox {
-      position: fixed;
-      inset: 0;
-      z-index: 40;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background: rgba(0, 0, 0, 0.76);
-      backdrop-filter: blur(10px);
-    }
-
-    .flyer-lightbox.open {
-      display: flex;
-    }
-
-    .lightbox-dialog {
-      position: relative;
-      width: min(100%, 860px);
-      max-height: 92vh;
-      border-radius: 28px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.46);
-      background: #091417;
-    }
-
-    .lightbox-dialog img {
-      width: 100%;
-      max-height: 92vh;
-      object-fit: contain;
-      background: #091417;
-    }
-
-    .lightbox-close {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      width: 44px;
-      height: 44px;
-      border: 0;
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.56);
-      color: white;
-      cursor: pointer;
-      font-size: 1.4rem;
-      line-height: 1;
-    }
-
-    .footer {
-      width: min(calc(100% - 40px), var(--max));
-      margin: 0 auto;
-      padding: 0 0 34px;
-      color: rgba(255, 255, 255, 0.7);
-      text-align: center;
-      font-size: 0.92rem;
-    }
-
-    @media (max-width: 980px) {
-      .hero,
-      .info-spotlight,
-      .details-layout,
-      .story-grid,
-      .contact-grid,
-      .info-grid,
-      .prices-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-meta {
-        grid-template-columns: 1fr;
-      }
-
-      .flyer-card {
-        min-height: 560px;
-      }
-    }
-
-    @media (max-width: 720px) {
-      .page-shell {
-        width: min(calc(100% - 12px), 100%);
-        margin: 6px auto;
-        border-radius: 24px;
-      }
-
-      .nav {
-        padding: 16px 18px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 14px;
-      }
-
-      .nav-links {
-        width: 100%;
-        justify-content: flex-start;
-      }
-
-      .section {
-        width: min(calc(100% - 24px), var(--max));
-        padding: 54px 0;
-      }
-
-      .hero {
-        padding-top: 30px;
-      }
-
-      .flyer-card {
-        min-height: 460px;
-      }
-
-      .flyer-copy {
-        padding: 24px 18px;
-      }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{
+      height:auto;min-height:100vh;
+      background:#000;
+      font-family:'Poppins',sans-serif;
+      color:#fff;
+      overflow-x:hidden;
+    }
+    #club-room{
+      position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;
+      perspective:1500px;
+      transform-style:preserve-3d;
+      pointer-events:none;
+    }
+    .fog{
+      position:absolute;top:0;left:0;width:100%;height:100%;
+      background:linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0.2));
+      filter:blur(10px);
+      opacity:0.7;
+      animation:fogPulse 10s ease infinite;
+    }
+    @keyframes fogPulse{0%,100%{opacity:0.7;}50%{opacity:0.4;}}
+    .floor{
+      position:absolute;bottom:0;left:50%;width:300%;height:100%;
+      background:repeating-linear-gradient(0deg, #111 0px, #111 20px, #00ff00 20px, #00ff00 40px);
+      transform:translateX(-50%) rotateX(90deg);
+      box-shadow:0 0 50px #00ff00;
+      animation:floorGlow 4s ease infinite;
+    }
+    @keyframes floorGlow{0%,100%{box-shadow:0 0 50px #00ff00;}50%{box-shadow:0 0 100px #00ff00,0 0 200px #00ff00;}}
+    .wall{
+      position:absolute;width:300%;height:100%;
+      background:#1a0033;
+      box-shadow:inset 0 0 100px #ff00ff;
+    }
+    .wall-back{top:0;transform:translateZ(-100px);}
+    .wall-left{left:0;transform:rotateY(90deg) translateZ(-150px);}
+    .wall-right{right:0;transform:rotateY(-90deg) translateZ(-150px);}
+    .laser{
+      position:absolute;top:50%;left:50%;width:1px;height:400%;
+      background:currentColor;
+      box-shadow:0 0 15px currentColor,0 0 30px currentColor;
+      transform:translate(-50%,-50%) rotate(0deg);
+      opacity:0.9;
+    }
+    .laser1{color:#00ffff;}
+    .laser2{color:#ff00ff;}
+    .laser3{color:#00ff00;}
+    .laser4{color:#ff4500;}
+    .laser5{color:#ffff00;}
+    .sign{
+      position:fixed;top:15px;left:15px;
+      width:160px;height:50px;
+      background:#ff00ff;
+      box-shadow:0 0 30px #ff00ff;
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.5rem;font-weight:600;color:#000;
+      z-index:100;
+      animation:spinSign 8s linear infinite;
+      transform-origin:center;
+    }
+    @keyframes spinSign{0%{transform:rotateY(0deg);}100%{transform:rotateY(360deg);}}
+    .overlay{
+      position:relative;z-index:10;pointer-events:auto;
+      padding:90px 20px 40px 20px;
+      max-width:1200px;margin:0 auto;
+    }
+    .header{position:relative;margin-bottom:20px;text-align:center;}
+    .site-title{
+      font-size:2.2rem;font-weight:600;color:#ff00ff;
+      text-shadow:0 0 12px #ff00ff,0 0 24px #ff00ff;
+      animation:neonPulse 2s ease infinite;
+    }
+    .content{
+      display:flex;flex-wrap:wrap;gap:20px;
+      margin-top:20px;
+    }
+    .left{
+      flex:1 1 100%;display:flex;flex-direction:column;align-items:center;
+      padding:0 10px;
+    }
+    .notice{
+      text-align:center;font-weight:bold;color:#ff0000;
+      font-size:1.3rem;margin:15px 0;padding:12px 16px;
+      background:rgba(255,0,0,.1);border:2px solid #ff0000;
+      border-radius:10px;max-width:100%;
+      text-shadow:0 0 10px #ff0000;
+      animation:flashGrow 2s ease-in-out infinite;
+    }
+    .rsvp-button{
+      margin-top:20px;padding:14px 32px;background:#ff00ff;
+      color:#000;font-weight:600;text-decoration:none;border-radius:8px;
+      box-shadow:0 0 12px #ff00ff;transition:all .3s;
+      font-size:1.1rem;text-align:center;
+      min-width:280px;
+    }
+    .rsvp-button:hover{background:#00ff00;box-shadow:0 0 18px #00ff00;}
+    .rsvp-note{
+      margin-top:10px;font-size:0.9rem;color:#00ffff;text-align:center;
+      max-width:300px;text-shadow:0 0 5px #00ffff;
+    }
+    .pricing{
+      margin-top:18px;font-size:1.2rem;color:#00ff00;text-align:center;
+      text-shadow:0 0 8px #00ff00;
+      max-width:300px;
+    }
+    .pricing-note{
+      margin-top:6px;font-size:0.75rem;color:#ccc;text-align:center;
+      max-width:300px;line-height:1.3;
+    }
+    .countdown{
+      margin-top:22px;font-size:1.6rem;color:#00ffff;
+      text-shadow:0 0 10px #00ffff;text-align:center;
+      max-width:300px;
+    }
+    .flyer{
+      max-width:90%;margin:25px auto;border-radius:12px;
+      box-shadow:0 0 20px #00ff00;display:block;
+    }
+    .events{
+      flex:1 1 100%;padding:20px;
+      background:rgba(26,0,51,.5);border-radius:12px;
+      max-height:none;overflow-y:visible;
+    }
+    .events h2{
+      font-size:1.8rem;color:#00ffff;
+      text-shadow:0 0 10px #00ffff;animation:neonPulse 2s ease infinite;
+      text-align:center;margin-bottom:15px;
+    }
+    .event{
+      margin-bottom:20px;padding:14px;border-radius:8px;
+      background:rgba(0,0,0,.3);transition:transform .3s,box-shadow .3s;
+    }
+    .event:hover{transform:scale(1.02);box-shadow:0 0 15px #ff00ff;}
+    .event h3{
+      font-size:1.35rem;color:#ff00ff!important;
+      text-shadow:0 0 10px #ff00ff;animation:neonPulse 3s ease infinite!important;
+      margin-bottom:8px;
+    }
+    .event p{
+      font-size:0.95rem;color:#00ffff;
+      text-shadow:0 0 5px #00ffff;margin:6px 0;
+    }
+    .event a{
+      color:#ff00ff;text-decoration:none;font-weight:600;
+      text-shadow:0 0 5px #ff00ff;display:inline-block;margin-top:8px;
+    }
+    .event a:hover{color:#00ff00;text-shadow:0 0 10px #00ff00;}
+    @keyframes neonPulse{0%,100%{text-shadow:0 0 10px #ff00ff,0 0 20px #ff00ff}50%{text-shadow:0 0 15px #00ffff,0 0 25px #00ffff}}
+    @keyframes flashGrow{0%,100%{transform:scale(1);opacity:1;text-shadow:0 0 10px #ff0000,0 0 20px #ff0000}50%{transform:scale(1.05);opacity:.9;text-shadow:0 0 25px #ff0000,0 0 35px #ff0000}}
+
+    ::-webkit-scrollbar{width:10px;}
+    ::-webkit-scrollbar-track{background:#000;}
+    ::-webkit-scrollbar-thumb{background:#333;border:2px solid #000;}
+    ::-webkit-scrollbar-thumb:hover{background:#555;}
+
+    @media (min-width:768px){
+      .content{flex-direction:row;}
+      .left{flex:2 1 60%;padding:0;}
+      .events{flex:1 1 35%;max-height:70vh;overflow-y:auto;}
+      .sign{width:200px;height:60px;font-size:1.8rem;top:20px;left:20px;}
+      .notice{font-size:1.4rem;padding:12px 20px;}
+      .rsvp-button{font-size:1.1rem;padding:12px 30px;min-width:auto;}
+      .pricing{font-size:1.2rem;max-width:100%;}
+      .pricing-note{font-size:0.75rem;max-width:100%;}
+      .countdown{font-size:1.6rem;max-width:100%;}
+      .overlay{padding:100px 50px 40px 50px;}
+      .flyer{max-width:80%;}
     }
   </style>
 </head>
 <body>
-  <div class="page-shell">
-    <header class="nav">
-      <div class="brand">
-        <div class="brand-mark">OLU</div>
-        <div class="brand-copy">
-          <h1>One Leg Up</h1>
-          <p>Adults Only Socials</p>
-        </div>
-      </div>
-      <nav class="nav-links">
-        <a href="#home">Home</a>
-        <a href="#event">Event</a>
-        <a href="#tickets">Tickets</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </header>
 
-    <main>
-      <section class="section hero" id="home">
-        <div class="hero-copy">
-          <div class="eyebrow">April 18th, 2026 Featured Event</div>
-          <h2>Tropical Temptation</h2>
-          <p>
-            A steamy poolside night built for open-minded adults, tropical energy, and a full evening of flirtation.
-            Join us in Fresno for the next One Leg Up party from <strong>4 PM to Midnight</strong>. Mixers will be
-            provided, and the vibe stays sexy, social, and unforgettable all night long.
-          </p>
-
-          <div class="hero-meta">
-            <div class="hero-meta-card">
-              <span>Date</span>
-              <strong>April 18th, 2026</strong>
-            </div>
-            <div class="hero-meta-card">
-              <span>Time</span>
-              <strong>4 PM to Midnight</strong>
-            </div>
-            <div class="hero-meta-card">
-              <span>Location</span>
-              <strong>1838 East Everglade Ave, Fresno, CA 93720</strong>
-            </div>
-          </div>
-
-          <div class="hero-actions">
-            <a class="button button-primary" href="#tickets">Reserve Your Spot</a>
-            <a class="button button-secondary" href="sms:+15595493882">Text to RSVP</a>
-          </div>
-        </div>
-
-        <div class="flyer-card">
-          <img src="images/tropicaltemptationflyer.svg" alt="Tropical Temptation event flyer" />
-          <div class="flyer-copy">
-            <h3>Tropical Temptation</h3>
-            <p>April 18th, 2026<br />4 PM to Midnight<br />1838 East Everglade Ave, Fresno, CA 93720</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="section" id="event">
-        <div class="section-header">
-          <div>
-            <div class="eyebrow">What To Expect</div>
-            <h2 class="section-title">Poolside, Tropical, and Adults Only</h2>
-          </div>
-          <p class="section-subtitle">
-            This is the upcoming One Leg Up party now featured across the site. Same Fresno location, same simple RSVP flow,
-            and the same advance-pay requirement for single males.
-          </p>
-        </div>
-
-        <div class="info-grid">
-          <article class="info-card">
-            <span class="card-label">Event Details</span>
-            <h3>Tropical Temptation</h3>
-            <p>Slip into a warm-weather mood with pool play, open-minded company, mixers provided, and BYOB energy from late afternoon into midnight.</p>
-          </article>
-          <article class="info-card">
-            <span class="card-label">House Rules</span>
-            <h3>Arrive Ready</h3>
-            <p>Single males must pay in advance or they will not be admitted. Please send the exact amount so your entry can be confirmed without delays.</p>
-          </article>
-          <article class="info-card">
-            <span class="card-label">Venue</span>
-            <h3>Fresno Private Residence</h3>
-            <p>1838 East Everglade Ave, Fresno, CA 93720. The event runs from 4 PM to Midnight, giving everyone time to mingle, relax, and turn the heat up.</p>
-          </article>
-        </div>
-
-        <div class="details-layout">
-          <article class="info-card details-intro">
-            <span class="card-label">Need More Info?</span>
-            <h3>Tap Open For Extra Details</h3>
-            <p>
-              Instead of crowding the page, the sections on the right open only when someone wants more. That gives you room
-              for reminders, RSVP info, party notes, and what to expect without cluttering the main pitch.
-            </p>
-          </article>
-
-          <div class="accordion-list">
-            <article class="accordion-item">
-              <button class="accordion-trigger" type="button" aria-expanded="false">
-                <span>
-                  <span class="accordion-kicker">Arrival</span>
-                  <span class="accordion-title">When should guests show up?</span>
-                </span>
-                <span class="accordion-icon">+</span>
-              </button>
-              <div class="accordion-panel">
-                Doors open at 4 PM and the party runs through midnight. Coming earlier in the evening gives everyone more time to settle in, socialize, and enjoy the poolside atmosphere.
-              </div>
-            </article>
-
-            <article class="accordion-item">
-              <button class="accordion-trigger" type="button" aria-expanded="false">
-                <span>
-                  <span class="accordion-kicker">Payments</span>
-                  <span class="accordion-title">What should guests know before paying?</span>
-                </span>
-                <span class="accordion-icon">+</span>
-              </button>
-              <div class="accordion-panel">
-                Use the exact payment amount shown on the page. Single males must pay in advance or they will not be admitted. Couples can use PayPal, Cash App, or Venmo with the matching amount.
-              </div>
-            </article>
-
-            <article class="accordion-item">
-              <button class="accordion-trigger" type="button" aria-expanded="false">
-                <span>
-                  <span class="accordion-kicker">What To Bring</span>
-                  <span class="accordion-title">What fits the vibe best?</span>
-                </span>
-                <span class="accordion-icon">+</span>
-              </button>
-              <div class="accordion-panel">
-                Bring your best tropical energy, anything you need for a poolside evening, and whatever you plan to drink since the event is BYOB. Mixers will be provided.
-              </div>
-            </article>
-
-            <article class="accordion-item">
-              <button class="accordion-trigger" type="button" aria-expanded="false">
-                <span>
-                  <span class="accordion-kicker">RSVP</span>
-                  <span class="accordion-title">How do guests get a quick answer?</span>
-                </span>
-                <span class="accordion-icon">+</span>
-              </button>
-              <div class="accordion-panel">
-                The fastest route is to text <a class="inline-link" href="sms:+15595493882">(559) 549-3882</a>. That keeps RSVP questions, confirmations, and follow-up details all in one place.
-              </div>
-            </article>
-          </div>
-        </div>
-
-        <div class="info-spotlight">
-          <article class="info-card spotlight-card">
-            <span class="card-label">Quick Answers</span>
-            <h3>Open The Details Guests Ask About Most</h3>
-            <p>
-              These buttons swap in the extra info without sending anyone to another page. It is a cleaner way to answer the common questions
-              about timing, vibe, and entry rules while keeping the event page fast to scan.
-            </p>
-            <div class="spotlight-actions">
-              <button class="spotlight-chip active" type="button" data-spotlight="arrival">Arrival Window</button>
-              <button class="spotlight-chip" type="button" data-spotlight="vibe">Party Vibe</button>
-              <button class="spotlight-chip" type="button" data-spotlight="entry">Entry Notes</button>
-              <button class="spotlight-chip" type="button" data-spotlight="rsvp">RSVP Flow</button>
-            </div>
-          </article>
-
-          <article class="info-card spotlight-panel" id="spotlightPanel" aria-live="polite">
-            <span class="spotlight-kicker">Arrival Window</span>
-            <h3>Come early enough to settle in and connect</h3>
-            <p>
-              Guests can arrive starting at 4 PM, and the event runs until midnight. Earlier arrivals usually get the smoothest check-in,
-              the most time by the pool, and more space to meet people before the night fully peaks.
-            </p>
-            <ul class="spotlight-list">
-              <li><strong>Start:</strong> 4 PM doors open</li>
-              <li><strong>Best rhythm:</strong> arrive early, mingle, relax, then let the night build</li>
-              <li><strong>Location:</strong> 1838 East Everglade Ave, Fresno, CA 93720</li>
-            </ul>
-          </article>
-        </div>
-      </section>
-
-      <section class="section" id="tickets">
-        <div class="section-header">
-          <div>
-            <div class="eyebrow">Tickets & Payments</div>
-            <h2 class="section-title">Reserve Early</h2>
-          </div>
-          <p class="section-subtitle">
-            The payment structure stays the same as your previous flyers and pages. Pick your option below and use the exact amount when paying.
-          </p>
-        </div>
-
-        <div class="prices-grid">
-          <article class="price-card">
-            <span class="card-label">Couples</span>
-            <div class="price-tag">$40</div>
-            <p>Perfect for couples joining the tropical party together.</p>
-            <div class="price-buttons">
-              <a class="pay-link" href="https://paypal.me/0neLegUp/40" target="_blank" rel="noreferrer">Pay $40 with PayPal</a>
-              <a class="pay-link" href="https://cash.app/$0neLegUp?amount=40" target="_blank" rel="noreferrer">Pay $40 with Cash App</a>
-              <a class="pay-link" href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=40&note=Tropical%20Temptation%20Couples" target="_blank" rel="noreferrer">Pay $40 with Venmo</a>
-            </div>
-          </article>
-
-          <article class="price-card">
-            <span class="card-label">Single Male</span>
-            <div class="price-tag">$80</div>
-            <p>Advance payment required. Door pricing may be higher, and unpaid entry is not guaranteed.</p>
-            <div class="price-buttons">
-              <a class="pay-link" href="https://paypal.me/0neLegUp/80" target="_blank" rel="noreferrer">Pay $80 with PayPal</a>
-              <a class="pay-link" href="https://cash.app/$0neLegUp?amount=80" target="_blank" rel="noreferrer">Pay $80 with Cash App</a>
-              <a class="pay-link" href="https://venmo.com/u/One_Leg_Up?txn=pay&amount=80&note=Tropical%20Temptation%20Single%20Male" target="_blank" rel="noreferrer">Pay $80 with Venmo</a>
-            </div>
-          </article>
-        </div>
-
-        <div class="info-spotlight">
-          <article class="info-card spotlight-card">
-            <span class="card-label">Payment Help</span>
-            <h3>Show The Payment Rules Without Making The Section Feel Heavy</h3>
-            <p>
-              The panel on the right can switch between the key reminders guests usually need before they send payment or text to confirm.
-            </p>
-            <div class="spotlight-actions">
-              <button class="spotlight-chip active" type="button" data-ticket-spotlight="amounts">Exact Amounts</button>
-              <button class="spotlight-chip" type="button" data-ticket-spotlight="single-male">Single Male Policy</button>
-              <button class="spotlight-chip" type="button" data-ticket-spotlight="apps">Payment Apps</button>
-            </div>
-          </article>
-
-          <article class="info-card spotlight-panel" id="ticketSpotlightPanel" aria-live="polite">
-            <span class="spotlight-kicker">Exact Amounts</span>
-            <h3>Send the exact amount listed for faster confirmation</h3>
-            <p>
-              Keeping payments exact makes it much easier to confirm reservations quickly and match each RSVP to the right guest type.
-            </p>
-            <ul class="spotlight-list">
-              <li><strong>Couples:</strong> $40</li>
-              <li><strong>Single Male:</strong> $80 in advance</li>
-              <li><strong>Tip:</strong> text after payment so your RSVP can be confirmed faster</li>
-            </ul>
-          </article>
-        </div>
-      </section>
-
-      <section class="section" id="about">
-        <div class="section-header">
-          <div>
-            <div class="eyebrow">About One Leg Up</div>
-            <h2 class="section-title">Built For Sexy, Social Nights</h2>
-          </div>
-          <p class="section-subtitle">
-            One Leg Up has been creating open-minded adult parties since 2012, with Shane and Aly hosting events that blend playful energy,
-            welcoming company, and plenty of unforgettable stories.
-          </p>
-        </div>
-
-        <div class="story-grid">
-          <article class="story-card">
-            <span class="card-label">The Hosts</span>
-            <h3>Shane & Aly</h3>
-            <p>
-              Shane handles the planning, logistics, and party flow. Aly brings the atmosphere, social spark, and playful touch that turns a gathering into a full-on experience.
-              Together they host nights that are flirty, inviting, and designed for adults who want to relax, connect, and let loose.
-            </p>
-          </article>
-          <article class="story-card">
-            <span class="card-label">The Vibe</span>
-            <h3>What Makes It Work</h3>
-            <ul>
-              <li>Private Fresno location with poolside tropical energy</li>
-              <li>Mixers provided and BYOB-friendly atmosphere</li>
-              <li>Welcoming space for open-minded adults to mingle and play</li>
-              <li>Simple RSVP flow with advance payment options</li>
-            </ul>
-          </article>
-        </div>
-      </section>
-
-      <section class="section" id="contact">
-        <div class="section-header">
-          <div>
-            <div class="eyebrow">Get In Touch</div>
-            <h2 class="section-title">Text To RSVP</h2>
-          </div>
-          <p class="section-subtitle">
-            If you need details, want to confirm attendance, or just want to make sure you are on the list, send a text and we will get back to you.
-          </p>
-        </div>
-
-        <div class="contact-grid">
-          <article class="contact-card">
-            <span class="card-label">Contact</span>
-            <h3>Fastest Way To Reach Us</h3>
-            <p><a class="inline-link" href="sms:+15595493882">(559) 549-3882</a></p>
-            <p>Text us to RSVP and lock in your place for Tropical Temptation.</p>
-          </article>
-          <article class="contact-card">
-            <span class="card-label">Reminder</span>
-            <h3>Before You Arrive</h3>
-            <p>Bring your best tropical energy, use the exact payment amount, and remember that single males must pay in advance for entry.</p>
-          </article>
-        </div>
-      </section>
-    </main>
-
-    <footer class="footer">
-      <p>&copy; <span id="year"></span> One Leg Up. Tropical Temptation featured for April 18th, 2026.</p>
-    </footer>
+  <div id="club-room">
+    <div class="fog"></div>
+    <div class="floor"></div>
+    <div class="wall wall-back"></div>
+    <div class="wall wall-left"></div>
+    <div class="wall wall-right"></div>
+    <div class="laser laser1"></div>
+    <div class="laser laser2"></div>
+    <div class="laser laser3"></div>
+    <div class="laser laser4"></div>
+    <div class="laser laser5"></div>
   </div>
 
-  <div class="flyer-lightbox" id="flyerLightbox" aria-hidden="true">
-    <div class="lightbox-dialog">
-      <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Close flyer preview">&times;</button>
-      <img src="images/tropicaltemptationflyer.svg" alt="Large Tropical Temptation flyer preview" />
+  <div class="sign">One Leg Up</div>
+
+  <div class="overlay">
+    <div class="header">
+      <h1 class="site-title">One Leg Up</h1>
+    </div>
+    <div class="content">
+      <div class="left">
+        <div class="notice">
+          All pay will be cash in envelopes at the door.
+        </div>
+        <a href="sms:15597875801" class="rsvp-button">
+          Text 559-787-5801 for address
+        </a>
+        <div class="rsvp-note">
+          You must text the number to receive the party address.
+        </div>
+        <div class="pricing">
+          Single Males $80*, Couples $40, Single Females free
+        </div>
+        <div class="pricing-note">
+          * ask about a discount for bartending for 2 hours.
+        </div>
+        <div class="countdown" id="countdown">Loading...</div>
+        <img src="images/tropicaltemptationflyer.jpg" alt="Tropical Temptation Party Flyer" class="flyer">
+      </div>
+      <div class="events">
+        <h2>Upcoming Parties</h2>
+        <div id="upcoming-container"></div>
+
+        <h2>Past Events</h2>
+        <div id="past-container"></div>
+      </div>
     </div>
   </div>
 
   <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+    const allParties = [
+      {
+        date: "TBD",
+        title: "Newbie-Friendly Party",
+        desc: "Are you new to the lifestyle? This party is for you! 8 PM to 2 AM. Doors close 10 PM. BYOB. Ask us questions and learn from our experience!<br><strong>Cross streets: Maple & Shepherd</strong>",
+        sls: "#",
+        slsText: "View on SLS (link coming soon)"
+      },
+      {
+        date: "2025-11-15",
+        title: "NEON GLOW PARTY",
+        desc: "Light up the night! Dress in vibrant neon. 8 PM to 2 AM. Doors close 10 PM. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
+        sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642",
+        slsText: "View on SLS"
+      },
+      {
+        date: "2025-10-04",
+        title: "Oktoberfest Party",
+        desc: "Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
+        sls: "https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628",
+        slsText: "View on SLS"
+      },
+      {
+        date: "2025-07-20",
+        title: "Sunday Funday Pool Party",
+        desc: "Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB<br><strong>Cross streets: Maple & Shepherd</strong>",
+        sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723",
+        slsText: "View on SLS"
+      },
+      {
+        date: "2025-05-31",
+        title: "Skinny Dipping Pool Party",
+        desc: "<strong>Cross streets: Maple & Shepherd</strong>",
+        sls: "https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639",
+        slsText: "View on SLS"
+      }
+    ];
 
-    const accordionItems = document.querySelectorAll('.accordion-item');
-    accordionItems.forEach((item) => {
-      const button = item.querySelector('.accordion-trigger');
-      button.addEventListener('click', () => {
-        const isOpen = item.classList.toggle('open');
-        button.setAttribute('aria-expanded', String(isOpen));
+    function parseLocalDate(dateStr) {
+      if (dateStr === "TBD") return null;
+      const [y, m, d] = dateStr.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    // Sort real dates, keep TBD at the top of Upcoming
+    const now = new Date();
+    let nextEventEnd = null;
+
+    const upcomingContainer = document.getElementById('upcoming-container');
+    const pastContainer = document.getElementById('past-container');
+
+    allParties.forEach(party => {
+      let eventDate = parseLocalDate(party.date);
+      let isTBD = party.date === "TBD";
+      let displayDate = isTBD ? "TBD" : eventDate.toLocaleDateString('en-US', {
+        month: 'long', day: 'numeric', year: 'numeric'
       });
+
+      let eventEnd = null;
+      if (!isTBD) {
+        eventEnd = new Date(eventDate);
+        eventEnd.setDate(eventEnd.getDate() + 1);
+        eventEnd.setHours(2, 0, 0, 0);
+      }
+
+      const isUpcoming = isTBD || now < eventEnd;
+
+      const eventHTML = `
+        <div class="event" data-date="${party.date}">
+          <h3>${party.title}</h3>
+          <p>Date: ${displayDate}</p>
+          <p>${party.desc || ''}</p>
+          <a href="${party.sls}" target="_blank">${party.slsText}</a>
+        </div>
+      `;
+
+      if (isUpcoming) {
+        upcomingContainer.insertAdjacentHTML('beforeend', eventHTML);
+        if (!isTBD && (!nextEventEnd || eventEnd < nextEventEnd)) {
+          nextEventEnd = eventEnd;
+        }
+      } else {
+        pastContainer.insertAdjacentHTML('beforeend', eventHTML);
+      }
     });
 
-    const spotlightContent = {
-      arrival: {
-        kicker: 'Arrival Window',
-        title: 'Come early enough to settle in and connect',
-        body: 'Guests can arrive starting at 4 PM, and the event runs until midnight. Earlier arrivals usually get the smoothest check-in, the most time by the pool, and more space to meet people before the night fully peaks.',
-        items: [
-          '<strong>Start:</strong> 4 PM doors open',
-          '<strong>Best rhythm:</strong> arrive early, mingle, relax, then let the night build',
-          '<strong>Location:</strong> 1838 East Everglade Ave, Fresno, CA 93720'
-        ]
-      },
-      vibe: {
-        kicker: 'Party Vibe',
-        title: 'Tropical, social, playful, and built for adults',
-        body: 'The event is designed to feel warm, open, and sexy without being confusing or overproduced. Expect poolside energy, mixers provided, BYOB flexibility, and a crowd that comes to unwind and connect.',
-        items: [
-          '<strong>Setting:</strong> private Fresno residence with pool access',
-          '<strong>Atmosphere:</strong> tropical styling and adults-only social energy',
-          '<strong>Bring:</strong> poolside essentials and your own drinks'
-        ]
-      },
-      entry: {
-        kicker: 'Entry Notes',
-        title: 'A few simple rules keep the night moving smoothly',
-        body: 'The biggest entry rule is the advance-pay requirement for single males. That helps keep the guest list organized and avoids confusion at the door.',
-        items: [
-          '<strong>Single males:</strong> must pay in advance to be admitted',
-          '<strong>Exact amounts:</strong> use the listed price when paying',
-          '<strong>Confirmation:</strong> text after payment if you want the quickest follow-up'
-        ]
-      },
-      rsvp: {
-        kicker: 'RSVP Flow',
-        title: 'Texting is the fastest path to confirmation',
-        body: 'Keeping RSVP questions and confirmations in one text thread makes the process much easier. It also gives guests one direct place to ask follow-up questions.',
-        items: [
-          '<strong>Text:</strong> (559) 549-3882',
-          '<strong>Use it for:</strong> RSVP questions, confirmation, and follow-up details',
-          '<strong>Best practice:</strong> send a text right after payment if you already reserved'
-        ]
-      }
-    };
-
-    const ticketSpotlightContent = {
-      amounts: {
-        kicker: 'Exact Amounts',
-        title: 'Send the exact amount listed for faster confirmation',
-        body: 'Keeping payments exact makes it much easier to confirm reservations quickly and match each RSVP to the right guest type.',
-        items: [
-          '<strong>Couples:</strong> $40',
-          '<strong>Single Male:</strong> $80 in advance',
-          '<strong>Tip:</strong> text after payment so your RSVP can be confirmed faster'
-        ]
-      },
-      'single-male': {
-        kicker: 'Single Male Policy',
-        title: 'Advance payment is required before entry',
-        body: 'This part is worth making extra visible because it is the biggest gatekeeping rule on the page. It reduces confusion and helps avoid last-minute problems at the door.',
-        items: [
-          '<strong>Required:</strong> payment before arrival',
-          '<strong>Not guaranteed:</strong> unpaid walk-up entry',
-          '<strong>Best move:</strong> reserve early and text once sent'
-        ]
-      },
-      apps: {
-        kicker: 'Payment Apps',
-        title: 'Guests can use whichever option works best for them',
-        body: 'The page keeps all three app links visible, but the quick panel makes it easy to explain that the amount should stay the same across PayPal, Cash App, and Venmo.',
-        items: [
-          '<strong>Apps:</strong> PayPal, Cash App, and Venmo',
-          '<strong>Match the amount:</strong> use the exact listed price in every app',
-          '<strong>Reminder:</strong> include the right guest type when possible'
-        ]
-      }
-    };
-
-    function setupSpotlight(buttonSelector, panelId, contentMap) {
-      const panel = document.getElementById(panelId);
-      const buttons = document.querySelectorAll(buttonSelector);
-
-      if (!panel || !buttons.length) {
+    // Countdown only uses real upcoming events
+    const countdownEl = document.getElementById('countdown');
+    function updateCountdown() {
+      if (!nextEventEnd) {
+        countdownEl.textContent = 'No upcoming dated events';
         return;
       }
-
-      const kicker = panel.querySelector('.spotlight-kicker');
-      const title = panel.querySelector('h3');
-      const body = panel.querySelector('p');
-      const list = panel.querySelector('.spotlight-list');
-
-      function renderSpotlight(key) {
-        const data = contentMap[key];
-        if (!data) {
-          return;
-        }
-
-        kicker.textContent = data.kicker;
-        title.textContent = data.title;
-        body.textContent = data.body;
-        list.innerHTML = data.items.map((item) => `<li>${item}</li>`).join('');
-
-        buttons.forEach((button) => {
-          const isActive = button.dataset.spotlight === key || button.dataset.ticketSpotlight === key;
-          button.classList.toggle('active', isActive);
-          button.setAttribute('aria-pressed', String(isActive));
-        });
+      const diff = nextEventEnd - Date.now();
+      if (diff <= 0) {
+        location.reload();
+        return;
       }
-
-      buttons.forEach((button) => {
-        button.addEventListener('click', () => {
-          renderSpotlight(button.dataset.spotlight || button.dataset.ticketSpotlight);
-        });
-      });
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      countdownEl.innerHTML = `${d}d : ${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s`;
     }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
 
-    setupSpotlight('[data-spotlight]', 'spotlightPanel', spotlightContent);
-    setupSpotlight('[data-ticket-spotlight]', 'ticketSpotlightPanel', ticketSpotlightContent);
+    // Lasers animation
+    const lasers = document.querySelectorAll('.laser');
+    lasers.forEach(laser => {
+      let currentAngle = Math.random() * 360;
+      let isAnimating = false;
 
-    const flyerCard = document.querySelector('.flyer-card');
-    const flyerLightbox = document.getElementById('flyerLightbox');
-    const lightboxClose = document.getElementById('lightboxClose');
-
-    function closeLightbox() {
-      flyerLightbox.classList.remove('open');
-      flyerLightbox.setAttribute('aria-hidden', 'true');
-    }
-
-    flyerCard.addEventListener('click', () => {
-      flyerLightbox.classList.add('open');
-      flyerLightbox.setAttribute('aria-hidden', 'false');
-    });
-
-    lightboxClose.addEventListener('click', closeLightbox);
-    flyerLightbox.addEventListener('click', (event) => {
-      if (event.target === flyerLightbox) {
-        closeLightbox();
+      function getRandomDuration() {
+        return 3000 + Math.random() * 4000;
       }
-    });
 
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && flyerLightbox.classList.contains('open')) {
-        closeLightbox();
+      function animate() {
+        if (isAnimating) return;
+        isAnimating = true;
+        const targetAngle = Math.random() * 360;
+        const duration = getRandomDuration();
+        laser.style.transition = `transform ${duration}ms ease-in-out`;
+        laser.style.transform = `translate(-50%, -50%) rotate(${targetAngle}deg)`;
+        setTimeout(() => {
+          currentAngle = targetAngle;
+          isAnimating = false;
+          animate();
+        }, duration);
       }
+
+      laser.style.transform = `translate(-50%, -50%) rotate(${currentAngle}deg)`;
+      setTimeout(animate, 0);
     });
   </script>
 </body>
