@@ -476,6 +476,7 @@
     // Sort real dates, keep TBD at the top of Upcoming
     const now = new Date();
     let nextEventEnd = null;
+    let nextEventTitle = '';
 
     const upcomingContainer = document.getElementById('upcoming-container');
     const pastContainer = document.getElementById('past-container');
@@ -509,6 +510,7 @@
         upcomingContainer.insertAdjacentHTML('beforeend', eventHTML);
         if (!isTBD && (!nextEventEnd || eventEnd < nextEventEnd)) {
           nextEventEnd = eventEnd;
+          nextEventTitle = party.title;
         }
       } else {
         pastContainer.insertAdjacentHTML('beforeend', eventHTML);
@@ -531,7 +533,9 @@
       const h = Math.floor((diff % 86400000) / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       const s = Math.floor((diff % 60000) / 1000);
-      countdownEl.innerHTML = `${d}d : ${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s`;
+      const dayLabel = d === 1 ? 'day' : 'days';
+      const nextPartySuffix = nextEventTitle ? ` til ${nextEventTitle}` : '';
+      countdownEl.textContent = `${d} ${dayLabel} : ${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s${nextPartySuffix}`;
     }
     updateCountdown();
     setInterval(updateCountdown, 1000);
