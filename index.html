@@ -533,7 +533,8 @@
       const h = Math.floor((diff % 86400000) / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       const s = Math.floor((diff % 60000) / 1000);
-      countdownEl.textContent = `${d}d : ${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s days til ${nextEventTitle}`;
+      const nextPartySuffix = nextEventTitle ? ` days til ${nextEventTitle}` : '';
+      countdownEl.textContent = `${d} days : ${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s${nextPartySuffix}`;
     }
     updateCountdown();
     setInterval(updateCountdown, 1000);
