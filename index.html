@@ -117,14 +117,12 @@
       width:100%;
       display:flex;
       justify-content:center;
-      order:1;
     }
     .info-stack{
       width:100%;
       display:flex;
       flex-direction:column;
       align-items:center;
-      order:2;
     }
     .notice{
       text-align:center;font-weight:bold;color:#f8f0e8;
@@ -278,20 +276,16 @@
       .left{
         grid-column:2;
         padding:0;
-        display:grid;
-        grid-template-columns:minmax(0, 1fr);
-        grid-template-areas:
-          "info"
-          "flyer";
+        display:flex;
+        flex-direction:column;
         gap:10px;
         align-items:start;
       }
       .flyer-wrap{
-        grid-area:flyer;
+        grid-column:1 / -1;
         justify-content:center;
       }
       .info-stack{
-        grid-area:info;
         width:100%;
         display:grid;
         grid-template-columns:minmax(0, 1fr) minmax(0, 1fr);
@@ -386,12 +380,12 @@
         <p class="expect-location"><strong>Location zone:</strong> Maple &amp; Shepherd area in North Fresno (exact address texted after RSVP approval).</p>
       </section>
       <div class="left">
-        <div class="flyer-wrap">
-          <img src="https://github.com/user-attachments/assets/7681a40e-fbb4-4e3b-afaa-e8264741141a" alt="Playboy Pool Party Flyer" class="flyer">
-        </div>
         <div class="info-stack">
           <div class="notice">
             All pay is cash in envelopes at the door — please write your <strong>SLS**</strong> or <strong>Kasidie</strong> profile name on your envelope.
+          </div>
+          <div class="flyer-wrap">
+            <img src="https://github.com/user-attachments/assets/7681a40e-fbb4-4e3b-afaa-e8264741141a" alt="Playboy Pool Party Flyer" class="flyer">
           </div>
           <a href="sms:15597875801" class="rsvp-button">
             Text us for address
