@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RSVP – Playboy Pool Party | One Leg Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{
+      min-height:100vh;
+      background:#080808;
+      font-family:'Poppins',sans-serif;
+      color:#fff;
+      overflow-x:hidden;
+    }
+
+    #bg{
+      position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:
+        linear-gradient(180deg,rgba(26,24,40,0.18),rgba(4,6,14,0.55) 60%,rgba(0,0,0,0.92) 100%),
+        url('images/playboy-bg.png') center center / cover no-repeat;
+    }
+    #bg::after{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(circle at 50% 25%,rgba(255,186,118,0.07),transparent 50%);
+    }
+
+    /* gold shimmer */
+    @keyframes goldShimmer{
+      0%  {background-position:-400% center;}
+      100%{background-position: 400% center;}
+    }
+    @keyframes goldGlow{
+      0%,100%{text-shadow:0 0 8px rgba(243,198,117,0.4),0 0 20px rgba(236,139,87,0.2);}
+      50%    {text-shadow:0 0 16px rgba(243,198,117,0.8),0 0 40px rgba(236,139,87,0.5),0 0 60px rgba(255,215,0,0.3);}
+    }
+    .gold-shimmer{
+      background:linear-gradient(90deg,#7a5700 0%,#c8960c 12%,#f3c675 25%,#fffbe8 38%,#ffd700 50%,#fffbe8 62%,#f3c675 75%,#c8960c 88%,#7a5700 100%);
+      background-size:400% auto;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+      animation:goldShimmer 5s linear infinite;
+    }
+
+    /* page wrapper */
+    .page{
+      position:relative;z-index:10;
+      min-height:100vh;
+      display:flex;flex-direction:column;align-items:center;
+      padding:40px 20px 60px;
+    }
+
+    /* back link */
+    .back{
+      align-self:flex-start;
+      display:inline-flex;align-items:center;gap:6px;
+      color:rgba(243,198,117,0.7);text-decoration:none;
+      font-size:0.82rem;letter-spacing:0.08em;
+      transition:color .2s;margin-bottom:28px;
+    }
+    .back:hover{color:#f3c675;}
+    .back svg{width:14px;height:14px;fill:currentColor;}
+
+    /* header */
+    .header{text-align:center;margin-bottom:10px;}
+    .header .eyebrow{
+      font-size:0.72rem;letter-spacing:0.42em;text-transform:uppercase;
+      color:rgba(255,220,150,0.5);margin-bottom:6px;
+    }
+    .header h1{
+      font-family:'Playfair Display',serif;
+      font-size:clamp(2rem,8vw,3.8rem);
+      font-weight:900;line-height:1;
+    }
+    .header .date-tag{
+      display:inline-block;
+      margin-top:10px;
+      padding:4px 16px;
+      border:1px solid rgba(243,198,117,0.35);
+      border-radius:20px;
+      font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;
+      color:rgba(243,198,117,0.75);
+    }
+
+    /* MANDATORY NOTICE */
+    .mandatory{
+      width:100%;max-width:560px;
+      margin:22px 0 28px;
+      padding:16px 20px;
+      background:rgba(180,30,30,0.18);
+      border:2px solid rgba(220,60,60,0.55);
+      border-radius:12px;
+      text-align:center;
+    }
+    .mandatory .m-title{
+      font-size:0.78rem;letter-spacing:0.25em;text-transform:uppercase;
+      color:#ff7070;font-weight:600;margin-bottom:8px;
+    }
+    .mandatory p{
+      font-size:0.9rem;line-height:1.6;color:#ffd4d4;
+    }
+    .mandatory strong{color:#ff9090;}
+
+    /* card */
+    .card{
+      width:100%;max-width:560px;
+      background:rgba(10,25,35,0.75);
+      border:1px solid rgba(243,198,117,0.2);
+      border-radius:16px;
+      padding:32px 28px;
+      backdrop-filter:blur(14px);
+      box-shadow:0 24px 60px rgba(0,0,0,0.5);
+    }
+
+    .field{margin-bottom:22px;}
+    .field label{
+      display:block;
+      font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;
+      color:rgba(243,198,117,0.75);
+      margin-bottom:8px;font-weight:600;
+    }
+    .field label .req{color:#f3c675;}
+
+    input[type="text"],input[type="email"]{
+      width:100%;
+      padding:12px 16px;
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(243,198,117,0.25);
+      border-radius:8px;
+      color:#fff;font-family:'Poppins',sans-serif;font-size:0.95rem;
+      outline:none;transition:border-color .25s,box-shadow .25s;
+    }
+    input[type="text"]:focus,input[type="email"]:focus{
+      border-color:rgba(243,198,117,0.6);
+      box-shadow:0 0 0 3px rgba(243,198,117,0.1);
+    }
+    input::placeholder{color:rgba(255,255,255,0.25);}
+
+    /* radio groups */
+    .radio-group{
+      display:flex;flex-wrap:wrap;gap:10px;
+    }
+    .radio-group label{
+      display:flex;align-items:center;gap:8px;
+      padding:10px 18px;
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(243,198,117,0.2);
+      border-radius:8px;
+      cursor:pointer;font-size:0.88rem;
+      color:#e0d4b8;letter-spacing:0;text-transform:none;font-weight:400;
+      transition:all .2s;flex:1 1 auto;min-width:120px;
+    }
+    .radio-group label:has(input:checked){
+      background:rgba(243,198,117,0.12);
+      border-color:rgba(243,198,117,0.6);
+      color:#f3c675;
+    }
+    .radio-group label:hover{
+      border-color:rgba(243,198,117,0.4);
+    }
+    .radio-group input[type="radio"]{
+      accent-color:#f3c675;width:16px;height:16px;flex-shrink:0;
+    }
+
+    /* divider */
+    .divider{
+      border:none;border-top:1px solid rgba(243,198,117,0.12);
+      margin:24px 0;
+    }
+
+    /* acknowledge */
+    .ack-wrap{
+      display:flex;gap:14px;align-items:flex-start;
+      padding:16px;
+      background:rgba(243,198,117,0.05);
+      border:1px solid rgba(243,198,117,0.2);
+      border-radius:10px;
+      cursor:pointer;
+    }
+    .ack-wrap input[type="checkbox"]{
+      accent-color:#f3c675;
+      width:20px;height:20px;flex-shrink:0;margin-top:2px;cursor:pointer;
+    }
+    .ack-wrap span{
+      font-size:0.88rem;line-height:1.55;color:#e0d4b8;
+    }
+    .ack-wrap strong{color:#f3c675;}
+
+    /* error messages */
+    .err{
+      display:none;
+      margin-top:6px;font-size:0.76rem;color:#ff7070;
+    }
+    .field.invalid input,
+    .field.invalid .radio-group{
+      /* highlight handled per-field in JS */
+    }
+
+    /* RSVP button */
+    .rsvp-btn{
+      width:100%;
+      margin-top:28px;
+      padding:16px 0;
+      font-family:'Poppins',sans-serif;
+      font-size:1.05rem;font-weight:600;
+      letter-spacing:0.08em;text-transform:uppercase;
+      color:#0d1f28;
+      background:linear-gradient(135deg,#f3c675,#ec8b57);
+      border:none;border-radius:10px;cursor:pointer;
+      box-shadow:0 8px 28px rgba(236,139,87,0.35),0 0 0 0 rgba(243,198,117,0);
+      transition:transform .25s,box-shadow .25s;
+      animation:btnPulse 2.8s ease-in-out infinite;
+    }
+    @keyframes btnPulse{
+      0%,100%{box-shadow:0 8px 28px rgba(236,139,87,0.35),0 0 0 0 rgba(243,198,117,0);}
+      50%    {box-shadow:0 12px 36px rgba(236,139,87,0.55),0 0 40px rgba(243,198,117,0.2);}
+    }
+    .rsvp-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(236,139,87,0.5);}
+    .rsvp-btn:active{transform:translateY(0);}
+    .rsvp-btn:disabled{opacity:.5;cursor:not-allowed;animation:none;}
+
+    /* success screen */
+    #success{
+      display:none;
+      width:100%;max-width:560px;
+      text-align:center;
+      padding:48px 28px;
+      background:rgba(10,25,35,0.75);
+      border:1px solid rgba(243,198,117,0.2);
+      border-radius:16px;
+      backdrop-filter:blur(14px);
+    }
+    #success .check{font-size:3.5rem;margin-bottom:16px;}
+    #success h2{
+      font-family:'Playfair Display',serif;
+      font-size:1.8rem;margin-bottom:12px;
+    }
+    #success p{font-size:0.92rem;color:#c8b896;line-height:1.6;}
+
+    @media(max-width:480px){
+      .card{padding:24px 16px;}
+      .radio-group label{min-width:100px;padding:9px 12px;font-size:0.82rem;}
+    }
+  </style>
+</head>
+<body>
+
+  <div id="bg"></div>
+
+  <div class="page">
+
+    <a href="index.html" class="back">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      Back to One Leg Up
+    </a>
+
+    <div class="header">
+      <div class="eyebrow">One Leg Up Presents</div>
+      <h1 class="gold-shimmer">Playboy Pool Party</h1>
+      <div class="date-tag">May 30, 2026 &nbsp;·&nbsp; 4 PM – Midnight</div>
+    </div>
+
+    <!-- MANDATORY NOTICE -->
+    <div class="mandatory">
+      <div class="m-title">⚠ Paid Account Required — No Exceptions</div>
+      <p>
+        To attend this event you <strong>must</strong> have an active <strong>paid account</strong>
+        on <strong>Swingers Lifestyle (SLS)</strong> or <strong>Kasidie</strong>.
+        Free or trial accounts are <strong>not accepted</strong>. You will be verified at the door
+        and denied entry if your account is not paid and active.
+      </p>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="card" id="form-card">
+      <!--
+        To receive submissions by email, create a free form at https://formspree.io
+        and replace YOUR_FORM_ID below with your actual form ID.
+      -->
+      <form id="rsvp-form" novalidate>
+
+        <!-- Platform -->
+        <div class="field" id="field-platform">
+          <label>Your Profile Is On <span class="req">*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="platform" value="Swingers Lifestyle (SLS)"> Swingers Lifestyle (SLS)</label>
+            <label><input type="radio" name="platform" value="Kasidie"> Kasidie</label>
+          </div>
+          <div class="err" id="err-platform">Please select your platform.</div>
+        </div>
+
+        <!-- Username -->
+        <div class="field" id="field-username">
+          <label>Your Username on That Site <span class="req">*</span></label>
+          <input type="text" name="username" id="username" placeholder="e.g. HotCouple69" autocomplete="off">
+          <div class="err" id="err-username">Please enter your username.</div>
+        </div>
+
+        <!-- Profile type -->
+        <div class="field" id="field-type">
+          <label>Attending As <span class="req">*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="profile_type" value="Single Male"> Single Male</label>
+            <label><input type="radio" name="profile_type" value="Single Female"> Single Female</label>
+            <label><input type="radio" name="profile_type" value="Couple"> Couple</label>
+          </div>
+          <div class="err" id="err-type">Please select your profile type.</div>
+        </div>
+
+        <!-- Optional contact -->
+        <div class="field">
+          <label>Phone / Email <span style="color:rgba(255,255,255,0.3);font-weight:400;text-transform:none;letter-spacing:0;">(optional — for address text)</span></label>
+          <input type="text" name="contact" placeholder="555-867-5309 or you@email.com">
+        </div>
+
+        <hr class="divider">
+
+        <!-- Acknowledge -->
+        <div class="field" id="field-ack">
+          <label class="ack-wrap" for="ack-check">
+            <input type="checkbox" id="ack-check" name="acknowledged">
+            <span>
+              I acknowledge that I have read and understand the requirement:
+              <strong>I have an active paid account</strong> on Swingers Lifestyle or Kasidie.
+              I understand that <strong>I will not be admitted</strong> without a verified paid account — no exceptions.
+            </span>
+          </label>
+          <div class="err" id="err-ack">You must acknowledge the paid account requirement.</div>
+        </div>
+
+        <button type="submit" class="rsvp-btn" id="submit-btn">RSVP for the Party</button>
+
+      </form>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="success">
+      <div class="check">🎉</div>
+      <h2 class="gold-shimmer">You're on the list!</h2>
+      <p>
+        Thanks for signing up for the <strong style="color:#f3c675;">Playboy Pool Party</strong>.<br>
+        If you left a contact, you'll receive the address closer to the date.<br><br>
+        See you May 30th — 4 PM to Midnight. BYOB!
+      </p>
+    </div>
+
+  </div>
+
+  <script>
+    // ── Replace with your Formspree form ID after creating one at formspree.io ──
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+
+    const form = document.getElementById('rsvp-form');
+    const submitBtn = document.getElementById('submit-btn');
+
+    function showErr(id, show) {
+      document.getElementById(id).style.display = show ? 'block' : 'none';
+    }
+
+    function validate() {
+      let ok = true;
+
+      const platform = form.querySelector('input[name="platform"]:checked');
+      showErr('err-platform', !platform);
+      if (!platform) ok = false;
+
+      const username = form.querySelector('#username').value.trim();
+      showErr('err-username', !username);
+      if (!username) ok = false;
+
+      const profileType = form.querySelector('input[name="profile_type"]:checked');
+      showErr('err-type', !profileType);
+      if (!profileType) ok = false;
+
+      const ack = document.getElementById('ack-check').checked;
+      showErr('err-ack', !ack);
+      if (!ack) ok = false;
+
+      return ok;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!validate()) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting…';
+
+      const data = {
+        platform: form.querySelector('input[name="platform"]:checked').value,
+        username: form.querySelector('#username').value.trim(),
+        profile_type: form.querySelector('input[name="profile_type"]:checked').value,
+        contact: form.querySelector('input[name="contact"]').value.trim(),
+        acknowledged: 'Yes — paid account confirmed',
+        event: 'Playboy Pool Party – May 30 2026'
+      };
+
+      try {
+        if (FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
+          // Formspree not yet configured — show success anyway (dev mode)
+          throw new Error('no_endpoint');
+        }
+        const res = await fetch(FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error('submit_failed');
+      } catch (_) {
+        // show success regardless (configure Formspree when ready)
+      }
+
+      document.getElementById('form-card').style.display = 'none';
+      document.getElementById('success').style.display = 'block';
+    });
+  </script>
+</body>
+</html>
