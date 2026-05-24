@@ -396,7 +396,7 @@
           document.getElementById('success').style.display = 'block';
         } else {
           const json = await res.json().catch(() => ({}));
-          const msg = json.errors ? json.errors.map(e => e.message).join(', ') : 'Submission failed. Please try again.';
+          const msg = json.errors ? json.errors.map(e => e.message).join(', ') : `Error ${res.status}: ${json.error || JSON.stringify(json) || 'Unknown error'}`;
           submitBtn.disabled = false;
           submitBtn.textContent = 'RSVP for the Party';
           alert(msg);
