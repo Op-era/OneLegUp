@@ -277,6 +277,20 @@
     .event p{font-size:0.82rem;color:#e6f6ef;text-shadow:0 2px 10px rgba(0,0,0,0.35);margin:4px 0;}
     .event a{color:#f1b17c;text-decoration:none;font-weight:600;text-shadow:0 2px 10px rgba(0,0,0,0.35);display:inline-block;margin-top:8px;font-size:0.82rem;}
     .event a:hover{color:#ffe3a1;}
+    .rsvp-required-notice{
+      display:inline-block;margin-top:14px;padding:8px 16px;
+      background:rgba(220,50,50,0.18);border:1px solid rgba(255,80,80,0.5);
+      border-radius:8px;font-size:0.88rem;font-weight:700;letter-spacing:0.06em;
+      color:#ff9a9a;text-transform:uppercase;
+    }
+    .rsvp-arrow{
+      font-size:1.8rem;color:#f3c675;display:block;margin-top:4px;
+      animation:arrowBounce 1s ease-in-out infinite;line-height:1;
+    }
+    @keyframes arrowBounce{
+      0%,100%{transform:translateY(0);}
+      50%{transform:translateY(6px);}
+    }
     .rsvp-event-btn{
       display:inline-block;margin-top:8px;
       padding:7px 18px;
@@ -467,7 +481,10 @@
           <h3 class="gold-shimmer">${party.title}</h3>
           <p>Date: ${displayDate}</p>
           <p>${party.desc||''}</p>
-          ${party.signup ? `<a href="${party.signup}" class="rsvp-event-btn">${party.signupText}</a>` : ''}
+          ${party.signup ? `
+            <div class="rsvp-required-notice">⚠ MUST RSVP TO ATTEND THE PARTY</div>
+            <div class="rsvp-arrow">↓</div>
+            <a href="${party.signup}" class="rsvp-event-btn">${party.signupText}</a>` : ''}
           <a href="${party.sls}" target="_blank" style="margin-left:${party.signup?'10px':'0'}">${party.slsText}</a>
         </div>`;
       if (isUpcoming) {
