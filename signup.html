@@ -274,11 +274,9 @@
 
     <!-- FORM CARD -->
     <div class="card" id="form-card">
-      <!--
-        To receive submissions by email, create a free form at https://formspree.io
-        and replace YOUR_FORM_ID below with your actual form ID.
-      -->
-      <form id="rsvp-form" novalidate>
+      <form id="rsvp-form" action="https://formspree.io/f/meedzvkd" method="POST" novalidate>
+        <input type="hidden" name="event" value="Playboy Pool Party – May 30 2026">
+        <input type="hidden" name="_subject" value="New RSVP: Playboy Pool Party">
 
         <!-- Platform -->
         <div class="field" id="field-platform">
@@ -348,9 +346,6 @@
   </div>
 
   <script>
-    // ── Replace with your Formspree form ID after creating one at formspree.io ──
-    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/meedzvkd';
-
     const form = document.getElementById('rsvp-form');
     const submitBtn = document.getElementById('submit-btn');
 
@@ -360,7 +355,6 @@
 
     function validate() {
       let ok = true;
-
       const platform = form.querySelector('input[name="platform"]:checked');
       showErr('err-platform', !platform);
       if (!platform) ok = false;
@@ -387,32 +381,31 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Submitting…';
 
-      const data = {
-        platform: form.querySelector('input[name="platform"]:checked').value,
-        username: form.querySelector('#username').value.trim(),
-        profile_type: form.querySelector('input[name="profile_type"]:checked').value,
-        contact: form.querySelector('input[name="contact"]').value.trim(),
-        acknowledged: 'Yes — paid account confirmed',
-        event: 'Playboy Pool Party – May 30 2026'
-      };
+      // Set acknowledgment value before building FormData
+      document.getElementById('ack-check').value = 'Yes — paid account confirmed';
 
       try {
-        if (FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
-          // Formspree not yet configured — show success anyway (dev mode)
-          throw new Error('no_endpoint');
-        }
-        const res = await fetch(FORMSPREE_ENDPOINT, {
+        const res = await fetch(form.action, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify(data)
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
         });
-        if (!res.ok) throw new Error('submit_failed');
-      } catch (_) {
-        // show success regardless (configure Formspree when ready)
-      }
 
-      document.getElementById('form-card').style.display = 'none';
-      document.getElementById('success').style.display = 'block';
+        if (res.ok) {
+          document.getElementById('form-card').style.display = 'none';
+          document.getElementById('success').style.display = 'block';
+        } else {
+          const json = await res.json().catch(() => ({}));
+          const msg = json.errors ? json.errors.map(e => e.message).join(', ') : 'Submission failed. Please try again.';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'RSVP for the Party';
+          alert(msg);
+        }
+      } catch (_) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'RSVP for the Party';
+        alert('Network error — please check your connection and try again.');
+      }
     });
   </script>
 </body>
