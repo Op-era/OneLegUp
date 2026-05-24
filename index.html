@@ -384,70 +384,19 @@
     </div>
   </div>
 
+  <script src="music.js"></script>
   <script>
-    const audio = document.getElementById('site-audio');
     const landing = document.getElementById('landing');
-    const musicBar = document.getElementById('music-bar');
-    const musicToggle = document.getElementById('music-toggle');
-    const iconPause = document.getElementById('icon-pause');
-    const iconPlay  = document.getElementById('icon-play');
-    const musicLabel = document.getElementById('music-label');
-
-    const playlist = [
-      { src: 'music/One Leg Up.mp3',   label: 'One Leg Up' },
-      { src: 'music/Butterflies.mp3',  label: 'Butterflies' },
-      { src: 'music/RingMyBell.mp3',   label: 'Ring My Bell' },
-      { src: 'music/First Time.mp3',   label: 'First Time' }
-    ];
-    let trackIndex = 0;
-
-    function loadTrack(idx) {
-      trackIndex = (idx + playlist.length) % playlist.length;
-      audio.src = playlist[trackIndex].src;
-      musicLabel.textContent = playlist[trackIndex].label;
-    }
-
-    audio.addEventListener('ended', () => { loadTrack(trackIndex + 1); audio.play(); });
 
     function enterSite() {
       landing.classList.add('fade-out');
       setTimeout(() => { landing.style.display = 'none'; }, 1000);
-      loadTrack(0);
-      audio.volume = 0;
-      audio.play().catch(() => {});
-      let vol = 0;
-      const fadeIn = setInterval(() => {
-        vol = Math.min(1, vol + 0.04);
-        audio.volume = vol;
-        if (vol >= 1) clearInterval(fadeIn);
-      }, 80);
-      musicBar.style.display = 'flex';
+      OLUMusic.start();
     }
 
     document.getElementById('play-btn').addEventListener('click', enterSite);
     document.addEventListener('keydown', e => {
       if (e.key === 'Enter' && landing.style.display !== 'none') enterSite();
-    });
-
-    document.getElementById('music-prev').addEventListener('click', () => {
-      loadTrack(trackIndex - 1);
-      if (!audio.paused) audio.play();
-    });
-    document.getElementById('music-next').addEventListener('click', () => {
-      loadTrack(trackIndex + 1);
-      if (!audio.paused) audio.play();
-    });
-
-    musicToggle.addEventListener('click', () => {
-      if (audio.paused) {
-        audio.play();
-        iconPause.style.display = '';
-        iconPlay.style.display  = 'none';
-      } else {
-        audio.pause();
-        iconPause.style.display = 'none';
-        iconPlay.style.display  = '';
-      }
     });
 
     // ─── Party data & events ───
