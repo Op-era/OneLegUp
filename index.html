@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>One Leg Up - Playboy Pool Party</title>
+  <link rel="icon" type="image/png" href="images/NewLogo/logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
@@ -213,18 +214,19 @@
     .members-btn:hover{background:rgba(243,198,117,0.12);color:#f3c675;border-color:rgba(243,198,117,0.6);}
     @media(min-width:768px){.members-btn{top:22px;right:22px;}}
     .sign{
-      position:fixed;top:15px;left:15px;
-      width:160px;height:50px;
-      background:linear-gradient(135deg,rgba(10,25,35,0.9),rgba(8,20,28,0.95));
-      box-shadow:0 12px 28px rgba(236,139,87,0.2), 0 0 0 1px rgba(243,198,117,0.3);
-      display:flex;align-items:center;justify-content:center;
-      font-size:1.4rem;font-weight:600;
+      position:fixed;top:12px;left:14px;
+      display:flex;align-items:center;gap:8px;
       z-index:100;
+      text-decoration:none;
+    }
+    .sign img{
+      width:42px;height:42px;border-radius:50%;
       border:1px solid rgba(243,198,117,0.35);
+      box-shadow:0 0 12px rgba(243,198,117,0.25);
     }
     .sign span {
       font-family:'Playfair Display',serif;
-      font-size:1.2rem;font-weight:700;
+      font-size:1.1rem;font-weight:700;
       animation:goldGlow 3s ease-in-out infinite;
     }
 
@@ -319,6 +321,7 @@
     <div class="l-orb orb1"></div>
     <div class="l-orb orb2"></div>
     <div class="l-orb orb3"></div>
+    <img src="images/NewLogo/logo.png" alt="One Leg Up" style="width:90px;height:90px;border-radius:50%;border:1px solid rgba(243,198,117,0.4);box-shadow:0 0 30px rgba(243,198,117,0.25);margin-bottom:18px;">
     <div class="landing-eyebrow">Welcome to</div>
     <div class="landing-title gold-shimmer">One Leg Up</div>
     <div class="landing-sub">Members Only</div>
@@ -347,7 +350,10 @@
   </div>
 
   <div id="club-room"></div>
-  <div class="sign"><span class="gold-shimmer">One Leg Up</span></div>
+  <div class="sign">
+    <img src="images/NewLogo/logo.png" alt="One Leg Up">
+    <span class="gold-shimmer">One Leg Up</span>
+  </div>
   <a href="login.html" class="members-btn">Members Portal</a>
 
   <div class="overlay">
