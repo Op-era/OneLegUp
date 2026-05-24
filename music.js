@@ -1,7 +1,6 @@
 // Shared music player — persists across same-tab page navigations via sessionStorage
 (function () {
   const PLAYLIST = [
-    { src: 'music/One Leg Up.mp3',  label: 'One Leg Up' },
     { src: 'music/Butterflies.mp3', label: 'Butterflies' },
     { src: 'music/RingMyBell.mp3',  label: 'Ring My Bell' },
     { src: 'music/First Time.mp3',  label: 'First Time' }
