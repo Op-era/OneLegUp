@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RSVP – Playboy Pool Party | One Leg Up</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     html,body{
@@ -274,9 +275,7 @@
 
     <!-- FORM CARD -->
     <div class="card" id="form-card">
-      <form id="rsvp-form" action="https://formspree.io/f/meedzvkd" method="POST" novalidate>
-        <input type="hidden" name="event" value="Playboy Pool Party – May 30 2026">
-        <input type="hidden" name="_subject" value="New RSVP: Playboy Pool Party">
+      <form id="rsvp-form" novalidate>
 
         <!-- Platform -->
         <div class="field" id="field-platform">
@@ -332,6 +331,11 @@
       </form>
     </div>
 
+    <!-- membership link -->
+    <p style="margin-top:20px;text-align:center;font-size:0.82rem;color:rgba(255,220,150,0.45);">
+      Don't have an SLS or Kasidie account? <a href="register.html" style="color:rgba(243,198,117,0.75);text-decoration:none;">Create a One Leg Up membership →</a>
+    </p>
+
     <!-- SUCCESS -->
     <div id="success">
       <div class="check">🎉</div>
@@ -346,6 +350,12 @@
   </div>
 
   <script>
+    const { createClient } = window.supabase;
+    const sb = createClient(
+      'https://dstxhnszvykjsavdwiuf.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzdHhobnN6dnlranNhdmR3aXVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNzkyNzksImV4cCI6MjA5NDY1NTI3OX0.XbJ8sOq7QkNdUfjv6rRaEFM2FdkQ8p6B0v2wDo08Ukc'
+    );
+
     const form = document.getElementById('rsvp-form');
     const submitBtn = document.getElementById('submit-btn');
 
@@ -356,21 +366,13 @@
     function validate() {
       let ok = true;
       const platform = form.querySelector('input[name="platform"]:checked');
-      showErr('err-platform', !platform);
-      if (!platform) ok = false;
-
+      showErr('err-platform', !platform); if (!platform) ok = false;
       const username = form.querySelector('#username').value.trim();
-      showErr('err-username', !username);
-      if (!username) ok = false;
-
+      showErr('err-username', !username); if (!username) ok = false;
       const profileType = form.querySelector('input[name="profile_type"]:checked');
-      showErr('err-type', !profileType);
-      if (!profileType) ok = false;
-
+      showErr('err-type', !profileType); if (!profileType) ok = false;
       const ack = document.getElementById('ack-check').checked;
-      showErr('err-ack', !ack);
-      if (!ack) ok = false;
-
+      showErr('err-ack', !ack); if (!ack) ok = false;
       return ok;
     }
 
@@ -381,31 +383,24 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Submitting…';
 
-      // Set acknowledgment value before building FormData
-      document.getElementById('ack-check').value = 'Yes — paid account confirmed';
+      const { error } = await sb.from('rsvps').insert({
+        event:        'Playboy Pool Party – May 30 2026',
+        platform:     form.querySelector('input[name="platform"]:checked').value,
+        username:     form.querySelector('#username').value.trim(),
+        profile_type: form.querySelector('input[name="profile_type"]:checked').value,
+        contact:      form.querySelector('input[name="contact"]').value.trim(),
+        acknowledged: true
+      });
 
-      try {
-        const res = await fetch(form.action, {
-          method: 'POST',
-          body: new FormData(form),
-          headers: { 'Accept': 'application/json' }
-        });
-
-        if (res.ok) {
-          document.getElementById('form-card').style.display = 'none';
-          document.getElementById('success').style.display = 'block';
-        } else {
-          const json = await res.json().catch(() => ({}));
-          const msg = json.errors ? json.errors.map(e => e.message).join(', ') : `Error ${res.status}: ${json.error || JSON.stringify(json) || 'Unknown error'}`;
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'RSVP for the Party';
-          alert(msg);
-        }
-      } catch (_) {
+      if (error) {
         submitBtn.disabled = false;
         submitBtn.textContent = 'RSVP for the Party';
-        alert('Network error — please check your connection and try again.');
+        alert('Something went wrong: ' + error.message);
+        return;
       }
+
+      document.getElementById('form-card').style.display = 'none';
+      document.getElementById('success').style.display   = 'block';
     });
   </script>
 </body>

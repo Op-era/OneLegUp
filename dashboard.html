@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Membership – One Leg Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{min-height:100vh;background:#080808;font-family:'Poppins',sans-serif;color:#fff;overflow-x:hidden;}
+    #bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,rgba(26,24,40,0.18),rgba(4,6,14,0.6) 60%,rgba(0,0,0,0.92) 100%),url('images/playboy-bg.png') center center/cover no-repeat;}
+    #bg::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 25%,rgba(255,186,118,0.07),transparent 50%);}
+    @keyframes goldShimmer{0%{background-position:-400% center;}100%{background-position:400% center;}}
+    .gold-shimmer{background:linear-gradient(90deg,#7a5700 0%,#c8960c 12%,#f3c675 25%,#fffbe8 38%,#ffd700 50%,#fffbe8 62%,#f3c675 75%,#c8960c 88%,#7a5700 100%);background-size:400% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:goldShimmer 5s linear infinite;}
+    .page{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px 60px;}
+    .topbar{width:100%;max-width:560px;display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;}
+    .back{display:inline-flex;align-items:center;gap:6px;color:rgba(243,198,117,0.7);text-decoration:none;font-size:0.82rem;letter-spacing:0.08em;transition:color .2s;}
+    .back:hover{color:#f3c675;}
+    .back svg{width:14px;height:14px;fill:currentColor;}
+    .logout-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(243,198,117,0.2);border-radius:8px;padding:7px 16px;color:rgba(243,198,117,0.7);font-size:0.78rem;font-family:'Poppins',sans-serif;cursor:pointer;letter-spacing:0.05em;transition:all .2s;}
+    .logout-btn:hover{background:rgba(243,198,117,0.1);color:#f3c675;}
+    .header{text-align:center;margin-bottom:28px;width:100%;max-width:560px;}
+    .header .eyebrow{font-size:0.72rem;letter-spacing:0.42em;text-transform:uppercase;color:rgba(255,220,150,0.5);margin-bottom:6px;}
+    .header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,7vw,2.8rem);font-weight:900;line-height:1;}
+    .card{width:100%;max-width:560px;background:rgba(10,25,35,0.78);border:1px solid rgba(243,198,117,0.2);border-radius:16px;padding:28px;backdrop-filter:blur(14px);box-shadow:0 24px 60px rgba(0,0,0,0.5);margin-bottom:16px;}
+    .card-title{font-size:0.72rem;letter-spacing:0.25em;text-transform:uppercase;color:rgba(243,198,117,0.6);margin-bottom:16px;font-weight:600;}
+    .info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .info-row:last-child{border-bottom:none;}
+    .info-label{font-size:0.8rem;color:rgba(255,220,150,0.5);text-transform:uppercase;letter-spacing:0.08em;}
+    .info-value{font-size:0.92rem;color:#e0d4b8;font-weight:600;}
+    .badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;}
+    .badge-pending{background:rgba(243,162,117,0.15);border:1px solid rgba(243,162,117,0.4);color:#f3a275;}
+    .badge-approved{background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.35);color:#4ade80;}
+    .badge-denied{background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.35);color:#f87171;}
+    .status-notice{margin-top:14px;padding:14px 16px;border-radius:10px;font-size:0.85rem;line-height:1.55;}
+    .notice-pending{background:rgba(243,162,117,0.08);border:1px solid rgba(243,162,117,0.25);color:#f3c699;}
+    .notice-approved{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.25);color:#86efac;}
+    .notice-denied{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:#fca5a5;}
+    .field{margin-bottom:16px;}
+    .field label{display:block;font-size:0.76rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,198,117,0.7);margin-bottom:7px;font-weight:600;}
+    input[type="text"]{width:100%;padding:11px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(243,198,117,0.22);border-radius:8px;color:#fff;font-family:'Poppins',sans-serif;font-size:0.92rem;outline:none;transition:border-color .25s;}
+    input:focus{border-color:rgba(243,198,117,0.6);}
+    input::placeholder{color:rgba(255,255,255,0.22);}
+    .radio-group{display:flex;flex-wrap:wrap;gap:8px;}
+    .radio-group label{display:flex;align-items:center;gap:8px;padding:9px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(243,198,117,0.18);border-radius:8px;cursor:pointer;font-size:0.84rem;color:#e0d4b8;transition:all .2s;flex:1 1 auto;}
+    .radio-group label:has(input:checked){background:rgba(243,198,117,0.12);border-color:rgba(243,198,117,0.6);color:#f3c675;}
+    .radio-group label:hover{border-color:rgba(243,198,117,0.4);}
+    .radio-group input[type="radio"]{accent-color:#f3c675;width:14px;height:14px;flex-shrink:0;}
+    .save-btn{margin-top:6px;padding:11px 28px;font-family:'Poppins',sans-serif;font-size:0.88rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#0d1f28;background:linear-gradient(135deg,#f3c675,#ec8b57);border:none;border-radius:8px;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 6px 20px rgba(236,139,87,0.3);}
+    .save-btn:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(236,139,87,0.45);}
+    .save-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+    .alert{padding:11px 14px;border-radius:8px;font-size:0.82rem;margin-bottom:14px;display:none;}
+    .alert-err{background:rgba(180,30,30,0.2);border:1px solid rgba(220,60,60,0.4);color:#ffa0a0;}
+    .alert-ok{background:rgba(30,120,60,0.2);border:1px solid rgba(60,180,100,0.4);color:#90ffb8;}
+    .admin-link{margin-top:8px;text-align:center;font-size:0.8rem;}
+    .admin-link a{color:rgba(243,198,117,0.6);text-decoration:none;}
+    .admin-link a:hover{color:#f3c675;}
+  </style>
+</head>
+<body>
+<div id="bg"></div>
+<div class="page">
+
+  <div class="topbar">
+    <a href="index.html" class="back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Main Site</a>
+    <button class="logout-btn" id="logout-btn">Log Out</button>
+  </div>
+
+  <div class="header">
+    <div class="eyebrow">One Leg Up Members</div>
+    <h1 class="gold-shimmer" id="welcome-heading">My Membership</h1>
+  </div>
+
+  <!-- Status card -->
+  <div class="card" id="status-card">
+    <div class="card-title">Membership Status</div>
+    <div class="info-row">
+      <span class="info-label">Status</span>
+      <span class="badge" id="status-badge">—</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Email</span>
+      <span class="info-value" id="info-email">—</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Profile Type</span>
+      <span class="info-value" id="info-type">—</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Member Since</span>
+      <span class="info-value" id="info-since">—</span>
+    </div>
+    <div class="status-notice" id="status-notice"></div>
+  </div>
+
+  <!-- Edit profile card -->
+  <div class="card">
+    <div class="card-title">Edit Profile</div>
+    <div class="alert" id="edit-alert"></div>
+    <div class="field">
+      <label>Display Name</label>
+      <input type="text" id="edit-name" placeholder="Your display name">
+    </div>
+    <div class="field">
+      <label>Attending As</label>
+      <div class="radio-group">
+        <label><input type="radio" name="edit_type" value="single_male"> Single Male</label>
+        <label><input type="radio" name="edit_type" value="single_female"> Single Female</label>
+        <label><input type="radio" name="edit_type" value="couple"> Couple</label>
+      </div>
+    </div>
+    <button class="save-btn" id="save-btn">Save Changes</button>
+  </div>
+
+  <div class="admin-link" id="admin-link" style="display:none;">
+    <a href="admin.html">Admin Panel →</a>
+  </div>
+</div>
+
+<script>
+  const { createClient } = window.supabase;
+  const sb = createClient(
+    'https://dstxhnszvykjsavdwiuf.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzdHhobnN6dnlranNhdmR3aXVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNzkyNzksImV4cCI6MjA5NDY1NTI3OX0.XbJ8sOq7QkNdUfjv6rRaEFM2FdkQ8p6B0v2wDo08Ukc'
+  );
+
+  const profileLabels = { single_male: 'Single Male', single_female: 'Single Female', couple: 'Couple' };
+  const statusNotices = {
+    pending:  { cls: 'notice-pending',  msg: '⏳ Your membership is pending admin approval. You\'ll be notified once reviewed.' },
+    approved: { cls: 'notice-approved', msg: '✅ Your membership is approved! You can attend events.' },
+    denied:   { cls: 'notice-denied',   msg: '❌ Your membership was not approved. Contact the host for more information.' }
+  };
+
+  let currentMember = null;
+
+  async function init() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { window.location.href = 'login.html'; return; }
+
+    const { data: member, error } = await sb.from('members').select('*').eq('id', session.user.id).single();
+    if (error || !member) { window.location.href = 'login.html'; return; }
+
+    currentMember = member;
+
+    // Populate heading
+    document.getElementById('welcome-heading').textContent = `Welcome, ${member.display_name || 'Member'}`;
+
+    // Status badge
+    const badge = document.getElementById('status-badge');
+    badge.textContent = member.status.charAt(0).toUpperCase() + member.status.slice(1);
+    badge.className = 'badge badge-' + member.status;
+
+    // Info rows
+    document.getElementById('info-email').textContent = member.email;
+    document.getElementById('info-type').textContent  = profileLabels[member.profile_type] || '—';
+    document.getElementById('info-since').textContent = new Date(member.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+    // Status notice
+    const notice = statusNotices[member.status];
+    const noticeEl = document.getElementById('status-notice');
+    noticeEl.textContent = notice.msg;
+    noticeEl.className   = 'status-notice ' + notice.cls;
+
+    // Pre-fill edit form
+    document.getElementById('edit-name').value = member.display_name || '';
+    if (member.profile_type) {
+      const radio = document.querySelector(`input[name="edit_type"][value="${member.profile_type}"]`);
+      if (radio) radio.checked = true;
+    }
+
+    // Show admin link if admin
+    if (member.is_admin) document.getElementById('admin-link').style.display = 'block';
+  }
+
+  // Save profile edits
+  document.getElementById('save-btn').addEventListener('click', async () => {
+    const alertEl = document.getElementById('edit-alert');
+    alertEl.style.display = 'none';
+    const name = document.getElementById('edit-name').value.trim();
+    const type = document.querySelector('input[name="edit_type"]:checked')?.value;
+
+    if (!name) { alertEl.textContent = 'Please enter a display name.'; alertEl.className = 'alert alert-err'; alertEl.style.display = 'block'; return; }
+    if (!type) { alertEl.textContent = 'Please select a profile type.'; alertEl.className = 'alert alert-err'; alertEl.style.display = 'block'; return; }
+
+    const btn = document.getElementById('save-btn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+
+    const { error } = await sb.from('members').update({ display_name: name, profile_type: type }).eq('id', currentMember.id);
+
+    btn.disabled = false; btn.textContent = 'Save Changes';
+    if (error) {
+      alertEl.textContent = error.message; alertEl.className = 'alert alert-err'; alertEl.style.display = 'block';
+    } else {
+      alertEl.textContent = 'Profile updated!'; alertEl.className = 'alert alert-ok'; alertEl.style.display = 'block';
+      document.getElementById('welcome-heading').textContent = `Welcome, ${name}`;
+      document.getElementById('info-type').textContent = profileLabels[type];
+    }
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await sb.auth.signOut();
+    window.location.href = 'index.html';
+  });
+
+  init();
+</script>
+</body>
+</html>

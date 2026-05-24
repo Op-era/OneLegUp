@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin – One Leg Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{min-height:100vh;background:#080808;font-family:'Poppins',sans-serif;color:#fff;overflow-x:hidden;}
+    #bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,rgba(10,8,18,0.7),rgba(0,0,0,0.95) 80%),url('images/playboy-bg.png') center center/cover no-repeat;}
+    @keyframes goldShimmer{0%{background-position:-400% center;}100%{background-position:400% center;}}
+    .gold-shimmer{background:linear-gradient(90deg,#7a5700 0%,#c8960c 12%,#f3c675 25%,#fffbe8 38%,#ffd700 50%,#fffbe8 62%,#f3c675 75%,#c8960c 88%,#7a5700 100%);background-size:400% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:goldShimmer 5s linear infinite;}
+    .page{position:relative;z-index:10;min-height:100vh;padding:30px 20px 60px;max-width:900px;margin:0 auto;}
+    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;}
+    .topbar-left{display:flex;align-items:center;gap:20px;}
+    .back{display:inline-flex;align-items:center;gap:6px;color:rgba(243,198,117,0.7);text-decoration:none;font-size:0.82rem;letter-spacing:0.08em;transition:color .2s;}
+    .back:hover{color:#f3c675;}
+    .back svg{width:14px;height:14px;fill:currentColor;}
+    .page-title{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,5vw,2.4rem);font-weight:900;}
+    .logout-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(243,198,117,0.2);border-radius:8px;padding:7px 16px;color:rgba(243,198,117,0.7);font-size:0.78rem;font-family:'Poppins',sans-serif;cursor:pointer;letter-spacing:0.05em;transition:all .2s;}
+    .logout-btn:hover{background:rgba(243,198,117,0.1);color:#f3c675;}
+
+    /* Stats */
+    .stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px;}
+    .stat{flex:1 1 100px;padding:14px 18px;background:rgba(10,25,35,0.7);border:1px solid rgba(243,198,117,0.15);border-radius:12px;text-align:center;}
+    .stat .num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;line-height:1;}
+    .stat .lbl{font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,220,150,0.5);margin-top:4px;}
+    .stat-pending .num{color:#f3a275;}
+    .stat-approved .num{color:#4ade80;}
+    .stat-denied .num{color:#f87171;}
+    .stat-total .num{color:#f3c675;}
+
+    /* Tabs */
+    .tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
+    .tab{padding:8px 20px;border-radius:8px;border:1px solid rgba(243,198,117,0.18);background:rgba(255,255,255,0.04);color:rgba(255,220,150,0.55);font-size:0.82rem;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .2s;letter-spacing:0.04em;}
+    .tab.active,.tab:hover{background:rgba(243,198,117,0.12);border-color:rgba(243,198,117,0.4);color:#f3c675;}
+
+    /* Member cards */
+    .member-card{background:rgba(10,25,35,0.72);border:1px solid rgba(243,198,117,0.14);border-radius:12px;padding:18px 20px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;transition:border-color .2s;}
+    .member-card:hover{border-color:rgba(243,198,117,0.28);}
+    .member-info{flex:1 1 200px;}
+    .member-name{font-size:1rem;font-weight:600;color:#f3c675;margin-bottom:4px;}
+    .member-email{font-size:0.8rem;color:rgba(255,220,150,0.55);margin-bottom:6px;}
+    .member-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+    .badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;}
+    .badge-pending{background:rgba(243,162,117,0.15);border:1px solid rgba(243,162,117,0.4);color:#f3a275;}
+    .badge-approved{background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.35);color:#4ade80;}
+    .badge-denied{background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.35);color:#f87171;}
+    .badge-type{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,220,150,0.65);}
+    .member-date{font-size:0.72rem;color:rgba(255,255,255,0.35);}
+    .member-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;flex-shrink:0;}
+    .action-btn{padding:7px 16px;border-radius:7px;font-family:'Poppins',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;letter-spacing:0.04em;}
+    .btn-approve{background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.4);color:#4ade80;}
+    .btn-approve:hover{background:rgba(74,222,128,0.25);}
+    .btn-deny{background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.35);color:#f87171;}
+    .btn-deny:hover{background:rgba(248,113,113,0.22);}
+    .btn-delete{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.4);}
+    .btn-delete:hover{border-color:rgba(248,113,113,0.4);color:#f87171;}
+    .notes-input{width:100%;padding:8px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(243,198,117,0.15);border-radius:6px;color:#e0d4b8;font-family:'Poppins',sans-serif;font-size:0.8rem;outline:none;margin-top:8px;resize:vertical;}
+    .notes-input:focus{border-color:rgba(243,198,117,0.4);}
+    .notes-input::placeholder{color:rgba(255,255,255,0.2);}
+
+    /* RSVPs table */
+    .rsvp-table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+    .rsvp-table th{text-align:left;padding:10px 14px;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,198,117,0.6);border-bottom:1px solid rgba(243,198,117,0.15);}
+    .rsvp-table td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.05);color:#e0d4b8;vertical-align:middle;}
+    .rsvp-table tr:hover td{background:rgba(243,198,117,0.03);}
+    .rsvp-table .del-rsvp{background:none;border:none;color:rgba(248,113,113,0.5);cursor:pointer;font-size:0.9rem;padding:0 4px;transition:color .2s;}
+    .rsvp-table .del-rsvp:hover{color:#f87171;}
+
+    .section-wrap{background:rgba(10,25,35,0.72);border:1px solid rgba(243,198,117,0.14);border-radius:12px;padding:20px;margin-bottom:16px;}
+    .empty{text-align:center;padding:40px 20px;color:rgba(255,220,150,0.35);font-size:0.88rem;}
+  </style>
+</head>
+<body>
+<div id="bg"></div>
+<div class="page">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <a href="dashboard.html" class="back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Dashboard</a>
+      <h1 class="page-title gold-shimmer">Admin Panel</h1>
+    </div>
+    <button class="logout-btn" id="logout-btn">Log Out</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats" id="stats">
+    <div class="stat stat-total"><div class="num" id="stat-total">—</div><div class="lbl">Total Members</div></div>
+    <div class="stat stat-pending"><div class="num" id="stat-pending">—</div><div class="lbl">Pending</div></div>
+    <div class="stat stat-approved"><div class="num" id="stat-approved">—</div><div class="lbl">Approved</div></div>
+    <div class="stat stat-denied"><div class="num" id="stat-denied">—</div><div class="lbl">Denied</div></div>
+    <div class="stat"><div class="num" id="stat-rsvps">—</div><div class="lbl">Event RSVPs</div></div>
+  </div>
+
+  <!-- Members section -->
+  <div class="tabs" id="filter-tabs">
+    <button class="tab active" data-filter="all">All</button>
+    <button class="tab" data-filter="pending">Pending</button>
+    <button class="tab" data-filter="approved">Approved</button>
+    <button class="tab" data-filter="denied">Denied</button>
+  </div>
+  <div id="members-list"></div>
+
+  <!-- RSVPs section -->
+  <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin:32px 0 14px;" class="gold-shimmer">Event RSVPs</h2>
+  <div class="section-wrap">
+    <table class="rsvp-table" id="rsvp-table">
+      <thead><tr><th>Platform / Membership</th><th>Username</th><th>Type</th><th>Contact</th><th>Date</th><th></th></tr></thead>
+      <tbody id="rsvp-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const { createClient } = window.supabase;
+  const sb = createClient(
+    'https://dstxhnszvykjsavdwiuf.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzdHhobnN6dnlranNhdmR3aXVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNzkyNzksImV4cCI6MjA5NDY1NTI3OX0.XbJ8sOq7QkNdUfjv6rRaEFM2FdkQ8p6B0v2wDo08Ukc'
+  );
+
+  const profileLabels = { single_male: 'Single Male', single_female: 'Single Female', couple: 'Couple' };
+  let allMembers = [];
+  let currentFilter = 'all';
+
+  async function init() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { window.location.href = 'login.html'; return; }
+
+    const { data: me } = await sb.from('members').select('is_admin').eq('id', session.user.id).single();
+    if (!me?.is_admin) { window.location.href = 'dashboard.html'; return; }
+
+    await loadMembers();
+    await loadRsvps();
+  }
+
+  async function loadMembers() {
+    const { data } = await sb.from('members').select('*').order('created_at', { ascending: false });
+    allMembers = data || [];
+
+    document.getElementById('stat-total').textContent    = allMembers.length;
+    document.getElementById('stat-pending').textContent  = allMembers.filter(m => m.status === 'pending').length;
+    document.getElementById('stat-approved').textContent = allMembers.filter(m => m.status === 'approved').length;
+    document.getElementById('stat-denied').textContent   = allMembers.filter(m => m.status === 'denied').length;
+
+    renderMembers();
+  }
+
+  function renderMembers() {
+    const list = document.getElementById('members-list');
+    const filtered = currentFilter === 'all' ? allMembers : allMembers.filter(m => m.status === currentFilter);
+    if (!filtered.length) { list.innerHTML = '<div class="empty">No members in this category.</div>'; return; }
+
+    list.innerHTML = filtered.map(m => `
+      <div class="member-card" id="mc-${m.id}">
+        <div class="member-info">
+          <div class="member-name">${esc(m.display_name || '(no name)')}</div>
+          <div class="member-email">${esc(m.email)}</div>
+          <div class="member-meta">
+            <span class="badge badge-${m.status}">${m.status}</span>
+            <span class="badge badge-type">${profileLabels[m.profile_type] || '—'}</span>
+            <span class="member-date">${new Date(m.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
+          </div>
+          <textarea class="notes-input" placeholder="Notes about this member…" data-id="${m.id}">${esc(m.notes || '')}</textarea>
+        </div>
+        <div class="member-actions">
+          ${m.status !== 'approved' ? `<button class="action-btn btn-approve" onclick="updateStatus('${m.id}','approved')">Approve</button>` : ''}
+          ${m.status !== 'denied'   ? `<button class="action-btn btn-deny"    onclick="updateStatus('${m.id}','denied')">Deny</button>` : ''}
+          <button class="action-btn btn-delete" onclick="deleteMember('${m.id}')">Delete</button>
+        </div>
+      </div>
+    `).join('');
+
+    // Save notes on blur
+    list.querySelectorAll('.notes-input').forEach(el => {
+      el.addEventListener('blur', async () => {
+        await sb.from('members').update({ notes: el.value }).eq('id', el.dataset.id);
+      });
+    });
+  }
+
+  async function updateStatus(id, status) {
+    await sb.from('members').update({ status }).eq('id', id);
+    await loadMembers();
+  }
+
+  async function deleteMember(id) {
+    if (!confirm('Delete this member? This cannot be undone.')) return;
+    await sb.from('members').delete().eq('id', id);
+    await loadMembers();
+  }
+
+  async function loadRsvps() {
+    const { data } = await sb.from('rsvps').select('*').order('created_at', { ascending: false });
+    const rsvps = data || [];
+    document.getElementById('stat-rsvps').textContent = rsvps.length;
+
+    const tbody = document.getElementById('rsvp-body');
+    if (!rsvps.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:rgba(255,220,150,0.35);padding:30px;">No RSVPs yet.</td></tr>'; return; }
+
+    tbody.innerHTML = rsvps.map(r => `
+      <tr>
+        <td>${esc(r.platform || '—')}</td>
+        <td>${esc(r.username || '—')}</td>
+        <td>${esc(r.profile_type || '—')}</td>
+        <td>${esc(r.contact || '—')}</td>
+        <td>${new Date(r.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
+        <td><button class="del-rsvp" onclick="deleteRsvp('${r.id}')">✕</button></td>
+      </tr>
+    `).join('');
+  }
+
+  async function deleteRsvp(id) {
+    if (!confirm('Remove this RSVP?')) return;
+    await sb.from('rsvps').delete().eq('id', id);
+    await loadRsvps();
+  }
+
+  // Filter tabs
+  document.getElementById('filter-tabs').addEventListener('click', e => {
+    if (!e.target.matches('.tab')) return;
+    currentFilter = e.target.dataset.filter;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    e.target.classList.add('active');
+    renderMembers();
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await sb.auth.signOut();
+    window.location.href = 'index.html';
+  });
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  init();
+</script>
+</body>
+</html>

@@ -196,6 +196,22 @@
         linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.04) 26%, rgba(0,0,0,0.18) 48%, rgba(0,0,0,0.52) 74%, rgba(0,0,0,0.7) 100%);
     }
 
+    .members-btn{
+      position:fixed;top:15px;right:15px;
+      padding:8px 18px;
+      background:rgba(10,25,35,0.85);
+      border:1px solid rgba(243,198,117,0.3);
+      border-radius:8px;
+      color:rgba(243,198,117,0.8);
+      font-size:0.75rem;font-weight:600;
+      letter-spacing:0.1em;text-transform:uppercase;
+      text-decoration:none;
+      z-index:100;
+      transition:all .2s;
+      backdrop-filter:blur(8px);
+    }
+    .members-btn:hover{background:rgba(243,198,117,0.12);color:#f3c675;border-color:rgba(243,198,117,0.6);}
+    @media(min-width:768px){.members-btn{top:22px;right:22px;}}
     .sign{
       position:fixed;top:15px;left:15px;
       width:160px;height:50px;
@@ -332,6 +348,7 @@
 
   <div id="club-room"></div>
   <div class="sign"><span class="gold-shimmer">One Leg Up</span></div>
+  <a href="login.html" class="members-btn">Members Portal</a>
 
   <div class="overlay">
     <div class="content">
