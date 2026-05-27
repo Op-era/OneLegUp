@@ -69,6 +69,10 @@
     .rsvp-table tr:hover td{background:rgba(243,198,117,0.03);}
     .rsvp-table .del-rsvp{background:none;border:none;color:rgba(248,113,113,0.5);cursor:pointer;font-size:0.9rem;padding:0 4px;transition:color .2s;}
     .rsvp-table .del-rsvp:hover{color:#f87171;}
+    .rsvp-table input[type="checkbox"]{accent-color:#f3c675;width:14px;height:14px;cursor:pointer;}
+    .bulk-bar{display:none;align-items:center;gap:12px;padding:10px 14px;background:rgba(243,198,117,0.08);border:1px solid rgba(243,198,117,0.25);border-radius:8px;margin-bottom:10px;font-size:0.82rem;color:#f3c675;}
+    .bulk-del{padding:6px 16px;background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);border-radius:6px;color:#f87171;font-family:'Poppins',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:background .2s;}
+    .bulk-del:hover{background:rgba(248,113,113,0.28);}
 
     .section-wrap{background:rgba(10,25,35,0.72);border:1px solid rgba(243,198,117,0.14);border-radius:12px;padding:20px;margin-bottom:16px;}
     .empty{text-align:center;padding:40px 20px;color:rgba(255,220,150,0.35);font-size:0.88rem;}
@@ -107,8 +111,12 @@
   <!-- RSVPs section -->
   <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin:32px 0 14px;" class="gold-shimmer">Event RSVPs</h2>
   <div class="section-wrap">
+    <div class="bulk-bar" id="bulk-bar">
+      <span id="bulk-count">0 selected</span>
+      <button class="bulk-del" id="bulk-del-btn">Delete Selected</button>
+    </div>
     <table class="rsvp-table" id="rsvp-table">
-      <thead><tr><th>Platform / Membership</th><th>Username</th><th>Type</th><th>Contact</th><th>Date</th><th></th></tr></thead>
+      <thead><tr><th style="width:36px"><input type="checkbox" id="select-all"></th><th>Platform / Membership</th><th>Username</th><th>Type</th><th>Contact</th><th>Date</th><th></th></tr></thead>
       <tbody id="rsvp-body"></tbody>
     </table>
   </div>
@@ -208,7 +216,8 @@
     if (!rsvps.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:rgba(255,220,150,0.35);padding:30px;">No RSVPs yet.</td></tr>'; return; }
 
     tbody.innerHTML = rsvps.map(r => `
-      <tr>
+      <tr data-id="${esc(r.id)}">
+        <td><input type="checkbox" class="rsvp-cb" value="${esc(r.id)}"></td>
         <td>${esc(r.platform || '—')}</td>
         <td>${esc(r.username || '—')}</td>
         <td>${esc(r.profile_type || '—')}</td>
@@ -217,11 +226,39 @@
         <td><button class="del-rsvp" onclick="deleteRsvp('${esc(r.id)}')">✕</button></td>
       </tr>
     `).join('');
+
+    document.getElementById('select-all').checked = false;
+    document.getElementById('bulk-bar').style.display = 'none';
+    tbody.querySelectorAll('.rsvp-cb').forEach(cb => cb.addEventListener('change', updateBulkBar));
   }
+
+  function updateBulkBar() {
+    const checked = document.querySelectorAll('.rsvp-cb:checked');
+    const bar = document.getElementById('bulk-bar');
+    document.getElementById('bulk-count').textContent = `${checked.length} selected`;
+    bar.style.display = checked.length ? 'flex' : 'none';
+    document.getElementById('select-all').checked =
+      checked.length === document.querySelectorAll('.rsvp-cb').length;
+  }
+
+  document.getElementById('select-all').addEventListener('change', function() {
+    document.querySelectorAll('.rsvp-cb').forEach(cb => { cb.checked = this.checked; });
+    updateBulkBar();
+  });
+
+  document.getElementById('bulk-del-btn').addEventListener('click', async () => {
+    const ids = [...document.querySelectorAll('.rsvp-cb:checked')].map(cb => cb.value);
+    if (!ids.length) return;
+    if (!confirm(`Delete ${ids.length} RSVP(s)?`)) return;
+    await Promise.all(ids.map(id =>
+      fetch(`${RSVP_API}/rsvp/${id}`, { method: 'DELETE', headers: AUTH })
+    ));
+    await loadRsvps();
+  });
 
   async function deleteRsvp(id) {
     if (!confirm('Remove this RSVP?')) return;
-    await fetch(`${RSVP_API}/rsvp/${id}`, { method: 'DELETE' });
+    await fetch(`${RSVP_API}/rsvp/${id}`, { method: 'DELETE', headers: AUTH });
     await loadRsvps();
   }
 
