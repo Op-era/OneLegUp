@@ -35,7 +35,7 @@ echo "    Tunnel URL: $TUNNEL_URL"
 
 echo ""
 echo "==> Updating HTML files with live tunnel URL..."
-for f in signup.html register.html login.html dashboard.html set-password.html; do
+for f in signup.html register.html login.html dashboard.html set-password.html subscribe.html; do
   sed -i '' "s|const API = '.*'|const API = '$TUNNEL_URL'|" "$SCRIPT_DIR/$f" 2>/dev/null || true
 done
 sed -i '' "s|const RSVP_URL = '.*'|const RSVP_URL = '$TUNNEL_URL/rsvp'|" "$SCRIPT_DIR/signup.html"

@@ -56,6 +56,21 @@
     .admin-link{margin-top:8px;text-align:center;font-size:0.8rem;}
     .admin-link a{color:rgba(243,198,117,0.6);text-decoration:none;}
     .admin-link a:hover{color:#f3c675;}
+    .sub-card{width:100%;max-width:560px;border-radius:16px;padding:22px 24px;backdrop-filter:blur(14px);box-shadow:0 24px 60px rgba(0,0,0,0.5);margin-bottom:16px;}
+    .sub-active{background:rgba(10,35,20,0.82);border:1px solid rgba(74,222,128,0.3);}
+    .sub-upsell{background:rgba(10,25,35,0.78);border:1px solid rgba(243,198,117,0.2);}
+    .sub-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+    .sub-info .sub-label{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,220,150,0.5);margin-bottom:4px;}
+    .sub-info .sub-val{font-size:1rem;font-weight:600;color:#4ade80;}
+    .sub-info .sub-cancel{font-size:0.78rem;color:rgba(255,220,150,0.4);margin-top:2px;}
+    .sub-upsell-text .sub-label{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,220,150,0.5);margin-bottom:4px;}
+    .sub-upsell-text p{font-size:0.86rem;color:#c8b896;line-height:1.5;}
+    .sub-upsell-text strong{color:#f3c675;}
+    .manage-sub-btn{padding:9px 20px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;letter-spacing:0.04em;border:none;transition:all .2s;}
+    .btn-manage{background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.35) !important;border-style:solid;color:#4ade80;}
+    .btn-manage:hover{background:rgba(74,222,128,0.22);}
+    .btn-subscribe{background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;}
+    .btn-subscribe:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(236,139,87,0.4);}
   </style>
 </head>
 <body>
@@ -94,6 +109,9 @@
     <div class="status-notice" id="status-notice"></div>
   </div>
 
+  <!-- Subscription card -->
+  <div id="sub-card"></div>
+
   <!-- Edit profile card -->
   <div class="card">
     <div class="card-title">Edit Profile</div>
@@ -128,13 +146,78 @@
   };
 
   let currentMember = null;
-  const token = localStorage.getItem('olu_token');
+  const token   = localStorage.getItem('olu_token');
+  const params  = new URLSearchParams(window.location.search);
+  const SESSION_ID = params.get('session_id');
+
+  function renderSubCard(member) {
+    const el = document.getElementById('sub-card');
+    if (member.subscription_status === 'active') {
+      el.innerHTML = `
+        <div class="sub-card sub-active">
+          <div class="sub-row">
+            <div class="sub-info">
+              <div class="sub-label">Membership Subscription</div>
+              <div class="sub-val">✅ Active — $9.99/month</div>
+              <div class="sub-cancel">Full access to all One Leg Up parties</div>
+            </div>
+            <button class="manage-sub-btn btn-manage" id="manage-sub-btn">Manage / Cancel</button>
+          </div>
+        </div>`;
+      document.getElementById('manage-sub-btn').addEventListener('click', async () => {
+        const btn = document.getElementById('manage-sub-btn');
+        btn.textContent = 'Loading…';
+        const res  = await fetch(`${API}/subscribe/portal`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+        const data = await res.json();
+        if (res.ok) window.location.href = data.url;
+        else { alert(data.error || 'Could not open portal'); btn.textContent = 'Manage / Cancel'; }
+      });
+    } else {
+      el.innerHTML = `
+        <div class="sub-card sub-upsell">
+          <div class="sub-row">
+            <div class="sub-upsell-text">
+              <div class="sub-label">Membership Subscription</div>
+              <p>Get instant access to all parties for <strong>$9.99/month</strong> — no SLS or Kasidie required.</p>
+            </div>
+            <button class="manage-sub-btn btn-subscribe" id="join-sub-btn">Subscribe Now</button>
+          </div>
+        </div>`;
+      document.getElementById('join-sub-btn').addEventListener('click', async () => {
+        const btn = document.getElementById('join-sub-btn');
+        btn.textContent = 'Loading…';
+        const res  = await fetch(`${API}/subscribe/checkout`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+        const data = await res.json();
+        if (res.ok) window.location.href = data.url;
+        else { alert(data.error || 'Could not start checkout'); btn.textContent = 'Subscribe Now'; }
+      });
+    }
+  }
+
+  async function confirmSessionIfNeeded(member) {
+    if (!SESSION_ID) return member;
+    try {
+      const res = await fetch(`${API}/subscribe/confirm?session_id=${SESSION_ID}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        // Re-fetch updated member
+        const r2 = await fetch(`${API}/member/me`, { headers: { Authorization: `Bearer ${token}` } });
+        if (r2.ok) return await r2.json();
+      }
+    } catch (e) { /* ignore */ }
+    return member;
+  }
 
   async function init() {
     if (!token) { window.location.href = 'login.html'; return; }
     const res = await fetch(`${API}/member/me`, { headers: { Authorization: `Bearer ${token}` } });
     if (!res.ok) { localStorage.removeItem('olu_token'); window.location.href = 'login.html'; return; }
-    const member = await res.json();
+    let member = await res.json();
+
+    // If coming back from Stripe, confirm payment and refresh member
+    if (SESSION_ID) member = await confirmSessionIfNeeded(member);
+
     currentMember = member;
 
     document.getElementById('welcome-heading').textContent = `Welcome, ${member.display_name || 'Member'}`;
@@ -146,14 +229,15 @@
     document.getElementById('info-since').textContent = new Date(member.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     const notice = statusNotices[member.status];
     const noticeEl = document.getElementById('status-notice');
-    noticeEl.textContent = notice.msg;
-    noticeEl.className   = 'status-notice ' + notice.cls;
+    noticeEl.textContent = notice?.msg || '';
+    noticeEl.className   = 'status-notice ' + (notice?.cls || '');
     document.getElementById('edit-name').value = member.display_name || '';
     if (member.profile_type) {
       const radio = document.querySelector(`input[name="edit_type"][value="${member.profile_type}"]`);
       if (radio) radio.checked = true;
     }
     if (member.is_admin) document.getElementById('admin-link').style.display = 'block';
+    renderSubCard(member);
   }
 
   document.getElementById('save-btn').addEventListener('click', async () => {

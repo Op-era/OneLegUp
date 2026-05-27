@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Become a Member – One Leg Up</title>
+  <link rel="icon" type="image/png" href="images/NewLogo/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{min-height:100vh;background:#080808;font-family:'Poppins',sans-serif;color:#fff;overflow-x:hidden;}
+    #bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,rgba(26,24,40,0.18),rgba(4,6,14,0.6) 60%,rgba(0,0,0,0.92) 100%),url('images/playboy-bg.png') center center/cover no-repeat;}
+    #bg::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 25%,rgba(255,186,118,0.07),transparent 50%);}
+    @keyframes goldShimmer{0%{background-position:-400% center;}100%{background-position:400% center;}}
+    .gold-shimmer{background:linear-gradient(90deg,#7a5700 0%,#c8960c 12%,#f3c675 25%,#fffbe8 38%,#ffd700 50%,#fffbe8 62%,#f3c675 75%,#c8960c 88%,#7a5700 100%);background-size:400% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:goldShimmer 5s linear infinite;}
+    .page{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px 60px;}
+    .topbar{width:100%;max-width:520px;display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;}
+    .back{display:inline-flex;align-items:center;gap:6px;color:rgba(243,198,117,0.7);text-decoration:none;font-size:0.82rem;letter-spacing:0.08em;transition:color .2s;}
+    .back:hover{color:#f3c675;}
+    .back svg{width:14px;height:14px;fill:currentColor;}
+    .header{text-align:center;margin-bottom:32px;width:100%;max-width:520px;}
+    .header .eyebrow{font-size:0.72rem;letter-spacing:0.42em;text-transform:uppercase;color:rgba(255,220,150,0.5);margin-bottom:6px;}
+    .header h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,8vw,3rem);font-weight:900;line-height:1;}
+    .header p{margin-top:12px;font-size:0.92rem;color:rgba(200,184,150,0.85);line-height:1.6;max-width:420px;margin-left:auto;margin-right:auto;}
+
+    .pricing-card{width:100%;max-width:440px;background:rgba(10,25,35,0.82);border:1px solid rgba(243,198,117,0.35);border-radius:20px;padding:36px 32px;backdrop-filter:blur(14px);box-shadow:0 32px 70px rgba(0,0,0,0.55),0 0 0 1px rgba(243,198,117,0.08);}
+    .price-row{display:flex;align-items:baseline;justify-content:center;gap:6px;margin-bottom:6px;}
+    .price-amount{font-family:'Playfair Display',serif;font-size:4rem;font-weight:900;color:#f3c675;line-height:1;}
+    .price-period{font-size:1rem;color:rgba(243,198,117,0.6);font-weight:600;}
+    .price-sub{text-align:center;font-size:0.78rem;color:rgba(255,220,150,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:28px;}
+
+    .perks{list-style:none;margin-bottom:28px;}
+    .perks li{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.88rem;color:#e0d4b8;line-height:1.4;}
+    .perks li:last-child{border-bottom:none;}
+    .perk-icon{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.3);display:flex;align-items:center;justify-content:center;margin-top:1px;}
+    .perk-icon svg{width:11px;height:11px;fill:none;stroke:#4ade80;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+
+    .subscribe-btn{width:100%;padding:16px 0;font-family:'Poppins',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#0d1f28;background:linear-gradient(135deg,#f3c675,#ec8b57);border:none;border-radius:12px;cursor:pointer;transition:transform .25s,box-shadow .25s;box-shadow:0 10px 30px rgba(236,139,87,0.4);}
+    .subscribe-btn:hover{transform:translateY(-2px);box-shadow:0 16px 38px rgba(236,139,87,0.55);}
+    .subscribe-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+    .login-note{margin-top:18px;text-align:center;font-size:0.82rem;color:rgba(200,184,150,0.5);}
+    .login-note a{color:rgba(243,198,117,0.7);text-decoration:none;}
+    .login-note a:hover{color:#f3c675;}
+
+    .alert{padding:12px 16px;border-radius:8px;font-size:0.84rem;margin-bottom:18px;display:none;}
+    .alert-err{background:rgba(180,30,30,0.2);border:1px solid rgba(220,60,60,0.4);color:#ffa0a0;}
+    .alert-ok{background:rgba(30,120,60,0.2);border:1px solid rgba(60,180,100,0.4);color:#90ffb8;}
+    .alert-info{background:rgba(243,198,117,0.08);border:1px solid rgba(243,198,117,0.25);color:#f3c699;}
+
+    .already-card{text-align:center;padding:8px 0;}
+    .already-card .icon{font-size:2.6rem;margin-bottom:12px;}
+    .already-card h2{font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:10px;}
+    .already-card p{font-size:0.88rem;color:#c8b896;line-height:1.6;margin-bottom:20px;}
+    .manage-btn{display:inline-block;padding:12px 28px;background:rgba(243,198,117,0.1);border:1px solid rgba(243,198,117,0.4);border-radius:10px;color:#f3c675;font-weight:600;font-size:0.88rem;text-decoration:none;cursor:pointer;font-family:'Poppins',sans-serif;transition:background .2s;letter-spacing:0.04em;}
+    .manage-btn:hover{background:rgba(243,198,117,0.18);}
+  </style>
+</head>
+<body>
+<div id="bg"></div>
+<div class="page">
+
+  <div class="topbar">
+    <a href="index.html" class="back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Back</a>
+    <a href="login.html" class="back" style="gap:4px;">Log In →</a>
+  </div>
+
+  <div class="header">
+    <div class="eyebrow">One Leg Up Membership</div>
+    <h1 class="gold-shimmer">Skip the Middleman</h1>
+    <p>No SLS. No Kasidie. No waiting for approval. Pay once a month and get instant access to every One Leg Up party.</p>
+  </div>
+
+  <div class="pricing-card" id="main-card">
+    <div class="alert" id="alert"></div>
+
+    <div id="subscribe-view">
+      <div class="price-row">
+        <div class="price-amount">$9.99</div>
+        <div class="price-period">/ month</div>
+      </div>
+      <div class="price-sub">Cancel anytime · No hidden fees</div>
+
+      <ul class="perks">
+        <li>
+          <div class="perk-icon"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          <span>Access to all One Leg Up parties — no SLS or Kasidie membership required</span>
+        </li>
+        <li>
+          <div class="perk-icon"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          <span>Instant account approval the moment your payment goes through</span>
+        </li>
+        <li>
+          <div class="perk-icon"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          <span>Members-only event info and early RSVP access</span>
+        </li>
+        <li>
+          <div class="perk-icon"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          <span>Cancel anytime from your dashboard — no calls, no hassle</span>
+        </li>
+      </ul>
+
+      <button class="subscribe-btn" id="subscribe-btn">Subscribe Now — $9.99/mo</button>
+      <div class="login-note">Don't have an account? <a href="register.html">Sign up first</a> — it only takes a minute.</div>
+    </div>
+
+    <div id="already-view" class="already-card" style="display:none;">
+      <div class="icon">✅</div>
+      <h2 class="gold-shimmer">You're a Member!</h2>
+      <p>Your $9.99/month subscription is active. You have full access to all One Leg Up events.</p>
+      <button class="manage-btn" id="manage-btn">Manage Subscription</button>
+      <br><br>
+      <a href="dashboard.html" class="back">← Back to dashboard</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const API   = 'https://offering-preference-repository-brooklyn.trycloudflare.com';
+  const token = localStorage.getItem('olu_token');
+  const alertEl = document.getElementById('alert');
+  const params  = new URLSearchParams(window.location.search);
+
+  function showAlert(msg, type = 'err') {
+    alertEl.textContent = msg;
+    alertEl.className   = 'alert alert-' + type;
+    alertEl.style.display = 'block';
+  }
+
+  async function init() {
+    if (params.get('canceled')) {
+      showAlert('Subscription was canceled — no charge was made. You can try again anytime.', 'info');
+    }
+
+    if (!token) return; // Not logged in — show default subscribe view
+
+    try {
+      const res  = await fetch(`${API}/member/me`, { headers: { Authorization: `Bearer ${token}` } });
+      if (!res.ok) return;
+      const member = await res.json();
+      if (member.subscription_status === 'active') {
+        document.getElementById('subscribe-view').style.display = 'none';
+        document.getElementById('already-view').style.display   = 'block';
+      }
+    } catch (e) { /* offline — show default view */ }
+  }
+
+  document.getElementById('subscribe-btn').addEventListener('click', async () => {
+    if (!token) { window.location.href = 'register.html'; return; }
+    const btn = document.getElementById('subscribe-btn');
+    btn.disabled = true; btn.textContent = 'Loading…';
+    try {
+      const res  = await fetch(`${API}/subscribe/checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!res.ok) { showAlert(data.error || 'Could not start checkout'); btn.disabled = false; btn.textContent = 'Subscribe Now — $9.99/mo'; return; }
+      window.location.href = data.url;
+    } catch (e) {
+      showAlert('Network error — is the server running?');
+      btn.disabled = false; btn.textContent = 'Subscribe Now — $9.99/mo';
+    }
+  });
+
+  document.getElementById('manage-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('manage-btn');
+    btn.textContent = 'Loading…';
+    try {
+      const res  = await fetch(`${API}/subscribe/portal`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok) window.location.href = data.url;
+      else { showAlert(data.error || 'Could not open portal'); btn.textContent = 'Manage Subscription'; }
+    } catch (e) {
+      showAlert('Network error'); btn.textContent = 'Manage Subscription';
+    }
+  });
+
+  init();
+</script>
+<script src="music.js"></script>
+</body>
+</html>
