@@ -324,15 +324,16 @@
     @media (min-width:768px){
       html,body{height:100vh;overflow:hidden;}
       .overlay{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;padding:78px 34px 18px 34px;}
-      .content{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,0.92fr);align-items:start;gap:16px;margin-top:8px;flex:1 1 auto;min-height:0;}
-      .left{padding:0;display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"flyer" "info" "expect";gap:10px;align-items:start;}
-      .flyer-wrap{grid-area:flyer;justify-content:center;}
-      .info-stack{grid-area:info;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch;gap:8px 12px;max-width:none;}
-      .expectations{grid-area:expect;margin-top:0;}
+      .content{display:grid;grid-template-columns:minmax(260px,0.74fr) minmax(0,1.08fr) minmax(340px,0.92fr);align-items:start;gap:16px;margin-top:8px;flex:1 1 auto;min-height:0;}
+      .expectations{grid-column:1;align-self:start;}
       .expectations h2,.expect-intro{text-align:left;}
-      .expect-list li{font-size:0.78rem;}
-      .expect-subhead{font-size:0.78rem;}
-      .events{grid-column:2;max-height:calc(100vh - 180px);overflow-y:auto;}
+      .expect-list li{font-size:0.8rem;}
+      .expect-subhead{font-size:0.82rem;}
+      .expect-location{font-size:0.76rem;}
+      .left{grid-column:2;padding:0;display:flex;flex-direction:column;gap:10px;align-items:start;}
+      .flyer-wrap{width:100%;justify-content:center;}
+      .info-stack{width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch;gap:8px 12px;max-width:none;}
+      .events{grid-column:3;max-height:calc(100vh - 180px);overflow-y:auto;}
       .sign{width:200px;height:60px;font-size:1.8rem;top:20px;left:20px;}
       .sign span{font-size:1.5rem;}
       .notice{grid-column:1 / -1;font-size:0.98rem;padding:10px 14px;margin:6px 0 0;}
@@ -389,6 +390,26 @@
 
   <div class="overlay">
     <div class="content">
+      <section class="expectations" aria-labelledby="expect-heading">
+        <h2 id="expect-heading" class="gold-shimmer">What to Expect</h2>
+        <p class="expect-intro">A North Fresno lifestyle party in the spirit of Hugh Hefner — elegant, daring, and unforgettable.</p>
+        <h3 class="expect-subhead">Party Snapshot</h3>
+        <ul class="expect-list">
+          <li><strong>Guest mix:</strong> Couples and single women always welcome; single men screened to protect balance.</li>
+          <li><strong>Atmosphere:</strong> Playboy Mansion vibes — lounge energy, sultry music, and social connection before play.</li>
+          <li><strong>Drink setup:</strong> BYOB only. We do not serve or sell alcohol. Ice chests with ice are provided to keep drinks cold.</li>
+          <li><strong>Supplies provided:</strong> Condoms and lube are available for guests.</li>
+        </ul>
+        <h3 class="expect-subhead">House Etiquette</h3>
+        <ul class="expect-list">
+          <li><strong>Consent is mandatory:</strong> Ask before touching, and respect "no" immediately.</li>
+          <li><strong>Discretion always:</strong> No photos, videos, or sharing guest identities.</li>
+          <li><strong>Dress code:</strong> Arrive in Playboy-inspired attire — think silk robes, bunny ears, or upscale nightlife glam.</li>
+          <li><strong>Clean play standards:</strong> Respect host spaces, use supplies provided, and clean up after yourself.</li>
+          <li><strong>Travel light:</strong> We do not have lockers, so bring only what you can keep with you.</li>
+        </ul>
+        <p class="expect-location"><strong>Location zone:</strong> Maple &amp; Shepherd area in North Fresno — exact address texted after RSVP approval.</p>
+      </section>
       <div class="left">
         <div class="flyer-wrap">
           <img src="images/playboy_pool_party.png" alt="Playboy Pool Party Flyer" class="flyer">
@@ -416,26 +437,6 @@
           </div>
           <div class="countdown" id="countdown">Loading...</div>
         </div>
-        <section class="expectations" aria-labelledby="expect-heading">
-          <h2 id="expect-heading" class="gold-shimmer">What to Expect</h2>
-          <p class="expect-intro">A North Fresno lifestyle party in the spirit of Hugh Hefner — elegant, daring, and unforgettable.</p>
-          <h3 class="expect-subhead">Party Snapshot</h3>
-          <ul class="expect-list">
-            <li><strong>Guest mix:</strong> Couples and single women always welcome; single men screened to protect balance.</li>
-            <li><strong>Atmosphere:</strong> Playboy Mansion vibes — lounge energy, sultry music, and social connection before play.</li>
-            <li><strong>Drink setup:</strong> BYOB only. We do not serve or sell alcohol. Ice chests with ice are provided to keep drinks cold.</li>
-            <li><strong>Supplies provided:</strong> Condoms and lube are available for guests.</li>
-          </ul>
-          <h3 class="expect-subhead">House Etiquette</h3>
-          <ul class="expect-list">
-            <li><strong>Consent is mandatory:</strong> Ask before touching, and respect "no" immediately.</li>
-            <li><strong>Discretion always:</strong> No photos, videos, or sharing guest identities.</li>
-            <li><strong>Dress code:</strong> Arrive in Playboy-inspired attire — think silk robes, bunny ears, or upscale nightlife glam.</li>
-            <li><strong>Clean play standards:</strong> Respect host spaces, use supplies provided, and clean up after yourself.</li>
-            <li><strong>Travel light:</strong> We do not have lockers, so bring only what you can keep with you.</li>
-          </ul>
-          <p class="expect-location"><strong>Location zone:</strong> Maple &amp; Shepherd area in North Fresno — exact address texted after RSVP approval.</p>
-        </section>
       </div>
       <div class="events">
         <div style="background:rgba(243,198,117,0.06);border:1px solid rgba(243,198,117,0.25);border-radius:12px;padding:18px 20px;margin-bottom:18px;">
