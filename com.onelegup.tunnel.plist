@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.onelegup.tunnel</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/shanefoster/OneLegUp/start-local.sh</string>
+  </array>
+
+  <!-- Start automatically on login -->
+  <key>RunAtLoad</key>
+  <true/>
+
+  <!-- Restart automatically if it crashes or exits -->
+  <key>KeepAlive</key>
+  <true/>
+
+  <!-- Logs -->
+  <key>StandardOutPath</key>
+  <string>/tmp/onelegup-tunnel.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/onelegup-cf.log</string>
+</dict>
+</plist>

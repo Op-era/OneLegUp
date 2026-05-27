@@ -6,7 +6,6 @@
   <title>Create Membership – One Leg Up</title>
   <link rel="icon" type="image/png" href="images/NewLogo/logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     html,body{min-height:100vh;background:#080808;font-family:'Poppins',sans-serif;color:#fff;overflow-x:hidden;}
@@ -77,16 +76,6 @@
         <div class="err" id="err-email">Please enter a valid email.</div>
       </div>
       <div class="field">
-        <label>Password <span class="req">*</span></label>
-        <input type="password" id="password" name="password" placeholder="Minimum 8 characters">
-        <div class="err" id="err-pw">Password must be at least 8 characters.</div>
-      </div>
-      <div class="field">
-        <label>Confirm Password <span class="req">*</span></label>
-        <input type="password" id="confirm_pw" name="confirm_pw" placeholder="Repeat your password">
-        <div class="err" id="err-cpw">Passwords do not match.</div>
-      </div>
-      <div class="field">
         <label>Attending As <span class="req">*</span></label>
         <div class="radio-group">
           <label><input type="radio" name="profile_type" value="single_male"> Single Male</label>
@@ -99,9 +88,9 @@
     </form>
 
     <div id="verify-screen">
-      <div class="icon">📬</div>
-      <h2 class="gold-shimmer">Check Your Email</h2>
-      <p>We sent a verification link to <strong id="sent-email" style="color:#f3c675;"></strong>.<br>Click the link to activate your account, then log in.</p>
+      <div class="icon">✅</div>
+      <h2 class="gold-shimmer">You're registered!</h2>
+      <p>Account created for <strong id="sent-email" style="color:#f3c675;"></strong>.<br>Your membership is pending admin approval. Once approved you can <a href="login.html" style="color:#f3c675;">log in here</a>.</p>
     </div>
 
     <div class="login-link">Already have an account? <a href="login.html">Log in</a></div>
@@ -109,19 +98,12 @@
 </div>
 
 <script>
-  const { createClient } = window.supabase;
-  const sb = createClient(
-    'https://hahjiqoiialzbdnbwqxi.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhaGppcW9paWFsemJkbmJ3cXhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1OTk1NTUsImV4cCI6MjA5NTE3NTU1NX0.HJROMfXZDxaS6cW992MaC46IO2eaOMEylilfhT4umiM'
-  );
+  const API = 'https://offering-preference-repository-brooklyn.trycloudflare.com';
 
-  // Redirect if already logged in
-  sb.auth.getSession().then(({ data: { session } }) => {
-    if (session) window.location.href = 'dashboard.html';
-  });
+  if (localStorage.getItem('olu_token')) window.location.href = 'dashboard.html';
 
-  const form = document.getElementById('reg-form');
-  const btn  = document.getElementById('submit-btn');
+  const form  = document.getElementById('reg-form');
+  const btn   = document.getElementById('submit-btn');
   const alert = document.getElementById('alert');
 
   function showErr(id, show) { document.getElementById(id).style.display = show ? 'block' : 'none'; }
@@ -131,20 +113,11 @@
     let ok = true;
     const name = document.getElementById('display_name').value.trim();
     showErr('err-name', !name); if (!name) ok = false;
-
     const email = document.getElementById('email').value.trim();
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     showErr('err-email', !emailOk); if (!emailOk) ok = false;
-
-    const pw = document.getElementById('password').value;
-    showErr('err-pw', pw.length < 8); if (pw.length < 8) ok = false;
-
-    const cpw = document.getElementById('confirm_pw').value;
-    showErr('err-cpw', pw !== cpw); if (pw !== cpw) ok = false;
-
     const type = form.querySelector('input[name="profile_type"]:checked');
     showErr('err-type', !type); if (!type) ok = false;
-
     return ok;
   }
 
@@ -156,28 +129,25 @@
     btn.disabled = true;
     btn.textContent = 'Creating account…';
 
-    const email       = document.getElementById('email').value.trim();
-    const password    = document.getElementById('password').value;
-    const displayName = document.getElementById('display_name').value.trim();
-    const profileType = form.querySelector('input[name="profile_type"]:checked').value;
-
-    const { error } = await sb.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { display_name: displayName, profile_type: profileType },
-        emailRedirectTo: 'https://onelegup.club/login.html'
-      }
+    const res = await fetch(`${API}/member/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        display_name: document.getElementById('display_name').value.trim(),
+        email:        document.getElementById('email').value.trim(),
+        profile_type: form.querySelector('input[name="profile_type"]:checked').value
+      })
     });
 
-    if (error) {
-      showAlert(error.message);
+    const data = await res.json();
+    if (!res.ok) {
+      showAlert(data.error || 'Something went wrong');
       btn.disabled = false;
       btn.textContent = 'Create My Account';
       return;
     }
 
-    document.getElementById('sent-email').textContent = email;
+    document.getElementById('sent-email').textContent = document.getElementById('email').value.trim();
     form.style.display = 'none';
     document.getElementById('verify-screen').style.display = 'block';
   });

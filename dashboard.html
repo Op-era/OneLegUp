@@ -6,7 +6,6 @@
   <title>My Membership – One Leg Up</title>
   <link rel="icon" type="image/png" href="images/NewLogo/logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     html,body{min-height:100vh;background:#080808;font-family:'Poppins',sans-serif;color:#fff;overflow-x:hidden;}
@@ -120,78 +119,60 @@
 </div>
 
 <script>
-  const { createClient } = window.supabase;
-  const sb = createClient(
-    'https://hahjiqoiialzbdnbwqxi.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhaGppcW9paWFsemJkbmJ3cXhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1OTk1NTUsImV4cCI6MjA5NTE3NTU1NX0.HJROMfXZDxaS6cW992MaC46IO2eaOMEylilfhT4umiM'
-  );
-
+  const API = 'https://offering-preference-repository-brooklyn.trycloudflare.com';
   const profileLabels = { single_male: 'Single Male', single_female: 'Single Female', couple: 'Couple' };
   const statusNotices = {
-    pending:  { cls: 'notice-pending',  msg: '⏳ Your membership is pending admin approval. You\'ll be notified once reviewed.' },
+    pending:  { cls: 'notice-pending',  msg: '⏳ Your membership is pending admin approval.' },
     approved: { cls: 'notice-approved', msg: '✅ Your membership is approved! You can attend events.' },
-    denied:   { cls: 'notice-denied',   msg: '❌ Your membership was not approved. Contact the host for more information.' }
+    denied:   { cls: 'notice-denied',   msg: '❌ Your membership was not approved. Contact the host.' }
   };
 
   let currentMember = null;
+  const token = localStorage.getItem('olu_token');
 
   async function init() {
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session) { window.location.href = 'login.html'; return; }
-
-    const { data: member, error } = await sb.from('members').select('*').eq('id', session.user.id).single();
-    if (error || !member) { window.location.href = 'login.html'; return; }
-
+    if (!token) { window.location.href = 'login.html'; return; }
+    const res = await fetch(`${API}/member/me`, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) { localStorage.removeItem('olu_token'); window.location.href = 'login.html'; return; }
+    const member = await res.json();
     currentMember = member;
 
-    // Populate heading
     document.getElementById('welcome-heading').textContent = `Welcome, ${member.display_name || 'Member'}`;
-
-    // Status badge
     const badge = document.getElementById('status-badge');
     badge.textContent = member.status.charAt(0).toUpperCase() + member.status.slice(1);
     badge.className = 'badge badge-' + member.status;
-
-    // Info rows
     document.getElementById('info-email').textContent = member.email;
     document.getElementById('info-type').textContent  = profileLabels[member.profile_type] || '—';
     document.getElementById('info-since').textContent = new Date(member.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-
-    // Status notice
     const notice = statusNotices[member.status];
     const noticeEl = document.getElementById('status-notice');
     noticeEl.textContent = notice.msg;
     noticeEl.className   = 'status-notice ' + notice.cls;
-
-    // Pre-fill edit form
     document.getElementById('edit-name').value = member.display_name || '';
     if (member.profile_type) {
       const radio = document.querySelector(`input[name="edit_type"][value="${member.profile_type}"]`);
       if (radio) radio.checked = true;
     }
-
-    // Show admin link if admin
     if (member.is_admin) document.getElementById('admin-link').style.display = 'block';
   }
 
-  // Save profile edits
   document.getElementById('save-btn').addEventListener('click', async () => {
     const alertEl = document.getElementById('edit-alert');
     alertEl.style.display = 'none';
     const name = document.getElementById('edit-name').value.trim();
     const type = document.querySelector('input[name="edit_type"]:checked')?.value;
-
     if (!name) { alertEl.textContent = 'Please enter a display name.'; alertEl.className = 'alert alert-err'; alertEl.style.display = 'block'; return; }
-    if (!type) { alertEl.textContent = 'Please select a profile type.'; alertEl.className = 'alert alert-err'; alertEl.style.display = 'block'; return; }
-
+    if (!type) { alertEl.textContent = 'Please select a profile type.';  alertEl.className = 'alert alert-err'; alertEl.style.display = 'block'; return; }
     const btn = document.getElementById('save-btn');
     btn.disabled = true; btn.textContent = 'Saving…';
-
-    const { error } = await sb.from('members').update({ display_name: name, profile_type: type }).eq('id', currentMember.id);
-
+    const res = await fetch(`${API}/member/me`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ display_name: name, profile_type: type })
+    });
     btn.disabled = false; btn.textContent = 'Save Changes';
-    if (error) {
-      alertEl.textContent = error.message; alertEl.className = 'alert alert-err'; alertEl.style.display = 'block';
+    if (!res.ok) {
+      alertEl.textContent = 'Save failed'; alertEl.className = 'alert alert-err'; alertEl.style.display = 'block';
     } else {
       alertEl.textContent = 'Profile updated!'; alertEl.className = 'alert alert-ok'; alertEl.style.display = 'block';
       document.getElementById('welcome-heading').textContent = `Welcome, ${name}`;
@@ -199,8 +180,8 @@
     }
   });
 
-  document.getElementById('logout-btn').addEventListener('click', async () => {
-    await sb.auth.signOut();
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    localStorage.removeItem('olu_token');
     window.location.href = 'index.html';
   });
 

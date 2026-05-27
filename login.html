@@ -6,7 +6,6 @@
   <title>Members Login – One Leg Up</title>
   <link rel="icon" type="image/png" href="images/NewLogo/logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     html,body{min-height:100vh;background:#080808;font-family:'Poppins',sans-serif;color:#fff;overflow-x:hidden;}
@@ -107,11 +106,9 @@
 </div>
 
 <script>
-  const { createClient } = window.supabase;
-  const sb = createClient(
-    'https://hahjiqoiialzbdnbwqxi.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhaGppcW9paWFsemJkbmJ3cXhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1OTk1NTUsImV4cCI6MjA5NTE3NTU1NX0.HJROMfXZDxaS6cW992MaC46IO2eaOMEylilfhT4umiM'
-  );
+  const API = 'https://offering-preference-repository-brooklyn.trycloudflare.com';
+
+  if (localStorage.getItem('olu_token')) window.location.href = 'dashboard.html';
 
   const alertEl = document.getElementById('alert');
   function showAlert(msg, type = 'err') {
@@ -120,32 +117,30 @@
     alertEl.style.display = 'block';
   }
 
-  // Handle Supabase auth redirects (email confirmation, password reset)
-  sb.auth.onAuthStateChange((event, session) => {
-    if (event === 'PASSWORD_RECOVERY') {
-      document.getElementById('login-view').style.display   = 'none';
-      document.getElementById('forgot-view').style.display  = 'none';
-      document.getElementById('newpw-view').style.display   = 'block';
-    } else if (event === 'SIGNED_IN' && session) {
-      window.location.href = 'dashboard.html';
-    }
-  });
-
-  // Login form
   document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     alertEl.style.display = 'none';
     const btn = document.getElementById('login-btn');
     btn.disabled = true; btn.textContent = 'Logging in…';
-    const { error } = await sb.auth.signInWithPassword({
-      email:    document.getElementById('email').value.trim(),
-      password: document.getElementById('password').value
+
+    const res = await fetch(`${API}/member/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email:    document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value
+      })
     });
-    if (error) { showAlert(error.message); btn.disabled = false; btn.textContent = 'Log In'; }
-    // onAuthStateChange handles redirect on success
+    const data = await res.json();
+    if (!res.ok) {
+      showAlert(data.error || 'Login failed');
+      btn.disabled = false; btn.textContent = 'Log In';
+      return;
+    }
+    localStorage.setItem('olu_token', data.token);
+    window.location.href = 'dashboard.html';
   });
 
-  // Forgot password toggle
   document.getElementById('forgot-link').addEventListener('click', () => {
     alertEl.style.display = 'none';
     document.getElementById('login-view').style.display  = 'none';
@@ -157,32 +152,12 @@
     document.getElementById('login-view').style.display  = 'block';
   });
 
-  // Send reset email
+  // Forgot password — just show a note, no email sending
   document.getElementById('forgot-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const btn = document.getElementById('reset-btn');
-    btn.disabled = true; btn.textContent = 'Sending…';
-    const { error } = await sb.auth.resetPasswordForEmail(
-      document.getElementById('reset-email').value.trim(),
-      { redirectTo: 'https://onelegup.club/login.html' }
-    );
-    btn.disabled = false; btn.textContent = 'Send Reset Link';
-    if (error) { showAlert(error.message); }
-    else { showAlert('Reset link sent — check your email.', 'ok'); }
-  });
-
-  // Set new password
-  document.getElementById('newpw-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const pw  = document.getElementById('new-pw').value;
-    const cpw = document.getElementById('confirm-new-pw').value;
-    if (pw.length < 8) { showAlert('Password must be at least 8 characters.'); return; }
-    if (pw !== cpw)    { showAlert('Passwords do not match.'); return; }
-    const btn = document.getElementById('newpw-btn');
-    btn.disabled = true; btn.textContent = 'Saving…';
-    const { error } = await sb.auth.updateUser({ password: pw });
-    if (error) { showAlert(error.message); btn.disabled = false; btn.textContent = 'Set New Password'; }
-    else { showAlert('Password updated! Redirecting…', 'ok'); setTimeout(() => window.location.href = 'dashboard.html', 1500); }
+    showAlert('Contact the host to reset your password.', 'ok');
+    document.getElementById('reset-btn').disabled = false;
+    document.getElementById('reset-btn').textContent = 'Send Reset Link';
   });
 </script>
   <script src="music.js"></script>

@@ -6,7 +6,6 @@
   <title>Admin – One Leg Up</title>
   <link rel="icon" type="image/png" href="images/NewLogo/logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     html,body{min-height:100vh;background:#080808;font-family:'Poppins',sans-serif;color:#fff;overflow-x:hidden;}
@@ -116,36 +115,30 @@
 </div>
 
 <script>
-  const { createClient } = window.supabase;
-  const sb = createClient(
-    'https://hahjiqoiialzbdnbwqxi.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhaGppcW9paWFsemJkbmJ3cXhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1OTk1NTUsImV4cCI6MjA5NTE3NTU1NX0.HJROMfXZDxaS6cW992MaC46IO2eaOMEylilfhT4umiM'
-  );
+  const token = localStorage.getItem('olu_token');
+  const AUTH  = { Authorization: `Bearer ${token}` };
 
   const profileLabels = { single_male: 'Single Male', single_female: 'Single Female', couple: 'Couple' };
   let allMembers = [];
   let currentFilter = 'all';
 
   async function init() {
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session) { window.location.href = 'login.html'; return; }
-
-    const { data: me } = await sb.from('members').select('is_admin').eq('id', session.user.id).single();
+    if (!token) { window.location.href = 'login.html'; return; }
+    const me = await fetch(`${RSVP_API}/member/me`, { headers: AUTH }).then(r => r.json());
     if (!me?.is_admin) { window.location.href = 'dashboard.html'; return; }
-
     await loadMembers();
     await loadRsvps();
   }
 
   async function loadMembers() {
-    const { data } = await sb.from('members').select('*').order('created_at', { ascending: false });
-    allMembers = data || [];
+    const res = await fetch(`${RSVP_API}/members`, { headers: AUTH });
+    allMembers = res.ok ? await res.json() : [];
+    allMembers.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     document.getElementById('stat-total').textContent    = allMembers.length;
     document.getElementById('stat-pending').textContent  = allMembers.filter(m => m.status === 'pending').length;
     document.getElementById('stat-approved').textContent = allMembers.filter(m => m.status === 'approved').length;
     document.getElementById('stat-denied').textContent   = allMembers.filter(m => m.status === 'denied').length;
-
     renderMembers();
   }
 
@@ -174,28 +167,41 @@
       </div>
     `).join('');
 
-    // Save notes on blur
     list.querySelectorAll('.notes-input').forEach(el => {
       el.addEventListener('blur', async () => {
-        await sb.from('members').update({ notes: el.value }).eq('id', el.dataset.id);
+        await fetch(`${RSVP_API}/member/${el.dataset.id}/status`, {
+          method: 'PUT', headers: { 'Content-Type': 'application/json', ...AUTH },
+          body: JSON.stringify({ notes: el.value })
+        });
       });
     });
   }
 
   async function updateStatus(id, status) {
-    await sb.from('members').update({ status }).eq('id', id);
+    await fetch(`${RSVP_API}/member/${id}/status`, {
+      method: 'PUT', headers: { 'Content-Type': 'application/json', ...AUTH },
+      body: JSON.stringify({ status })
+    });
     await loadMembers();
   }
 
   async function deleteMember(id) {
     if (!confirm('Delete this member? This cannot be undone.')) return;
-    await sb.from('members').delete().eq('id', id);
+    await fetch(`${RSVP_API}/member/${id}`, { method: 'DELETE', headers: AUTH });
     await loadMembers();
   }
 
+  const RSVP_API = 'https://offering-preference-repository-brooklyn.trycloudflare.com';
+
   async function loadRsvps() {
-    const { data } = await sb.from('rsvps').select('*').order('created_at', { ascending: false });
-    const rsvps = data || [];
+    let rsvps = [];
+    try {
+      const res = await fetch(`${RSVP_API}/rsvps`);
+      rsvps = await res.json();
+      rsvps.sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at));
+    } catch (e) {
+      console.warn('Could not reach RSVP server:', e.message);
+    }
     document.getElementById('stat-rsvps').textContent = rsvps.length;
 
     const tbody = document.getElementById('rsvp-body');
@@ -207,15 +213,15 @@
         <td>${esc(r.username || '—')}</td>
         <td>${esc(r.profile_type || '—')}</td>
         <td>${esc(r.contact || '—')}</td>
-        <td>${new Date(r.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
-        <td><button class="del-rsvp" onclick="deleteRsvp('${r.id}')">✕</button></td>
+        <td>${new Date(r.submitted_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
+        <td><button class="del-rsvp" onclick="deleteRsvp('${esc(r.id)}')">✕</button></td>
       </tr>
     `).join('');
   }
 
   async function deleteRsvp(id) {
     if (!confirm('Remove this RSVP?')) return;
-    await sb.from('rsvps').delete().eq('id', id);
+    await fetch(`${RSVP_API}/rsvp/${id}`, { method: 'DELETE' });
     await loadRsvps();
   }
 
@@ -228,8 +234,8 @@
     renderMembers();
   });
 
-  document.getElementById('logout-btn').addEventListener('click', async () => {
-    await sb.auth.signOut();
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    localStorage.removeItem('olu_token');
     window.location.href = 'index.html';
   });
 

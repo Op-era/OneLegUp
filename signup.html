@@ -6,7 +6,6 @@
   <title>RSVP – Playboy Pool Party | One Leg Up</title>
   <link rel="icon" type="image/png" href="images/NewLogo/logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     html,body{
@@ -349,15 +348,10 @@
     </div>
 
   </div>
-
   <script>
-    const { createClient } = window.supabase;
-    const sb = createClient(
-      'https://hahjiqoiialzbdnbwqxi.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhaGppcW9paWFsemJkbmJ3cXhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1OTk1NTUsImV4cCI6MjA5NTE3NTU1NX0.HJROMfXZDxaS6cW992MaC46IO2eaOMEylilfhT4umiM'
-    );
+    const RSVP_URL = 'https://offering-preference-repository-brooklyn.trycloudflare.com/rsvp';
 
-    const form = document.getElementById('rsvp-form');
+    const form      = document.getElementById('rsvp-form');
     const submitBtn = document.getElementById('submit-btn');
 
     function showErr(id, show) {
@@ -384,24 +378,29 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Submitting…';
 
-      const { error } = await sb.from('rsvps').insert({
-        event:        'Playboy Pool Party – May 30 2026',
-        platform:     form.querySelector('input[name="platform"]:checked').value,
-        username:     form.querySelector('#username').value.trim(),
-        profile_type: form.querySelector('input[name="profile_type"]:checked').value,
-        contact:      form.querySelector('input[name="contact"]').value.trim(),
-        acknowledged: true
-      });
+      try {
+        const res = await fetch(RSVP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event:        'Playboy Pool Party – May 30 2026',
+            platform:     form.querySelector('input[name="platform"]:checked').value,
+            username:     form.querySelector('#username').value.trim(),
+            profile_type: form.querySelector('input[name="profile_type"]:checked').value,
+            contact:      form.querySelector('input[name="contact"]').value.trim(),
+            acknowledged: true
+          })
+        });
 
-      if (error) {
+        if (!res.ok) throw new Error('Server error');
+
+        document.getElementById('form-card').style.display = 'none';
+        document.getElementById('success').style.display   = 'block';
+      } catch (err) {
         submitBtn.disabled = false;
         submitBtn.textContent = 'RSVP for the Party';
-        alert('Something went wrong: ' + error.message);
-        return;
+        alert('Could not submit — make sure the server is running, or text 559-787-5801 directly.');
       }
-
-      document.getElementById('form-card').style.display = 'none';
-      document.getElementById('success').style.display   = 'block';
     });
   </script>
   <script src="music.js"></script>
