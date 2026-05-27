@@ -196,7 +196,7 @@
   async function loadRsvps() {
     let rsvps = [];
     try {
-      const res = await fetch(`${RSVP_API}/rsvps`);
+      const res = await fetch(`${RSVP_API}/rsvps`, { headers: AUTH });
       rsvps = await res.json();
       rsvps.sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at));
     } catch (e) {
