@@ -11,6 +11,7 @@ yarn-error.log
 # Data files (stay local on Mac)
 rsvps.json
 members.json
+sessions.json
 
 # OS / IDE
 .DS_Store

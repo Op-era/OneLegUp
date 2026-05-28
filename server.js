@@ -13,10 +13,11 @@ if (fs.existsSync(envFile)) {
   });
 }
 
-const PORT         = 3002;
-const RSVPS_FILE   = path.join(__dirname, 'rsvps.json');
-const MEMBERS_FILE = path.join(__dirname, 'members.json');
-const SITE_URL     = 'https://onelegup.club';
+const PORT           = 3002;
+const RSVPS_FILE     = path.join(__dirname, 'rsvps.json');
+const MEMBERS_FILE   = path.join(__dirname, 'members.json');
+const SESSIONS_FILE  = path.join(__dirname, 'sessions.json');
+const SITE_URL       = 'https://onelegup.club';
 
 // ── Stripe ────────────────────────────────────────────────────────────────────
 const Stripe = require('stripe');
@@ -127,11 +128,20 @@ function verifyPassword(pw, stored) {
   return crypto.scryptSync(pw, salt, 64).toString('hex') === hash;
 }
 
-// ── Sessions ──────────────────────────────────────────────────────────────────
-const sessions = new Map();
+// ── Sessions (persisted to disk so server restarts don't log users out) ────────
+function loadSessions() {
+  try { return new Map(Object.entries(JSON.parse(fs.readFileSync(SESSIONS_FILE, 'utf8')))); }
+  catch { return new Map(); }
+}
+function saveSessions(map) {
+  fs.writeFileSync(SESSIONS_FILE, JSON.stringify(Object.fromEntries(map)));
+}
+const sessions = loadSessions();
+
 function createSession(memberId) {
   const token = crypto.randomBytes(32).toString('hex');
   sessions.set(token, memberId);
+  saveSessions(sessions);
   return token;
 }
 function getMemberFromToken(req) {
