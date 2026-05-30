@@ -70,6 +70,15 @@
     .rsvp-table .del-rsvp{background:none;border:none;color:rgba(248,113,113,0.5);cursor:pointer;font-size:0.9rem;padding:0 4px;transition:color .2s;}
     .rsvp-table .del-rsvp:hover{color:#f87171;}
     .rsvp-table input[type="checkbox"]{accent-color:#f3c675;width:14px;height:14px;cursor:pointer;}
+    .profile-link{color:#f3c675;text-decoration:none;display:inline-flex;align-items:center;gap:3px;}
+    .profile-link:hover{text-decoration:underline;}
+    .profile-link svg{opacity:.55;flex-shrink:0;}
+    .verify-btns{display:flex;gap:4px;flex-wrap:wrap;}
+    .verify-btn{padding:3px 9px;border-radius:20px;font-size:0.68rem;font-weight:600;cursor:pointer;border:1px solid rgba(243,198,117,0.3);background:rgba(243,198,117,0.06);color:rgba(243,198,117,0.7);font-family:'Poppins',sans-serif;transition:all .15s;white-space:nowrap;}
+    .verify-btn:hover{background:rgba(243,198,117,0.15);border-color:rgba(243,198,117,0.5);color:#f3c675;}
+    .verify-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:600;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.35);color:#4ade80;white-space:nowrap;}
+    .verify-undo{background:none;border:none;color:rgba(255,255,255,0.25);cursor:pointer;font-size:0.7rem;padding:0;margin-left:2px;line-height:1;transition:color .15s;}
+    .verify-undo:hover{color:#f87171;}
     .bulk-bar{display:none;align-items:center;gap:12px;padding:10px 14px;background:rgba(243,198,117,0.08);border:1px solid rgba(243,198,117,0.25);border-radius:8px;margin-bottom:10px;font-size:0.82rem;color:#f3c675;}
     .bulk-del{padding:6px 16px;background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);border-radius:6px;color:#f87171;font-family:'Poppins',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:background .2s;}
     .bulk-del:hover{background:rgba(248,113,113,0.28);}
@@ -119,7 +128,7 @@
       <button class="bulk-del" id="bulk-del-btn">Delete Selected</button>
     </div>
     <table class="rsvp-table" id="rsvp-table">
-      <thead><tr><th style="width:36px"><input type="checkbox" id="select-all"></th><th>Platform / Membership</th><th>Username</th><th>Type</th><th>Contact</th><th>Date</th><th></th></tr></thead>
+      <thead><tr><th style="width:36px"><input type="checkbox" id="select-all"></th><th>Platform / Membership</th><th>Username</th><th>Type</th><th>Contact</th><th>Date</th><th>Verified</th><th></th></tr></thead>
       <tbody id="rsvp-body"></tbody>
     </table>
   </div>
@@ -217,19 +226,31 @@
     document.getElementById('stat-rsvps').textContent = rsvps.length;
 
     const tbody = document.getElementById('rsvp-body');
-    if (!rsvps.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:rgba(255,220,150,0.35);padding:30px;">No RSVPs yet.</td></tr>'; return; }
+    if (!rsvps.length) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:rgba(255,220,150,0.35);padding:30px;">No RSVPs yet.</td></tr>'; return; }
 
-    tbody.innerHTML = rsvps.map(r => `
-      <tr data-id="${esc(r.id)}">
+    tbody.innerHTML = rsvps.map(r => {
+      const url = profileUrl(r.platform, r.username);
+      const usernameHtml = url
+        ? `<a href="${url}" target="_blank" rel="noopener" class="profile-link">${esc(r.username||'—')}<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3H3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V7"/><path d="M8 1h3v3M10.5 1.5 5 7"/></svg></a>`
+        : esc(r.username || '—');
+      const verifyHtml = r.verified
+        ? `<span class="verify-badge">✓ ${esc(r.membership_type||'Verified')}</span><button class="verify-undo" onclick="unverifyRsvp('${esc(r.id)}')">✕</button>`
+        : `<div class="verify-btns">
+            <button class="verify-btn" onclick="verifyRsvp('${esc(r.id)}','Monthly')">Monthly</button>
+            <button class="verify-btn" onclick="verifyRsvp('${esc(r.id)}','Annual')">Annual</button>
+            <button class="verify-btn" onclick="verifyRsvp('${esc(r.id)}','Lifetime')">Lifetime</button>
+           </div>`;
+      return `<tr data-id="${esc(r.id)}">
         <td><input type="checkbox" class="rsvp-cb" value="${esc(r.id)}"></td>
         <td>${esc(r.platform || '—')}</td>
-        <td>${esc(r.username || '—')}</td>
+        <td>${usernameHtml}</td>
         <td>${esc(r.profile_type || '—')}</td>
         <td>${esc(r.contact || '—')}</td>
         <td>${new Date(r.submitted_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
+        <td>${verifyHtml}</td>
         <td><button class="del-rsvp" onclick="deleteRsvp('${esc(r.id)}')">✕</button></td>
-      </tr>
-    `).join('');
+      </tr>`;
+    }).join('');
 
     document.getElementById('select-all').checked = false;
     document.getElementById('bulk-bar').style.display = 'none';
@@ -281,6 +302,30 @@
     window.location.href = 'index.html';
   });
 
+  function profileUrl(platform, username) {
+    if (!username || username === '—') return null;
+    const p = (platform || '').toLowerCase();
+    if (p.includes('swingers') || p.includes('sls')) return `https://www.swinglifestyle.com/members/${encodeURIComponent(username)}`;
+    if (p.includes('kasidie')) return `https://www.kasidie.com/profile/${encodeURIComponent(username)}`;
+    return null;
+  }
+
+  async function verifyRsvp(id, membership_type) {
+    await fetch(`${RSVP_API}/rsvp/${id}/verify`, {
+      method: 'PUT', headers: { 'Content-Type': 'application/json', ...AUTH },
+      body: JSON.stringify({ verified: true, membership_type })
+    });
+    await loadRsvps();
+  }
+
+  async function unverifyRsvp(id) {
+    await fetch(`${RSVP_API}/rsvp/${id}/verify`, {
+      method: 'PUT', headers: { 'Content-Type': 'application/json', ...AUTH },
+      body: JSON.stringify({ verified: false })
+    });
+    await loadRsvps();
+  }
+
   function printRsvps() {
     if (!rsvps.length) { alert('No RSVPs to print.'); return; }
     const rows = rsvps.map(r => `
@@ -290,6 +335,7 @@
         <td>${esc(r.profile_type || '—')}</td>
         <td>${esc(r.contact || '—')}</td>
         <td>${new Date(r.submitted_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td>
+        <td>${r.verified ? '✓ ' + esc(r.membership_type||'Verified') : '—'}</td>
       </tr>`).join('');
     const win = window.open('', '_blank', 'width=820,height=650');
     win.document.write(`<!DOCTYPE html><html><head><title>One Leg Up – Event RSVPs</title>
@@ -305,7 +351,7 @@
 </style></head><body>
   <h1>One Leg Up – Event RSVPs</h1>
   <div class="sub">Printed ${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})} &nbsp;·&nbsp; ${rsvps.length} RSVPs</div>
-  <table><thead><tr><th>Platform / Membership</th><th>Username</th><th>Type</th><th>Contact</th><th>Date</th></tr></thead>
+  <table><thead><tr><th>Platform / Membership</th><th>Username</th><th>Type</th><th>Contact</th><th>Date</th><th>Verified</th></tr></thead>
   <tbody>${rows}</tbody></table>
   <script>window.onload=()=>{window.print();}<\/script>
 </body></html>`);
