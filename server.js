@@ -19,6 +19,7 @@ const MEMBERS_FILE   = path.join(__dirname, 'members.json');
 const SESSIONS_FILE  = path.join(__dirname, 'sessions.json');
 const FORUM_POSTS_FILE   = path.join(__dirname, 'forum_posts.json');
 const FORUM_REPLIES_FILE = path.join(__dirname, 'forum_replies.json');
+const CONTACTS_FILE      = path.join(__dirname, 'contacts.json');
 const SITE_URL       = 'https://onelegup.club';
 
 const FORUM_CATS = [
@@ -144,6 +145,34 @@ function readJSON(file) {
 }
 function writeJSON(file, data) {
   fs.writeFileSync(file, JSON.stringify(data, null, 2));
+}
+
+// ── Contact database ──────────────────────────────────────────────────────────
+function findOrCreateContact(platform, username, profileType, phone, email) {
+  if (!platform || !username) return null;
+  const contacts = readJSON(CONTACTS_FILE);
+  const key = platform.toLowerCase().trim() + '|' + username.toLowerCase().trim();
+  let idx = contacts.findIndex(c =>
+    c.platform.toLowerCase().trim() + '|' + c.username.toLowerCase().trim() === key
+  );
+  if (idx !== -1) {
+    contacts[idx].last_seen   = new Date().toISOString();
+    contacts[idx].event_count = (contacts[idx].event_count || 0) + 1;
+    if (phone) contacts[idx].phone = phone;
+    if (email) contacts[idx].email = email;
+    if (profileType) contacts[idx].profile_type = profileType;
+    writeJSON(CONTACTS_FILE, contacts);
+    return contacts[idx].id;
+  }
+  const contact = {
+    id: crypto.randomUUID(), platform, username,
+    profile_type: profileType || '', verified: false, membership_type: null,
+    first_seen: new Date().toISOString(), last_seen: new Date().toISOString(),
+    event_count: 1, phone: phone || '', email: email || '', notes: ''
+  };
+  contacts.push(contact);
+  writeJSON(CONTACTS_FILE, contacts);
+  return contact.id;
 }
 
 // ── Password hashing ──────────────────────────────────────────────────────────
@@ -283,7 +312,8 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && req.url === '/rsvp') {
       const body  = await parseBody(req);
       const rsvps = readJSON(RSVPS_FILE);
-      rsvps.push({ ...body, id: Date.now().toString(), submitted_at: new Date().toISOString() });
+      const contactId = findOrCreateContact(body.platform, body.username, body.profile_type, body.phone, body.email);
+      rsvps.push({ ...body, id: Date.now().toString(), submitted_at: new Date().toISOString(), contact_id: contactId });
       writeJSON(RSVPS_FILE, rsvps);
       return send(200, { ok: true });
     }
@@ -304,6 +334,15 @@ const server = http.createServer(async (req, res) => {
       if (idx === -1) return send(404, { error: 'Not found' });
       rsvps[idx] = { ...rsvps[idx], verified: !!verified, membership_type: verified ? (membership_type || null) : null };
       writeJSON(RSVPS_FILE, rsvps);
+      if (rsvps[idx].contact_id) {
+        const contacts = readJSON(CONTACTS_FILE);
+        const ci = contacts.findIndex(c => c.id === rsvps[idx].contact_id);
+        if (ci !== -1) {
+          contacts[ci].verified = !!verified;
+          if (verified) contacts[ci].membership_type = membership_type || null;
+          writeJSON(CONTACTS_FILE, contacts);
+        }
+      }
       return send(200, { ok: true });
     }
 
@@ -438,6 +477,35 @@ const server = http.createServer(async (req, res) => {
       const me = getMemberFromToken(req);
       if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
       writeJSON(MEMBERS_FILE, readJSON(MEMBERS_FILE).filter(m => m.id !== delMember[1]));
+      return send(200, { ok: true });
+    }
+
+    // ── Contacts ──────────────────────────────────────────────────────────────
+
+    if (req.method === 'GET' && req.url === '/contacts') {
+      const me = getMemberFromToken(req);
+      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
+      return send(200, readJSON(CONTACTS_FILE));
+    }
+
+    const contactNotes = req.url.match(/^\/contact\/(.+)\/notes$/);
+    if (req.method === 'PUT' && contactNotes) {
+      const me = getMemberFromToken(req);
+      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
+      const { notes } = await parseBody(req);
+      const contacts = readJSON(CONTACTS_FILE);
+      const idx = contacts.findIndex(c => c.id === contactNotes[1]);
+      if (idx === -1) return send(404, { error: 'Not found' });
+      contacts[idx].notes = notes || '';
+      writeJSON(CONTACTS_FILE, contacts);
+      return send(200, { ok: true });
+    }
+
+    const delContact = req.url.match(/^\/contact\/(.+)$/);
+    if (req.method === 'DELETE' && delContact) {
+      const me = getMemberFromToken(req);
+      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
+      writeJSON(CONTACTS_FILE, readJSON(CONTACTS_FILE).filter(c => c.id !== delContact[1]));
       return send(200, { ok: true });
     }
 
