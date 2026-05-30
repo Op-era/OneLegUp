@@ -59,11 +59,11 @@
       <form id="login-form" novalidate>
         <div class="field">
           <label>Email</label>
-          <input type="email" id="email" placeholder="you@email.com">
+          <input type="email" id="email" name="email" autocomplete="email" placeholder="you@email.com">
         </div>
         <div class="field">
           <label>Password</label>
-          <input type="password" id="password" placeholder="Your password">
+          <input type="password" id="password" name="password" autocomplete="current-password" placeholder="Your password">
         </div>
         <button type="submit" class="btn" id="login-btn">Log In</button>
       </form>
@@ -138,6 +138,10 @@
       return;
     }
     localStorage.setItem('olu_token', data.token);
+    if (window.PasswordCredential) {
+      const cred = new PasswordCredential(document.getElementById('login-form'));
+      await navigator.credentials.store(cred);
+    }
     window.location.href = 'dashboard.html';
   });
 
