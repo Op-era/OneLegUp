@@ -109,7 +109,10 @@
   <div id="members-list"></div>
 
   <!-- RSVPs section -->
-  <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin:32px 0 14px;" class="gold-shimmer">Event RSVPs</h2>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin:32px 0 14px;">
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;" class="gold-shimmer">Event RSVPs</h2>
+    <button class="action-btn btn-delete" id="print-rsvps-btn" onclick="printRsvps()" style="border-color:rgba(243,198,117,0.3);color:rgba(243,198,117,0.7);">Print List</button>
+  </div>
   <div class="section-wrap">
     <div class="bulk-bar" id="bulk-bar">
       <span id="bulk-count">0 selected</span>
@@ -200,9 +203,10 @@
   }
 
   const RSVP_API = 'https://api.onelegup.club';
+  let rsvps = [];
 
   async function loadRsvps() {
-    let rsvps = [];
+    rsvps = [];
     try {
       const res = await fetch(`${RSVP_API}/rsvps`, { headers: AUTH });
       rsvps = await res.json();
@@ -275,6 +279,37 @@
     localStorage.removeItem('olu_token');
     window.location.href = 'index.html';
   });
+
+  function printRsvps() {
+    if (!rsvps.length) { alert('No RSVPs to print.'); return; }
+    const rows = rsvps.map(r => `
+      <tr>
+        <td>${esc(r.platform || '—')}</td>
+        <td>${esc(r.username || '—')}</td>
+        <td>${esc(r.profile_type || '—')}</td>
+        <td>${esc(r.contact || '—')}</td>
+        <td>${new Date(r.submitted_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td>
+      </tr>`).join('');
+    const win = window.open('', '_blank', 'width=820,height=650');
+    win.document.write(`<!DOCTYPE html><html><head><title>One Leg Up – Event RSVPs</title>
+<style>
+  body{font-family:Arial,sans-serif;color:#000;background:#fff;padding:24px;}
+  h1{font-size:20px;margin-bottom:4px;}
+  .sub{font-size:12px;color:#555;margin-bottom:18px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{text-align:left;padding:8px 10px;border-bottom:2px solid #000;font-size:11px;text-transform:uppercase;letter-spacing:.08em;}
+  td{padding:7px 10px;border-bottom:1px solid #ddd;}
+  tr:nth-child(even) td{background:#f7f7f7;}
+  @media print{.no-print{display:none;}}
+</style></head><body>
+  <h1>One Leg Up – Event RSVPs</h1>
+  <div class="sub">Printed ${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})} &nbsp;·&nbsp; ${rsvps.length} RSVPs</div>
+  <table><thead><tr><th>Platform / Membership</th><th>Username</th><th>Type</th><th>Contact</th><th>Date</th></tr></thead>
+  <tbody>${rows}</tbody></table>
+  <script>window.onload=()=>{window.print();}<\/script>
+</body></html>`);
+    win.document.close();
+  }
 
   function esc(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
