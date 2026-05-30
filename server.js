@@ -17,7 +17,18 @@ const PORT           = 3002;
 const RSVPS_FILE     = path.join(__dirname, 'rsvps.json');
 const MEMBERS_FILE   = path.join(__dirname, 'members.json');
 const SESSIONS_FILE  = path.join(__dirname, 'sessions.json');
+const FORUM_POSTS_FILE   = path.join(__dirname, 'forum_posts.json');
+const FORUM_REPLIES_FILE = path.join(__dirname, 'forum_replies.json');
 const SITE_URL       = 'https://onelegup.club';
+
+const FORUM_CATS = [
+  { id:'general', name:'General',       desc:'General lifestyle talk',           nsfw:false, icon:'💬' },
+  { id:'events',  name:'Event Talk',    desc:'Upcoming and past events',          nsfw:false, icon:'🎉' },
+  { id:'intros',  name:'Introductions', desc:'New here? Say hello',               nsfw:false, icon:'👋' },
+  { id:'stories', name:'Stories',       desc:'Share your experiences',            nsfw:true,  icon:'🔥' },
+  { id:'advice',  name:'Adult Advice',  desc:'Questions and lifestyle guidance',  nsfw:true,  icon:'💭' },
+  { id:'kink',    name:'Kink & Fetish', desc:'Explore and discuss kinks',         nsfw:true,  icon:'🖤' },
+];
 
 // ── Stripe ────────────────────────────────────────────────────────────────────
 const Stripe = require('stripe');
@@ -106,6 +117,23 @@ async function sendSetupEmail(to, token) {
         <p style="color:#c8b896;margin:16px 0;">Click the button below to set your password and activate your account. After that, you can subscribe for $9.99/month for instant access to all parties.</p>
         <a href="${link}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;font-weight:700;text-decoration:none;border-radius:8px;">Set My Password</a>
         <p style="color:#666;font-size:0.8rem;margin-top:24px;">Or copy this link: ${link}</p>
+      </div>`
+  });
+}
+
+async function sendResetEmail(to, token) {
+  const link = `${SITE_URL}/set-password.html?token=${token}`;
+  await mailer.sendMail({
+    from: '"One Leg Up" <witprod@gmail.com>',
+    to,
+    subject: 'Reset your One Leg Up password',
+    html: `
+      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px;background:#080808;color:#fff;border-radius:12px;">
+        <h2 style="color:#f3c675;font-family:serif;">Password Reset</h2>
+        <p style="color:#c8b896;margin:16px 0;">Click the button below to set a new password. This link expires in 1 hour.</p>
+        <a href="${link}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;font-weight:700;text-decoration:none;border-radius:8px;">Reset My Password</a>
+        <p style="color:#666;font-size:0.8rem;margin-top:24px;">Or copy this link: ${link}</p>
+        <p style="color:#666;font-size:0.8rem;">If you didn't request this, ignore this email.</p>
       </div>`
   });
 }
@@ -266,6 +294,19 @@ const server = http.createServer(async (req, res) => {
       return send(200, readJSON(RSVPS_FILE));
     }
 
+    const verifyRsvp = req.url.match(/^\/rsvp\/(.+)\/verify$/);
+    if (req.method === 'PUT' && verifyRsvp) {
+      const me = getMemberFromToken(req);
+      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
+      const { verified, membership_type } = await parseBody(req);
+      const rsvps = readJSON(RSVPS_FILE);
+      const idx = rsvps.findIndex(r => r.id === verifyRsvp[1]);
+      if (idx === -1) return send(404, { error: 'Not found' });
+      rsvps[idx] = { ...rsvps[idx], verified: !!verified, membership_type: verified ? (membership_type || null) : null };
+      writeJSON(RSVPS_FILE, rsvps);
+      return send(200, { ok: true });
+    }
+
     const delRsvp = req.url.match(/^\/rsvp\/(.+)$/);
     if (req.method === 'DELETE' && delRsvp) {
       const me = getMemberFromToken(req);
@@ -303,12 +344,29 @@ const server = http.createServer(async (req, res) => {
       const members = readJSON(MEMBERS_FILE);
       const idx = members.findIndex(m => m.setup_token === token);
       if (idx === -1) return send(404, { error: 'Invalid or expired link' });
+      const isReset = members[idx].reset_mode === true;
       members[idx].password_hash = hashPassword(password);
       members[idx].setup_token   = null;
+      members[idx].reset_mode    = false;
       writeJSON(MEMBERS_FILE, members);
-      // Auto-login so user can proceed straight to subscription
       const sessionToken = createSession(members[idx].id);
-      return send(200, { ok: true, token: sessionToken });
+      return send(200, { ok: true, token: sessionToken, reset: isReset });
+    }
+
+    if (req.method === 'POST' && req.url === '/member/forgot-password') {
+      const { email } = await parseBody(req);
+      if (!email) return send(400, { error: 'Email required' });
+      const members = readJSON(MEMBERS_FILE);
+      const idx = members.findIndex(m => m.email.toLowerCase() === email.toLowerCase());
+      // Always respond OK so we don't leak whether an email exists
+      if (idx !== -1 && members[idx].password_hash) {
+        const token = crypto.randomBytes(32).toString('hex');
+        members[idx].setup_token = token;
+        members[idx].reset_mode  = true;
+        writeJSON(MEMBERS_FILE, members);
+        try { await sendResetEmail(email, token); } catch(e) { console.error('Reset email failed:', e.message); }
+      }
+      return send(200, { ok: true });
     }
 
     // ── Login / session ───────────────────────────────────────────────────────
@@ -334,9 +392,16 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'PUT' && req.url === '/member/me') {
       const me = getMemberFromToken(req);
       if (!me) return send(401, { error: 'Not logged in' });
-      const { display_name, profile_type } = await parseBody(req);
+      const { display_name, profile_type, forum_handle, name_color } = await parseBody(req);
+      const cleanHandle = forum_handle !== undefined ? forum_handle.trim().replace(/[^\w\s\-]/g,'').trim().slice(0,30) : undefined;
       writeJSON(MEMBERS_FILE, readJSON(MEMBERS_FILE).map(m =>
-        m.id === me.id ? { ...m, ...(display_name && { display_name }), ...(profile_type && { profile_type }) } : m
+        m.id === me.id ? {
+          ...m,
+          ...(display_name && { display_name }),
+          ...(profile_type && { profile_type }),
+          ...(cleanHandle !== undefined && { forum_handle: cleanHandle }),
+          ...(name_color && /^#[0-9a-fA-F]{6}$/.test(name_color) && { name_color })
+        } : m
       ));
       return send(200, { ok: true });
     }
@@ -373,6 +438,111 @@ const server = http.createServer(async (req, res) => {
       const me = getMemberFromToken(req);
       if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
       writeJSON(MEMBERS_FILE, readJSON(MEMBERS_FILE).filter(m => m.id !== delMember[1]));
+      return send(200, { ok: true });
+    }
+
+    // ── Forum ──────────────────────────────────────────────────────────────────
+
+    if (req.method === 'GET' && req.url === '/forum/categories') {
+      const me = getMemberFromToken(req);
+      const posts = readJSON(FORUM_POSTS_FILE);
+      const replies = readJSON(FORUM_REPLIES_FILE);
+      return send(200, FORUM_CATS.map(cat => {
+        const cp = posts.filter(p => p.category === cat.id);
+        const last = [...cp].sort((a,b) => new Date(b.created_at)-new Date(a.created_at))[0];
+        return { ...cat, post_count: cp.length,
+          reply_count: replies.filter(r => cp.some(p => p.id === r.post_id)).length,
+          last_activity: last?.created_at || null,
+          locked: cat.nsfw && me?.status !== 'approved' };
+      }));
+    }
+
+    if (req.method === 'GET' && req.url.startsWith('/forum/posts')) {
+      const params = new URL(req.url, 'http://localhost').searchParams;
+      const catId = params.get('category');
+      const page  = Math.max(1, parseInt(params.get('page')||'1'));
+      const cat   = FORUM_CATS.find(c => c.id === catId);
+      if (!cat) return send(404, { error: 'Category not found' });
+      if (cat.nsfw) {
+        const me = getMemberFromToken(req);
+        if (me?.status !== 'approved') return send(401, { error: 'Approved membership required' });
+      }
+      const PER = 25;
+      const all = readJSON(FORUM_POSTS_FILE).filter(p => p.category === catId).sort((a,b) => new Date(b.created_at)-new Date(a.created_at));
+      const replies = readJSON(FORUM_REPLIES_FILE);
+      const slice = all.slice((page-1)*PER, page*PER).map(p => ({ ...p, reply_count: replies.filter(r => r.post_id === p.id).length }));
+      return send(200, { category: cat, posts: slice, total: all.length, page, pages: Math.ceil(all.length/PER)||1 });
+    }
+
+    if (req.method === 'GET' && req.url.match(/^\/forum\/post\/([^/]+)$/)) {
+      const postId = req.url.match(/^\/forum\/post\/([^/]+)$/)[1];
+      const post = readJSON(FORUM_POSTS_FILE).find(p => p.id === postId);
+      if (!post) return send(404, { error: 'Post not found' });
+      const cat = FORUM_CATS.find(c => c.id === post.category);
+      if (cat?.nsfw) {
+        const me = getMemberFromToken(req);
+        if (me?.status !== 'approved') return send(401, { error: 'Approved membership required' });
+      }
+      const replies = readJSON(FORUM_REPLIES_FILE).filter(r => r.post_id === postId).sort((a,b) => new Date(a.created_at)-new Date(b.created_at));
+      return send(200, { post, replies, category: cat });
+    }
+
+    if (req.method === 'POST' && req.url === '/forum/post') {
+      const me = getMemberFromToken(req);
+      if (!me) return send(401, { error: 'Not logged in' });
+      if (me.status !== 'approved') return send(403, { error: 'Approved membership required to post' });
+      if (!me.forum_handle) return send(400, { error: 'Set a forum handle in your dashboard first' });
+      const { category, title, body } = await parseBody(req);
+      if (!category || !title?.trim() || !body?.trim()) return send(400, { error: 'Category, title, and body required' });
+      const cat = FORUM_CATS.find(c => c.id === category);
+      if (!cat) return send(404, { error: 'Invalid category' });
+      const posts = readJSON(FORUM_POSTS_FILE);
+      const post = { id: crypto.randomUUID(), author_id: me.id, forum_handle: me.forum_handle,
+        name_color: me.name_color || '#f3c675', category, title: title.trim().slice(0,200),
+        body: body.trim().slice(0,10000), nsfw: cat.nsfw, created_at: new Date().toISOString() };
+      posts.push(post);
+      writeJSON(FORUM_POSTS_FILE, posts);
+      return send(200, { ok: true, id: post.id });
+    }
+
+    if (req.method === 'POST' && req.url === '/forum/reply') {
+      const me = getMemberFromToken(req);
+      if (!me) return send(401, { error: 'Not logged in' });
+      if (me.status !== 'approved') return send(403, { error: 'Approved membership required to reply' });
+      if (!me.forum_handle) return send(400, { error: 'Set a forum handle in your dashboard first' });
+      const { post_id, body } = await parseBody(req);
+      if (!post_id || !body?.trim()) return send(400, { error: 'post_id and body required' });
+      if (!readJSON(FORUM_POSTS_FILE).find(p => p.id === post_id)) return send(404, { error: 'Post not found' });
+      const replies = readJSON(FORUM_REPLIES_FILE);
+      const reply = { id: crypto.randomUUID(), post_id, author_id: me.id, forum_handle: me.forum_handle,
+        name_color: me.name_color || '#f3c675', body: body.trim().slice(0,5000), created_at: new Date().toISOString() };
+      replies.push(reply);
+      writeJSON(FORUM_REPLIES_FILE, replies);
+      return send(200, { ok: true, id: reply.id });
+    }
+
+    if (req.method === 'DELETE' && req.url.match(/^\/forum\/post\/([^/]+)$/)) {
+      const me = getMemberFromToken(req);
+      if (!me) return send(401, { error: 'Not logged in' });
+      const postId = req.url.match(/^\/forum\/post\/([^/]+)$/)[1];
+      const posts = readJSON(FORUM_POSTS_FILE);
+      const post  = posts.find(p => p.id === postId);
+      if (!post) return send(404, { error: 'Not found' });
+      if (!me.is_admin && post.author_id !== me.id) return send(403, { error: 'Forbidden' });
+      writeJSON(FORUM_POSTS_FILE, posts.filter(p => p.id !== postId));
+      writeJSON(FORUM_REPLIES_FILE, readJSON(FORUM_REPLIES_FILE).filter(r => r.post_id !== postId));
+      return send(200, { ok: true });
+    }
+
+    if (req.method === 'DELETE' && req.url.match(/^\/forum\/reply\/([^/]+)$/)) {
+      const me = getMemberFromToken(req);
+      if (!me) return send(401, { error: 'Not logged in' });
+      const replyId = req.url.match(/^\/forum\/reply\/([^/]+)$/)[1];
+      const replies = readJSON(FORUM_REPLIES_FILE);
+      const reply   = replies.find(r => r.id === replyId);
+      if (!reply) return send(404, { error: 'Not found' });
+      if (!me.is_admin && reply.author_id !== me.id) return send(403, { error: 'Forbidden' });
+      writeJSON(FORUM_REPLIES_FILE, replies.filter(r => r.id !== replyId));
       return send(200, { ok: true });
     }
 

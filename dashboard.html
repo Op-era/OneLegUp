@@ -128,11 +128,25 @@
         <label><input type="radio" name="edit_type" value="couple"> Couple</label>
       </div>
     </div>
+    <div class="field">
+      <label>Forum Handle <span style="font-size:0.7rem;color:rgba(255,220,150,0.4);text-transform:none;letter-spacing:0;font-weight:400;">— shown on your forum posts</span></label>
+      <input type="text" id="edit-handle" placeholder="e.g. FireCouple88" maxlength="30">
+    </div>
+    <div class="field">
+      <label>Forum Name Color <span style="font-size:0.7rem;color:rgba(255,220,150,0.4);text-transform:none;letter-spacing:0;font-weight:400;">— your handle color in the forum</span></label>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <input type="color" id="edit-color" value="#f3c675" style="width:44px;height:38px;padding:2px;background:rgba(255,255,255,0.06);border:1px solid rgba(243,198,117,0.22);border-radius:8px;cursor:pointer;">
+        <span id="color-preview" style="font-size:0.9rem;font-weight:700;transition:color .2s;">Preview Handle</span>
+      </div>
+    </div>
     <button class="save-btn" id="save-btn">Save Changes</button>
   </div>
 
   <div class="admin-link" id="admin-link" style="display:none;">
     <a href="admin.html">Admin Panel →</a>
+  </div>
+  <div class="admin-link" style="margin-top:6px;">
+    <a href="forum.html">Community Forum →</a>
   </div>
 </div>
 
@@ -232,10 +246,22 @@
     noticeEl.textContent = notice?.msg || '';
     noticeEl.className   = 'status-notice ' + (notice?.cls || '');
     document.getElementById('edit-name').value = member.display_name || '';
+    document.getElementById('edit-handle').value = member.forum_handle || '';
+    if (member.name_color) {
+      document.getElementById('edit-color').value = member.name_color;
+      document.getElementById('color-preview').style.color = member.name_color;
+      document.getElementById('color-preview').textContent = member.forum_handle || 'Preview Handle';
+    }
     if (member.profile_type) {
       const radio = document.querySelector(`input[name="edit_type"][value="${member.profile_type}"]`);
       if (radio) radio.checked = true;
     }
+    document.getElementById('edit-color').addEventListener('input', function() {
+      document.getElementById('color-preview').style.color = this.value;
+    });
+    document.getElementById('edit-handle').addEventListener('input', function() {
+      document.getElementById('color-preview').textContent = this.value || 'Preview Handle';
+    });
     if (member.is_admin) document.getElementById('admin-link').style.display = 'block';
     renderSubCard(member);
   }
@@ -243,8 +269,10 @@
   document.getElementById('save-btn').addEventListener('click', async () => {
     const alertEl = document.getElementById('edit-alert');
     alertEl.style.display = 'none';
-    const name = document.getElementById('edit-name').value.trim();
-    const type = document.querySelector('input[name="edit_type"]:checked')?.value;
+    const name   = document.getElementById('edit-name').value.trim();
+    const type   = document.querySelector('input[name="edit_type"]:checked')?.value;
+    const handle = document.getElementById('edit-handle').value.trim();
+    const color  = document.getElementById('edit-color').value;
     if (!name) { alertEl.textContent = 'Please enter a display name.'; alertEl.className = 'alert alert-err'; alertEl.style.display = 'block'; return; }
     if (!type) { alertEl.textContent = 'Please select a profile type.';  alertEl.className = 'alert alert-err'; alertEl.style.display = 'block'; return; }
     const btn = document.getElementById('save-btn');
@@ -252,7 +280,7 @@
     const res = await fetch(`${API}/member/me`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ display_name: name, profile_type: type })
+      body: JSON.stringify({ display_name: name, profile_type: type, forum_handle: handle, name_color: color })
     });
     btn.disabled = false; btn.textContent = 'Save Changes';
     if (!res.ok) {

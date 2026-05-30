@@ -12,6 +12,8 @@ yarn-error.log
 rsvps.json
 members.json
 sessions.json
+forum_posts.json
+forum_replies.json
 
 # OS / IDE
 .DS_Store
