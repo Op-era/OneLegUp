@@ -70,7 +70,7 @@
       <div class="forgot-link"><a id="forgot-link">Forgot password?</a></div>
       <hr class="divider">
       <div class="bottom-links">
-        Don't have an account? <a href="register.html">Create membership</a>
+        New here? <a href="subscribe.html">Become a member</a>
       </div>
     </div>
 
@@ -108,7 +108,8 @@
 <script>
   const API = 'https://api.onelegup.club';
 
-  if (localStorage.getItem('olu_token')) window.location.href = 'dashboard.html';
+  const _next = new URLSearchParams(window.location.search).get('next');
+  if (localStorage.getItem('olu_token')) window.location.href = _next ? _next + '.html' : 'dashboard.html';
 
   const alertEl = document.getElementById('alert');
   function showAlert(msg, type = 'err') {
@@ -142,7 +143,7 @@
       const cred = new PasswordCredential(document.getElementById('login-form'));
       await navigator.credentials.store(cred);
     }
-    window.location.href = 'dashboard.html';
+    window.location.href = _next ? _next + '.html' : 'dashboard.html';
   });
 
   document.getElementById('forgot-link').addEventListener('click', () => {

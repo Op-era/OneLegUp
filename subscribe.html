@@ -101,7 +101,7 @@
       </ul>
 
       <button class="subscribe-btn" id="subscribe-btn">Subscribe Now — $9.99/mo</button>
-      <div class="login-note">Don't have an account? <a href="register.html">Sign up first</a> — it only takes a minute.</div>
+      <div class="login-note">Already a member? <a href="login.html">Log in</a></div>
     </div>
 
     <div id="already-view" class="already-card" style="display:none;">
@@ -147,7 +147,7 @@
   }
 
   document.getElementById('subscribe-btn').addEventListener('click', async () => {
-    if (!token) { window.location.href = 'register.html'; return; }
+    if (!token) { window.location.href = 'login.html?next=subscribe'; return; }
     const btn = document.getElementById('subscribe-btn');
     btn.disabled = true; btn.textContent = 'Loading…';
     try {
