@@ -308,7 +308,7 @@
         <!-- Optional contact -->
         <div class="field">
           <label>Phone <span style="color:rgba(255,255,255,0.3);font-weight:400;text-transform:none;letter-spacing:0;">(optional — we'll text you the address)</span></label>
-          <input type="tel" name="phone" id="phone" placeholder="555-867-5309" pattern="[\d\s\(\)\-\+\.]{7,20}">
+          <input type="tel" name="phone" id="phone" placeholder="(555) 867-5309" autocomplete="tel">
           <div class="err" id="err-phone">Please enter a valid phone number.</div>
         </div>
         <div class="field">
@@ -375,7 +375,7 @@
       const ack = document.getElementById('ack-check').checked;
       showErr('err-ack', !ack); if (!ack) ok = false;
       const phone = document.getElementById('phone').value.trim();
-      const phoneOk = !phone || /^[\d\s()\-+.]{7,20}$/.test(phone);
+      const phoneOk = !phone || /^\(\d{3}\) \d{3}-\d{4}$/.test(phone);
       showErr('err-phone', !phoneOk); if (!phoneOk) ok = false;
       const email = document.getElementById('rsvp_email').value.trim();
       const emailOk = !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -414,6 +414,15 @@
         submitBtn.textContent = 'RSVP for the Party';
         alert('Could not submit — make sure the server is running, or text 559-787-5801 directly.');
       }
+    });
+
+    document.getElementById('phone').addEventListener('input', function() {
+      const digits = this.value.replace(/\D/g, '').slice(0, 10);
+      let formatted = '';
+      if (digits.length > 6)       formatted = `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
+      else if (digits.length > 3)  formatted = `(${digits.slice(0,3)}) ${digits.slice(3)}`;
+      else if (digits.length > 0)  formatted = `(${digits}`;
+      this.value = formatted;
     });
   </script>
   <script src="music.js"></script>
