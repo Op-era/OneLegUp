@@ -275,7 +275,8 @@
     renderMembers();
   });
 
-  document.getElementById('logout-btn').addEventListener('click', () => {
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await fetch(`${RSVP_API}/member/logout`, { method: 'POST', headers: AUTH }).catch(() => {});
     localStorage.removeItem('olu_token');
     window.location.href = 'index.html';
   });

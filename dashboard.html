@@ -264,7 +264,8 @@
     }
   });
 
-  document.getElementById('logout-btn').addEventListener('click', () => {
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await fetch(`${API}/member/logout`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
     localStorage.removeItem('olu_token');
     window.location.href = 'index.html';
   });
