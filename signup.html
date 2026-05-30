@@ -416,6 +416,11 @@
       }
     });
 
+    document.getElementById('rsvp_email').addEventListener('blur', function() {
+      const v = this.value.trim();
+      showErr('err-rsvp-email', v.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v));
+    });
+
     document.getElementById('phone').addEventListener('input', function() {
       const digits = this.value.replace(/\D/g, '').slice(0, 10);
       let formatted = '';
