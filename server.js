@@ -74,6 +74,7 @@ async function handleStripeEvent(event) {
     const members = readJSON(MEMBERS_FILE);
     const idx = members.findIndex(m => m.id === obj.client_reference_id);
     if (idx !== -1) {
+      const needsSetup = !members[idx].password_hash && members[idx].setup_token;
       members[idx] = {
         ...members[idx], status: 'approved', subscription_status: 'active',
         stripe_customer_id: String(obj.customer),
@@ -81,6 +82,10 @@ async function handleStripeEvent(event) {
       };
       writeJSON(MEMBERS_FILE, members);
       console.log('Subscription activated for member:', members[idx].email);
+      if (needsSetup) {
+        try { await sendSetupEmail(members[idx].email, members[idx].setup_token); }
+        catch(e) { console.error('Setup email failed:', e.message); }
+      }
     }
   } else if (event.type === 'customer.subscription.deleted') {
     const members = readJSON(MEMBERS_FILE);
@@ -111,11 +116,11 @@ async function sendSetupEmail(to, token) {
   await mailer.sendMail({
     from: '"One Leg Up" <witprod@gmail.com>',
     to,
-    subject: 'Set up your One Leg Up password',
+    subject: 'Set up your One Leg Up account',
     html: `
       <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px;background:#080808;color:#fff;border-radius:12px;">
         <h2 style="color:#f3c675;font-family:serif;">Welcome to One Leg Up</h2>
-        <p style="color:#c8b896;margin:16px 0;">Click the button below to set your password and activate your account. After that, you can subscribe for $9.99/month for instant access to all parties.</p>
+        <p style="color:#c8b896;margin:16px 0;">Your membership is active! Click below to set your password and finish setting up your account.</p>
         <a href="${link}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;font-weight:700;text-decoration:none;border-radius:8px;">Set My Password</a>
         <p style="color:#666;font-size:0.8rem;margin-top:24px;">Or copy this link: ${link}</p>
       </div>`
@@ -259,15 +264,40 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'POST' && req.url === '/subscribe/checkout') {
       if (!stripe || !MEMBERSHIP_PRICE_ID) return send(503, { error: 'Stripe not configured' });
-      const me = getMemberFromToken(req);
-      if (!me) return send(401, { error: 'Not logged in' });
+      let me = getMemberFromToken(req);
+      const isLoggedIn = !!me;
+      if (!me) {
+        const { display_name, email, profile_type } = await parseBody(req);
+        if (!display_name || !email) return send(400, { error: 'Name and email required' });
+        const members = readJSON(MEMBERS_FILE);
+        const existing = members.find(m => m.email.toLowerCase() === email.toLowerCase());
+        if (existing) {
+          if (existing.subscription_status === 'active') return send(409, { error: 'That email already has an active membership' });
+          me = existing;
+        } else {
+          const setup_token = crypto.randomBytes(32).toString('hex');
+          me = {
+            id: crypto.randomUUID(), display_name, email,
+            profile_type: profile_type || '',
+            password_hash: '', setup_token,
+            status: 'pending', is_admin: false, notes: '',
+            subscription_status: 'none', stripe_customer_id: null, stripe_subscription_id: null,
+            created_at: new Date().toISOString()
+          };
+          members.push(me);
+          writeJSON(MEMBERS_FILE, members);
+        }
+      }
+      const successUrl = isLoggedIn
+        ? `${SITE_URL}/dashboard.html?session_id={CHECKOUT_SESSION_ID}`
+        : `${SITE_URL}/subscribe.html?success=1`;
       const session = await stripe.checkout.sessions.create({
         mode: 'subscription',
         payment_method_types: ['card'],
         customer_email: me.email,
         client_reference_id: me.id,
         line_items: [{ price: MEMBERSHIP_PRICE_ID, quantity: 1 }],
-        success_url: `${SITE_URL}/dashboard.html?session_id={CHECKOUT_SESSION_ID}`,
+        success_url: successUrl,
         cancel_url: `${SITE_URL}/subscribe.html?canceled=1`
       });
       return send(200, { url: session.url });

@@ -54,6 +54,12 @@
     .already-card p{font-size:0.88rem;color:#c8b896;line-height:1.6;margin-bottom:20px;}
     .manage-btn{display:inline-block;padding:12px 28px;background:rgba(243,198,117,0.1);border:1px solid rgba(243,198,117,0.4);border-radius:10px;color:#f3c675;font-weight:600;font-size:0.88rem;text-decoration:none;cursor:pointer;font-family:'Poppins',sans-serif;transition:background .2s;letter-spacing:0.04em;}
     .manage-btn:hover{background:rgba(243,198,117,0.18);}
+    .field{margin-bottom:14px;}
+    .field label{display:block;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(243,198,117,0.6);margin-bottom:5px;}
+    .field input,.field select{width:100%;padding:11px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(243,198,117,0.2);border-radius:8px;color:#fff;font-size:0.9rem;font-family:'Poppins',sans-serif;outline:none;transition:border-color .2s;}
+    .field input:focus,.field select:focus{border-color:rgba(243,198,117,0.5);}
+    .field select option{background:#1a1a2e;}
+    #new-user-fields{display:none;}
   </style>
 </head>
 <body>
@@ -88,11 +94,11 @@
         </li>
         <li>
           <div class="perk-icon"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-          <span>Instant account approval the moment your payment goes through</span>
+          <span>Instant approval the moment your payment goes through</span>
         </li>
         <li>
           <div class="perk-icon"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
-          <span>Members-only event info and early RSVP access</span>
+          <span>Members-only event info and early access</span>
         </li>
         <li>
           <div class="perk-icon"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
@@ -100,8 +106,35 @@
         </li>
       </ul>
 
+      <!-- shown only when not logged in -->
+      <div id="new-user-fields">
+        <div class="field">
+          <label>Your Name</label>
+          <input type="text" id="sub-name" placeholder="First name or couple name" autocomplete="name">
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="sub-email" placeholder="you@email.com" autocomplete="email">
+        </div>
+        <div class="field">
+          <label>I am a</label>
+          <select id="sub-type">
+            <option value="Couple">Couple</option>
+            <option value="Single Female">Single Female</option>
+            <option value="Single Male">Single Male</option>
+          </select>
+        </div>
+      </div>
+
       <button class="subscribe-btn" id="subscribe-btn">Subscribe Now — $9.99/mo</button>
       <div class="login-note">Already a member? <a href="login.html">Log in</a></div>
+    </div>
+
+    <div id="success-view" class="already-card" style="display:none;">
+      <div class="icon">✅</div>
+      <h2 class="gold-shimmer">Payment Received!</h2>
+      <p>Check your email — we just sent you a link to set your password and finish setting up your account.</p>
+      <a href="index.html" class="back">← Back to home</a>
     </div>
 
     <div id="already-view" class="already-card" style="display:none;">
@@ -128,32 +161,68 @@
     alertEl.style.display = 'block';
   }
 
+  let loggedIn = false;
+
   async function init() {
+    if (params.get('success')) {
+      document.getElementById('subscribe-view').style.display = 'none';
+      document.getElementById('success-view').style.display   = 'block';
+      return;
+    }
     if (params.get('canceled')) {
       showAlert('Subscription was canceled — no charge was made. You can try again anytime.', 'info');
     }
 
-    if (!token) return; // Not logged in — show default subscribe view
+    if (!token) {
+      document.getElementById('new-user-fields').style.display = 'block';
+      return;
+    }
 
     try {
       const res  = await fetch(`${API}/member/me`, { headers: { Authorization: `Bearer ${token}` } });
-      if (!res.ok) return;
+      if (!res.ok) { document.getElementById('new-user-fields').style.display = 'block'; return; }
       const member = await res.json();
+      loggedIn = true;
+      document.getElementById('new-user-fields').style.display = 'none';
       if (member.subscription_status === 'active') {
         document.getElementById('subscribe-view').style.display = 'none';
         document.getElementById('already-view').style.display   = 'block';
       }
-    } catch (e) { /* offline — show default view */ }
+    } catch (e) {
+      document.getElementById('new-user-fields').style.display = 'block';
+    }
   }
 
   document.getElementById('subscribe-btn').addEventListener('click', async () => {
-    if (!token) { window.location.href = 'login.html?next=subscribe'; return; }
     const btn = document.getElementById('subscribe-btn');
     btn.disabled = true; btn.textContent = 'Loading…';
+
+    let body = {};
+    let headers = { 'Content-Type': 'application/json' };
+
+    if (loggedIn) {
+      headers.Authorization = `Bearer ${token}`;
+    } else {
+      const name  = document.getElementById('sub-name').value.trim();
+      const email = document.getElementById('sub-email').value.trim();
+      const type  = document.getElementById('sub-type').value;
+      if (!name || !email) {
+        showAlert('Please enter your name and email.');
+        btn.disabled = false; btn.textContent = 'Subscribe Now — $9.99/mo';
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showAlert('Please enter a valid email address.');
+        btn.disabled = false; btn.textContent = 'Subscribe Now — $9.99/mo';
+        return;
+      }
+      body = { display_name: name, email, profile_type: type };
+    }
+
     try {
       const res  = await fetch(`${API}/subscribe/checkout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+        method: 'POST', headers,
+        body: JSON.stringify(body)
       });
       const data = await res.json();
       if (!res.ok) { showAlert(data.error || 'Could not start checkout'); btn.disabled = false; btn.textContent = 'Subscribe Now — $9.99/mo'; return; }
