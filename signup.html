@@ -307,8 +307,14 @@
 
         <!-- Optional contact -->
         <div class="field">
-          <label>Phone / Email <span style="color:rgba(255,255,255,0.3);font-weight:400;text-transform:none;letter-spacing:0;">(optional — for address text)</span></label>
-          <input type="text" name="contact" placeholder="555-867-5309 or you@email.com">
+          <label>Phone <span style="color:rgba(255,255,255,0.3);font-weight:400;text-transform:none;letter-spacing:0;">(optional — we'll text you the address)</span></label>
+          <input type="tel" name="phone" id="phone" placeholder="555-867-5309" pattern="[\d\s\(\)\-\+\.]{7,20}">
+          <div class="err" id="err-phone">Please enter a valid phone number.</div>
+        </div>
+        <div class="field">
+          <label>Email <span style="color:rgba(255,255,255,0.3);font-weight:400;text-transform:none;letter-spacing:0;">(optional — for event updates)</span></label>
+          <input type="email" name="rsvp_email" id="rsvp_email" placeholder="you@email.com">
+          <div class="err" id="err-rsvp-email">Please enter a valid email address.</div>
         </div>
 
         <hr class="divider">
@@ -368,6 +374,12 @@
       showErr('err-type', !profileType); if (!profileType) ok = false;
       const ack = document.getElementById('ack-check').checked;
       showErr('err-ack', !ack); if (!ack) ok = false;
+      const phone = document.getElementById('phone').value.trim();
+      const phoneOk = !phone || /^[\d\s()\-+.]{7,20}$/.test(phone);
+      showErr('err-phone', !phoneOk); if (!phoneOk) ok = false;
+      const email = document.getElementById('rsvp_email').value.trim();
+      const emailOk = !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      showErr('err-rsvp-email', !emailOk); if (!emailOk) ok = false;
       return ok;
     }
 
@@ -387,7 +399,8 @@
             platform:     form.querySelector('input[name="platform"]:checked').value,
             username:     form.querySelector('#username').value.trim(),
             profile_type: form.querySelector('input[name="profile_type"]:checked').value,
-            contact:      form.querySelector('input[name="contact"]').value.trim(),
+            phone:        document.getElementById('phone').value.trim(),
+            email:        document.getElementById('rsvp_email').value.trim(),
             acknowledged: true
           })
         });
