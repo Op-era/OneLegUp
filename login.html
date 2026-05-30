@@ -156,12 +156,18 @@
     document.getElementById('login-view').style.display  = 'block';
   });
 
-  // Forgot password — just show a note, no email sending
   document.getElementById('forgot-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    showAlert('Contact the host to reset your password.', 'ok');
-    document.getElementById('reset-btn').disabled = false;
-    document.getElementById('reset-btn').textContent = 'Send Reset Link';
+    const btn = document.getElementById('reset-btn');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    const email = document.getElementById('reset-email').value.trim();
+    await fetch(`${API}/member/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    showAlert('If that email is registered, a reset link is on its way. Check your inbox.', 'ok');
+    btn.disabled = false; btn.textContent = 'Send Reset Link';
   });
 </script>
   <script src="music.js"></script>
