@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Help & FAQ – One Leg Up</title>
+  <link rel="icon" type="image/png" href="images/NewLogo/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{min-height:100vh;background:#080808;font-family:'Poppins',sans-serif;color:#fff;overflow-x:hidden;}
+    #bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,rgba(26,24,40,0.18),rgba(4,6,14,0.6) 60%,rgba(0,0,0,0.92) 100%),url('images/playboy-bg.png') center center/cover no-repeat;}
+    #bg::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 25%,rgba(255,186,118,0.07),transparent 50%);}
+    @keyframes goldShimmer{0%{background-position:-400% center;}100%{background-position:400% center;}}
+    .gold-shimmer{background:linear-gradient(90deg,#7a5700 0%,#c8960c 12%,#f3c675 25%,#fffbe8 38%,#ffd700 50%,#fffbe8 62%,#f3c675 75%,#c8960c 88%,#7a5700 100%);background-size:400% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:goldShimmer 5s linear infinite;}
+    .page{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px 80px;}
+    .topbar{width:100%;max-width:600px;display:flex;justify-content:space-between;align-items:center;margin-bottom:36px;}
+    .back{display:inline-flex;align-items:center;gap:6px;color:rgba(243,198,117,0.7);text-decoration:none;font-size:0.82rem;letter-spacing:0.08em;transition:color .2s;}
+    .back:hover{color:#f3c675;}
+    .back svg{width:14px;height:14px;fill:currentColor;}
+    .header{text-align:center;margin-bottom:40px;width:100%;max-width:600px;}
+    .header .eyebrow{font-size:0.72rem;letter-spacing:0.42em;text-transform:uppercase;color:rgba(255,220,150,0.5);margin-bottom:8px;}
+    .header h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,8vw,3rem);font-weight:900;line-height:1;}
+    .header p{margin-top:14px;font-size:0.92rem;color:rgba(200,184,150,0.85);line-height:1.65;max-width:480px;margin-left:auto;margin-right:auto;}
+
+    /* Cancel hero card */
+    .cancel-hero{width:100%;max-width:600px;background:rgba(20,8,8,0.88);border:1px solid rgba(248,113,113,0.35);border-radius:20px;padding:36px 32px;backdrop-filter:blur(14px);box-shadow:0 32px 70px rgba(0,0,0,0.55);margin-bottom:28px;text-align:center;}
+    .cancel-hero .icon{font-size:2.4rem;margin-bottom:14px;}
+    .cancel-hero h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;color:#f87171;margin-bottom:10px;}
+    .cancel-hero p{font-size:0.9rem;color:rgba(200,184,150,0.8);line-height:1.65;margin-bottom:24px;max-width:440px;margin-left:auto;margin-right:auto;}
+    .cancel-steps{list-style:none;text-align:left;margin-bottom:28px;background:rgba(255,255,255,0.03);border-radius:12px;padding:20px 24px;}
+    .cancel-steps li{display:flex;align-items:flex-start;gap:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.88rem;color:#e0d4b8;line-height:1.5;}
+    .cancel-steps li:last-child{border-bottom:none;}
+    .step-num{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.35);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:#f87171;margin-top:1px;}
+    .cancel-btn{display:inline-block;padding:15px 36px;background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.45);border-radius:12px;color:#f87171;font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;transition:all .25s;}
+    .cancel-btn:hover{background:rgba(248,113,113,0.22);transform:translateY(-1px);}
+    .cancel-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+    .cancel-note{margin-top:14px;font-size:0.78rem;color:rgba(200,184,150,0.45);}
+
+    /* FAQ section */
+    .section-label{width:100%;max-width:600px;font-size:0.7rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(243,198,117,0.5);margin-bottom:16px;font-weight:600;}
+    .faq-card{width:100%;max-width:600px;background:rgba(10,25,35,0.78);border:1px solid rgba(243,198,117,0.18);border-radius:16px;overflow:hidden;backdrop-filter:blur(14px);box-shadow:0 24px 60px rgba(0,0,0,0.45);margin-bottom:28px;}
+    .faq-item{border-bottom:1px solid rgba(255,255,255,0.06);}
+    .faq-item:last-child{border-bottom:none;}
+    .faq-q{width:100%;background:none;border:none;text-align:left;padding:20px 24px;color:#e0d4b8;font-family:'Poppins',sans-serif;font-size:0.92rem;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;transition:color .2s;}
+    .faq-q:hover{color:#f3c675;}
+    .faq-q .chevron{flex-shrink:0;width:18px;height:18px;transition:transform .3s;}
+    .faq-q.open{color:#f3c675;}
+    .faq-q.open .chevron{transform:rotate(180deg);}
+    .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+    .faq-a.open{max-height:400px;}
+    .faq-a-inner{padding:0 24px 20px;font-size:0.87rem;color:rgba(200,184,150,0.8);line-height:1.7;}
+    .faq-a-inner a{color:#f3c675;text-decoration:none;}
+    .faq-a-inner a:hover{text-decoration:underline;}
+
+    /* Contact card */
+    .contact-card{width:100%;max-width:600px;background:rgba(10,25,35,0.78);border:1px solid rgba(243,198,117,0.18);border-radius:16px;padding:28px 32px;backdrop-filter:blur(14px);margin-bottom:16px;text-align:center;}
+    .contact-card h3{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:#f3c675;margin-bottom:10px;}
+    .contact-card p{font-size:0.88rem;color:rgba(200,184,150,0.75);line-height:1.65;margin-bottom:18px;}
+    .contact-link{display:inline-block;padding:11px 26px;background:rgba(243,198,117,0.1);border:1px solid rgba(243,198,117,0.35);border-radius:10px;color:#f3c675;font-weight:600;font-size:0.86rem;text-decoration:none;transition:background .2s;}
+    .contact-link:hover{background:rgba(243,198,117,0.2);}
+
+    .alert{padding:12px 16px;border-radius:8px;font-size:0.84rem;margin-bottom:18px;display:none;}
+    .alert-err{background:rgba(180,30,30,0.2);border:1px solid rgba(220,60,60,0.4);color:#ffa0a0;}
+    .alert-info{background:rgba(243,198,117,0.08);border:1px solid rgba(243,198,117,0.25);color:#f3c699;}
+  </style>
+</head>
+<body>
+<div id="bg"></div>
+<div class="page">
+
+  <div class="topbar">
+    <a href="index.html" class="back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Back to Site</a>
+    <a href="dashboard.html" class="back">My Dashboard →</a>
+  </div>
+
+  <div class="header">
+    <div class="eyebrow">One Leg Up Help Center</div>
+    <h1 class="gold-shimmer">Help & FAQ</h1>
+    <p>Everything you need to manage your membership, cancel anytime, or get in touch with us.</p>
+  </div>
+
+  <!-- Cancel hero -->
+  <div class="cancel-hero">
+    <div class="icon">🚫</div>
+    <h2>Cancel Your Membership</h2>
+    <p>You can cancel anytime — no calls, no hoops. Your access stays active through the end of your current billing period.</p>
+
+    <ul class="cancel-steps">
+      <li><div class="step-num">1</div><span><strong>Log in</strong> to your account. If you're not logged in, click "My Dashboard" above and sign in first.</span></li>
+      <li><div class="step-num">2</div><span>Click the <strong>"Cancel Membership"</strong> button below (or find it on your <a href="dashboard.html">Dashboard</a>).</span></li>
+      <li><div class="step-num">3</div><span>You'll be taken to the <strong>secure Stripe billing portal</strong> where you can cancel in one click. No forms, no waiting.</span></li>
+      <li><div class="step-num">4</div><span>After canceling, your membership stays active until the end of the billing cycle you already paid for.</span></li>
+    </ul>
+
+    <div class="alert" id="cancel-alert"></div>
+    <button class="cancel-btn" id="cancel-btn">Cancel My Membership →</button>
+    <div class="cancel-note">You'll be redirected to Stripe's secure portal — we never store your card details.</div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section-label">Frequently Asked Questions</div>
+  <div class="faq-card">
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Where do I go to cancel my membership?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="faq-a">
+        <div class="faq-a-inner">Log into your account, then go to your <a href="dashboard.html">Dashboard</a>. You'll see a <strong>Cancel Membership</strong> section. Click the button and you'll be taken to Stripe's billing portal to cancel in one click. You can also use the Cancel button at the top of this page.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Will I lose access immediately after canceling?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="faq-a">
+        <div class="faq-a-inner">No. When you cancel, your membership stays active until the end of the billing period you already paid for. After that, your subscription won't renew and access will end.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Can I get a refund?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="faq-a">
+        <div class="faq-a-inner">Refunds are handled case by case. If you believe you were charged in error or have a special circumstance, <a href="contact.html">contact us</a> and we'll work it out.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How do I update my payment method?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="faq-a">
+        <div class="faq-a-inner">Go to your <a href="dashboard.html">Dashboard</a> and click <strong>Manage Subscription</strong>. The Stripe portal lets you update your card, view payment history, and download invoices.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        I forgot my password. How do I get back in?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="faq-a">
+        <div class="faq-a-inner">Go to the <a href="login.html">Login page</a> and click <strong>Forgot password?</strong> — we'll email you a reset link within a few minutes.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What does the $9.99/month membership include?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="faq-a">
+        <div class="faq-a-inner">The membership lets you attend any One Leg Up event without needing a SwingLifeStyle or Kasidie profile. You also get members-only event info and early access. Entry fees still apply at the door — the membership is your <em>access pass</em>, not your event ticket.</div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Can I re-subscribe after canceling?
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="faq-a">
+        <div class="faq-a-inner">Yes! Just visit the <a href="subscribe.html">Membership page</a> and subscribe again anytime. Your existing account will be reactivated.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Contact -->
+  <div class="contact-card">
+    <h3>Still need help?</h3>
+    <p>If your question isn't answered above, reach out and we'll get back to you as soon as possible.</p>
+    <a href="contact.html" class="contact-link">Contact Us →</a>
+  </div>
+
+</div>
+
+<script>
+  const API   = 'https://api.onelegup.club';
+  const token = localStorage.getItem('olu_token');
+
+  function toggleFaq(btn) {
+    const answer = btn.nextElementSibling;
+    const isOpen = answer.classList.contains('open');
+    document.querySelectorAll('.faq-a.open').forEach(el => { el.classList.remove('open'); el.previousElementSibling.classList.remove('open'); });
+    if (!isOpen) { answer.classList.add('open'); btn.classList.add('open'); }
+  }
+
+  const cancelBtn   = document.getElementById('cancel-btn');
+  const cancelAlert = document.getElementById('cancel-alert');
+
+  function showAlert(msg, type = 'err') {
+    cancelAlert.textContent    = msg;
+    cancelAlert.className      = 'alert alert-' + type;
+    cancelAlert.style.display  = 'block';
+  }
+
+  cancelBtn.addEventListener('click', async () => {
+    if (!token) {
+      showAlert('Please log in first — click "My Dashboard" above, sign in, then come back here.', 'info');
+      return;
+    }
+    cancelBtn.disabled     = true;
+    cancelBtn.textContent  = 'Opening portal…';
+    try {
+      const res  = await fetch(`${API}/subscribe/portal`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        window.location.href = data.url;
+      } else {
+        showAlert(data.error || 'Could not open the billing portal. Try from your Dashboard instead.');
+        cancelBtn.disabled    = false;
+        cancelBtn.textContent = 'Cancel My Membership →';
+      }
+    } catch (e) {
+      showAlert('Network error — please try again or visit your Dashboard.');
+      cancelBtn.disabled    = false;
+      cancelBtn.textContent = 'Cancel My Membership →';
+    }
+  });
+</script>
+<script src="music.js"></script>
+</body>
+</html>

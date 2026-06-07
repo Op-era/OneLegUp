@@ -71,6 +71,16 @@
     .btn-manage:hover{background:rgba(74,222,128,0.22);}
     .btn-subscribe{background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;}
     .btn-subscribe:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(236,139,87,0.4);}
+    .cancel-card{width:100%;max-width:560px;background:rgba(20,8,8,0.8);border:1px solid rgba(248,113,113,0.28);border-radius:16px;padding:22px 24px;backdrop-filter:blur(14px);box-shadow:0 24px 60px rgba(0,0,0,0.5);margin-bottom:16px;display:none;}
+    .cancel-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+    .cancel-info .cancel-label{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(248,113,113,0.55);margin-bottom:4px;}
+    .cancel-info p{font-size:0.85rem;color:rgba(200,184,150,0.7);line-height:1.55;max-width:300px;}
+    .btn-cancel{padding:9px 20px;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;letter-spacing:0.04em;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.38);color:#f87171;transition:all .2s;flex-shrink:0;}
+    .btn-cancel:hover{background:rgba(248,113,113,0.2);}
+    .btn-cancel:disabled{opacity:.5;cursor:not-allowed;}
+    .help-link{margin-top:6px;text-align:center;font-size:0.8rem;}
+    .help-link a{color:rgba(243,198,117,0.6);text-decoration:none;}
+    .help-link a:hover{color:#f3c675;}
   </style>
 </head>
 <body>
@@ -142,11 +152,45 @@
     <button class="save-btn" id="save-btn">Save Changes</button>
   </div>
 
+  <!-- Cancel membership card (shown only when subscription is active) -->
+  <div class="cancel-card" id="cancel-card">
+    <div class="cancel-row">
+      <div class="cancel-info">
+        <div class="cancel-label">Cancel Membership</div>
+        <p>Want to leave? You'll keep access through your current billing period.</p>
+      </div>
+      <button class="btn-cancel" id="cancel-sub-btn">Cancel Membership</button>
+    </div>
+  </div>
+
   <div class="admin-link" id="admin-link" style="display:none;">
     <a href="admin.html">Admin Panel →</a>
   </div>
   <div class="admin-link" style="margin-top:6px;">
     <a href="forum.html">Community Forum →</a>
+  </div>
+  <div class="help-link" style="margin-top:6px;">
+    <a href="help.html">Help &amp; FAQ →</a>
+  </div>
+</div>
+
+<!-- Cancel confirmation modal -->
+<div id="cancel-modal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.78);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;">
+  <div style="width:100%;max-width:440px;background:rgba(20,8,8,0.97);border:1px solid rgba(248,113,113,0.45);border-radius:20px;padding:36px 30px;text-align:center;box-shadow:0 32px 70px rgba(0,0,0,0.8);">
+    <div style="font-size:2.4rem;margin-bottom:14px;">⚠️</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;color:#f87171;margin-bottom:14px;">Are you sure?</h2>
+    <p style="font-size:0.9rem;color:rgba(200,184,150,0.85);line-height:1.7;margin-bottom:22px;">
+      Without a One Leg Up membership, you'll need a verified profile on
+      <strong style="color:#f3c675;"><a href="https://swinglifestyle.com" target="_blank" rel="noopener" style="color:#f3c675;text-decoration:none;">SwingLifeStyle.com</a></strong>,
+      <strong style="color:#f3c675;"><a href="https://kasidie.com" target="_blank" rel="noopener" style="color:#f3c675;text-decoration:none;">Kasidie.com</a></strong>,
+      or a renewed <strong style="color:#f3c675;">One Leg Up membership</strong>
+      to attend events.<br><br>
+      You'll keep access through the end of your current billing cycle.
+    </p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button id="modal-keep-btn" style="padding:12px 26px;border-radius:10px;background:linear-gradient(135deg,#f3c675,#ec8b57);border:none;color:#0d1f28;font-family:'Poppins',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;letter-spacing:0.04em;">Keep My Membership</button>
+      <button id="modal-confirm-btn" style="padding:12px 26px;border-radius:10px;background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.45);color:#f87171;font-family:'Poppins',sans-serif;font-weight:600;font-size:0.9rem;cursor:pointer;letter-spacing:0.04em;transition:background .2s;">Yes, Cancel →</button>
+    </div>
   </div>
 </div>
 
@@ -164,8 +208,22 @@
   const params  = new URLSearchParams(window.location.search);
   const SESSION_ID = params.get('session_id');
 
+  async function openPortal(btn, fallbackLabel) {
+    btn.disabled    = true;
+    btn.textContent = 'Loading…';
+    try {
+      const res  = await fetch(`${API}/subscribe/portal`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      if (res.ok) { window.location.href = data.url; }
+      else { alert(data.error || 'Could not open portal'); btn.disabled = false; btn.textContent = fallbackLabel; }
+    } catch (e) {
+      alert('Network error'); btn.disabled = false; btn.textContent = fallbackLabel;
+    }
+  }
+
   function renderSubCard(member) {
     const el = document.getElementById('sub-card');
+    const cancelCard = document.getElementById('cancel-card');
     if (member.subscription_status === 'active') {
       el.innerHTML = `
         <div class="sub-card sub-active">
@@ -175,17 +233,13 @@
               <div class="sub-val">✅ Active — $9.99/month</div>
               <div class="sub-cancel">Cleared to attend all One Leg Up parties — entry fees apply at the door</div>
             </div>
-            <button class="manage-sub-btn btn-manage" id="manage-sub-btn">Manage / Cancel</button>
+            <button class="manage-sub-btn btn-manage" id="manage-sub-btn">Manage Subscription</button>
           </div>
         </div>`;
-      document.getElementById('manage-sub-btn').addEventListener('click', async () => {
-        const btn = document.getElementById('manage-sub-btn');
-        btn.textContent = 'Loading…';
-        const res  = await fetch(`${API}/subscribe/portal`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
-        const data = await res.json();
-        if (res.ok) window.location.href = data.url;
-        else { alert(data.error || 'Could not open portal'); btn.textContent = 'Manage / Cancel'; }
+      document.getElementById('manage-sub-btn').addEventListener('click', function() {
+        openPortal(this, 'Manage Subscription');
       });
+      cancelCard.style.display = 'block';
     } else {
       el.innerHTML = `
         <div class="sub-card sub-upsell">
@@ -296,6 +350,32 @@
     await fetch(`${API}/member/logout`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
     localStorage.removeItem('olu_token');
     window.location.href = 'index.html';
+  });
+
+  // Cancel membership — show confirmation modal first
+  const cancelModal    = document.getElementById('cancel-modal');
+  const cancelSubBtn   = document.getElementById('cancel-sub-btn');
+  const modalKeepBtn   = document.getElementById('modal-keep-btn');
+  const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+
+  if (cancelSubBtn) {
+    cancelSubBtn.addEventListener('click', () => {
+      cancelModal.style.display = 'flex';
+    });
+  }
+  if (modalKeepBtn) {
+    modalKeepBtn.addEventListener('click', () => {
+      cancelModal.style.display = 'none';
+    });
+  }
+  if (modalConfirmBtn) {
+    modalConfirmBtn.addEventListener('click', () => {
+      cancelModal.style.display = 'none';
+      openPortal(modalConfirmBtn, 'Yes, Cancel →');
+    });
+  }
+  cancelModal.addEventListener('click', (e) => {
+    if (e.target === cancelModal) cancelModal.style.display = 'none';
   });
 
   init();
