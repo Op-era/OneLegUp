@@ -20,7 +20,14 @@ const SESSIONS_FILE  = path.join(__dirname, 'sessions.json');
 const FORUM_POSTS_FILE   = path.join(__dirname, 'forum_posts.json');
 const FORUM_REPLIES_FILE = path.join(__dirname, 'forum_replies.json');
 const CONTACTS_FILE      = path.join(__dirname, 'contacts.json');
-const SITE_URL       = 'https://onelegup.club';
+const SITE_URL           = 'https://onelegup.club';
+const PARTY_EMAILS_FILE  = path.join(__dirname, 'party_emails_sent.json');
+
+// Keep in sync with index.html allParties — add new parties here
+const PARTY_SCHEDULE = [
+  { date: '2026-06-27', title: 'Suns Out Buns Out Pool Party' },
+  { date: '2026-08-01', title: 'School Girls and Professors Party' },
+];
 
 const FORUM_CATS = [
   { id:'general', name:'General',       desc:'General lifestyle talk',           nsfw:false, icon:'💬' },
@@ -651,6 +658,76 @@ const server = http.createServer(async (req, res) => {
     send(500, { error: e.message });
   }
 });
+
+// ── Party RSVP email blast ────────────────────────────────────────────────────
+// Doors close at 8 PM Los Angeles time; email sends at that moment.
+
+function doorsCloseAt(dateStr) {
+  // 8 PM PDT (UTC-7) for summer parties; adjust offset to -08:00 for winter (PST)
+  const month = parseInt(dateStr.split('-')[1], 10);
+  const offset = (month >= 3 && month <= 11) ? '-07:00' : '-08:00';
+  return new Date(`${dateStr}T20:00:00${offset}`);
+}
+
+async function sendPartyRsvpEmail(party) {
+  const allRsvps = readJSON(RSVPS_FILE);
+  const partyRsvps = allRsvps.filter(r => r.event && r.event.startsWith(party.title) && !r.test);
+
+  const rows = partyRsvps.map(r => `
+    <tr>
+      <td style="padding:10px 12px;border:1px solid #333;">${r.username || '—'}</td>
+      <td style="padding:10px 12px;border:1px solid #333;">${r.platform || '—'}</td>
+      <td style="padding:10px 12px;border:1px solid #333;">${r.profile_type || '—'}</td>
+      <td style="padding:10px 12px;border:1px solid #333;">${r.phone || '—'}</td>
+      <td style="padding:10px 12px;border:1px solid #333;">${r.email || '—'}</td>
+    </tr>`).join('');
+
+  await mailer.sendMail({
+    from: '"One Leg Up" <witprod@gmail.com>',
+    to: 'hautcouple@gmail.com',
+    subject: party.title,
+    html: `
+      <div style="font-family:sans-serif;max-width:680px;margin:0 auto;padding:32px;background:#0a0a0a;color:#fff;border-radius:12px;">
+        <h2 style="color:#f3c675;font-family:serif;margin-bottom:4px;">${party.title}</h2>
+        <p style="color:#888;margin-bottom:24px;">Doors closed — ${partyRsvps.length} RSVP${partyRsvps.length !== 1 ? 's' : ''} total</p>
+        <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">
+          <thead>
+            <tr style="background:#1a1208;color:#f3c675;text-align:left;">
+              <th style="padding:10px 12px;border:1px solid #333;">Username</th>
+              <th style="padding:10px 12px;border:1px solid #333;">Platform</th>
+              <th style="padding:10px 12px;border:1px solid #333;">Type</th>
+              <th style="padding:10px 12px;border:1px solid #333;">Phone</th>
+              <th style="padding:10px 12px;border:1px solid #333;">Email</th>
+            </tr>
+          </thead>
+          <tbody style="color:#ccc;">
+            ${rows || '<tr><td colspan="5" style="padding:12px;color:#666;border:1px solid #333;">No RSVPs recorded.</td></tr>'}
+          </tbody>
+        </table>
+      </div>`
+  });
+  console.log(`RSVP list emailed for "${party.title}" (${partyRsvps.length} entries)`);
+}
+
+async function checkPartyEmailSchedule() {
+  const now = new Date();
+  const sent = readJSON(PARTY_EMAILS_FILE);
+  for (const party of PARTY_SCHEDULE) {
+    if (sent.includes(party.date)) continue;
+    if (now >= doorsCloseAt(party.date)) {
+      try {
+        await sendPartyRsvpEmail(party);
+        sent.push(party.date);
+        writeJSON(PARTY_EMAILS_FILE, sent);
+      } catch (e) {
+        console.error(`Failed to send RSVP email for ${party.title}:`, e.message);
+      }
+    }
+  }
+}
+
+setInterval(checkPartyEmailSchedule, 60 * 1000);
+checkPartyEmailSchedule();
 
 server.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);

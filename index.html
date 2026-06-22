@@ -521,6 +521,12 @@
       return new Date(y, m-1, d);
     }
 
+    function doorsCloseAt(dateStr) {
+      const month = parseInt(dateStr.split('-')[1], 10);
+      const offset = (month >= 3 && month <= 11) ? '-07:00' : '-08:00';
+      return new Date(`${dateStr}T20:00:00${offset}`);
+    }
+
     const now = new Date();
     let nextEventEnd = null;
     const upcomingContainer = document.getElementById('upcoming-container');
@@ -537,7 +543,8 @@
         eventEnd.setHours(2,0,0,0);
       }
       const isUpcoming = isTBD || now < eventEnd;
-      const signupUrl = (isUpcoming && party.signup)
+      const rsvpOpen = isUpcoming && !isTBD && now < doorsCloseAt(party.date);
+      const signupUrl = (rsvpOpen && party.signup)
         ? `${party.signup}?event=${encodeURIComponent(party.title)}&date=${encodeURIComponent(party.date)}`
         : null;
       const eventHTML = `
