@@ -537,7 +537,7 @@
         eventEnd.setHours(2,0,0,0);
       }
       const isUpcoming = isTBD || now < eventEnd;
-      const signupUrl = party.signup
+      const signupUrl = (isUpcoming && party.signup)
         ? `${party.signup}?event=${encodeURIComponent(party.title)}&date=${encodeURIComponent(party.date)}`
         : null;
       const eventHTML = `
