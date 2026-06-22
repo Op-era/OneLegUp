@@ -115,13 +115,13 @@ async function handleStripeEvent(event) {
 // ── Gmail config ──────────────────────────────────────────────────────────────
 const mailer = nodemailer.createTransport({
   service: 'gmail',
-  auth: { user: 'witprod@gmail.com', pass: process.env.GMAIL_PASS || 'GMAIL_APP_PASSWORD' }
+  auth: { user: 'hautcouple@gmail.com', pass: process.env.GMAIL_PASS || '' }
 });
 
 async function sendSetupEmail(to, token) {
   const link = `${SITE_URL}/set-password.html?token=${token}`;
   await mailer.sendMail({
-    from: '"One Leg Up" <witprod@gmail.com>',
+    from: '"One Leg Up" <hautcouple@gmail.com>',
     to,
     subject: 'Action Required — Reset Your One Leg Up Password',
     html: `
@@ -145,7 +145,7 @@ async function sendSetupEmail(to, token) {
 async function sendResetEmail(to, token) {
   const link = `${SITE_URL}/set-password.html?token=${token}`;
   await mailer.sendMail({
-    from: '"One Leg Up" <witprod@gmail.com>',
+    from: '"One Leg Up" <hautcouple@gmail.com>',
     to,
     subject: 'Reset your One Leg Up password',
     html: `
@@ -691,7 +691,7 @@ async function sendPartyRsvpEmail(party) {
     </tr>`).join('');
 
   await mailer.sendMail({
-    from: '"One Leg Up" <witprod@gmail.com>',
+    from: '"One Leg Up" <hautcouple@gmail.com>',
     to: 'hautcouple@gmail.com',
     subject: party.title,
     html: `
