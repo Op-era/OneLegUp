@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>RSVP – Playboy Pool Party | One Leg Up</title>
+  <title>RSVP | One Leg Up</title>
   <link rel="icon" type="image/png" href="images/NewLogo/logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
   <style>
@@ -258,8 +258,8 @@
 
     <div class="header">
       <div class="eyebrow">One Leg Up Presents</div>
-      <h1 class="gold-shimmer">Playboy Pool Party</h1>
-      <div class="date-tag">May 30, 2026 &nbsp;·&nbsp; 4 PM – Midnight</div>
+      <h1 class="gold-shimmer" id="event-title">One Leg Up Party</h1>
+      <div class="date-tag" id="event-date-tag">4 PM – Midnight</div>
     </div>
 
     <!-- MANDATORY NOTICE -->
@@ -346,16 +346,38 @@
     <div id="success">
       <div class="check">🎉</div>
       <h2 class="gold-shimmer">You're on the list!</h2>
-      <p>
-        Thanks for signing up for the <strong style="color:#f3c675;">Playboy Pool Party</strong>.<br>
+      <p id="success-msg">
+        Thanks for signing up!<br>
         If you left a contact, you'll receive the address closer to the date.<br><br>
-        See you May 30th — 4 PM to Midnight. BYOB!
+        See you there — 4 PM to Midnight. BYOB!
       </p>
     </div>
 
   </div>
   <script>
     const RSVP_URL = 'https://api.onelegup.club/rsvp';
+
+    // Read event info from query params
+    const params    = new URLSearchParams(window.location.search);
+    const eventName = params.get('event') || 'One Leg Up Party';
+    const eventDateRaw = params.get('date') || '';
+    let eventDateDisplay = '';
+    if (eventDateRaw) {
+      const [y,m,d] = eventDateRaw.split('-').map(Number);
+      const dt = new Date(y, m-1, d);
+      eventDateDisplay = dt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+    }
+
+    document.getElementById('event-title').textContent = eventName;
+    document.getElementById('event-date-tag').innerHTML =
+      (eventDateDisplay ? eventDateDisplay + ' &nbsp;·&nbsp; ' : '') + '4 PM – Midnight';
+    document.title = `RSVP – ${eventName} | One Leg Up`;
+    if (eventDateDisplay) {
+      document.getElementById('success-msg').innerHTML =
+        `Thanks for signing up for the <strong style="color:#f3c675;">${eventName}</strong>.<br>
+        If you left a contact, you'll receive the address closer to the date.<br><br>
+        See you ${eventDateDisplay} — 4 PM to Midnight. BYOB!`;
+    }
 
     const form      = document.getElementById('rsvp-form');
     const submitBtn = document.getElementById('submit-btn');
@@ -395,7 +417,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            event:        'Playboy Pool Party – May 30 2026',
+            event:        eventDateDisplay ? `${eventName} – ${eventDateDisplay}` : eventName,
             platform:     form.querySelector('input[name="platform"]:checked').value,
             username:     form.querySelector('#username').value.trim(),
             profile_type: form.querySelector('input[name="profile_type"]:checked').value,
