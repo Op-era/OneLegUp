@@ -123,13 +123,21 @@ async function sendSetupEmail(to, token) {
   await mailer.sendMail({
     from: '"One Leg Up" <witprod@gmail.com>',
     to,
-    subject: 'Set up your One Leg Up account',
+    subject: 'Action Required — Reset Your One Leg Up Password',
     html: `
       <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px;background:#080808;color:#fff;border-radius:12px;">
-        <h2 style="color:#f3c675;font-family:serif;">Welcome to One Leg Up</h2>
-        <p style="color:#c8b896;margin:16px 0;">Your membership is active! Click below to set your password and finish setting up your account.</p>
-        <a href="${link}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;font-weight:700;text-decoration:none;border-radius:8px;">Set My Password</a>
+        <h2 style="color:#f3c675;font-family:serif;">One Leg Up — Site Update</h2>
+        <p style="color:#c8b896;margin:16px 0;">
+          We're making some updates to the site and as part of those changes
+          we're requiring all members to reset their passwords.
+        </p>
+        <p style="color:#c8b896;margin-bottom:24px;">
+          Click the button below to set a new password and continue accessing your account.
+          Your membership remains fully active.
+        </p>
+        <a href="${link}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;font-weight:700;text-decoration:none;border-radius:8px;">Reset My Password</a>
         <p style="color:#666;font-size:0.8rem;margin-top:24px;">Or copy this link: ${link}</p>
+        <p style="color:#555;font-size:0.75rem;margin-top:16px;">If you have any questions, reply to this email or text us at 559-787-5801.</p>
       </div>`
   });
 }
