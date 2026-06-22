@@ -413,7 +413,7 @@
       </section>
       <div class="left">
         <div class="flyer-wrap">
-          <img src="images/playboy_pool_party.png" alt="Playboy Pool Party Flyer" class="flyer">
+          <img src="images/sunsout-bg.png" alt="Suns Out Buns Out Pool Party Flyer" class="flyer">
         </div>
         <div class="info-stack">
           <div class="notice">
@@ -472,6 +472,16 @@
 
     // ─── Party data & events ───
     const allParties = [
+      {
+        date:"2026-08-01",title:"School Girls and Professors Party",
+        desc:"Join us for the School Girls and Professors Party from 4 PM to Midnight. BYOB.<br><strong>Cross streets: Maple &amp; Shepherd</strong>",
+        signup:"signup.html",signupText:"RSVP Now"
+      },
+      {
+        date:"2026-06-27",title:"Suns Out Buns Out Pool Party",
+        desc:"Join us for the Suns Out Buns Out Pool Party from 4 PM to Midnight. BYOB.<br><strong>Cross streets: Maple &amp; Shepherd</strong>",
+        signup:"signup.html",signupText:"RSVP Now"
+      },
       {
         date:"2026-05-30",title:"Playboy Pool Party",
         desc:"Join us for the Playboy Pool Party from 4 PM to Midnight. BYOB.<br><strong>Cross streets: Maple &amp; Shepherd</strong>",
@@ -536,7 +546,7 @@
             <div class="rsvp-required-notice">⚠ MUST RSVP TO ATTEND THE PARTY</div>
             <div class="rsvp-arrow">↓</div>
             <a href="${party.signup}" class="rsvp-event-btn">${party.signupText}</a>` : ''}
-          <a href="${party.sls}" target="_blank" style="margin-left:${party.signup?'10px':'0'}">${party.slsText}</a>
+          ${party.sls ? `<a href="${party.sls}" target="_blank" style="margin-left:${party.signup?'10px':'0'}">${party.slsText}</a>` : ''}
         </div>`;
       if (isUpcoming) {
         upcomingContainer.insertAdjacentHTML('beforeend', eventHTML);
