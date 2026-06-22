@@ -523,6 +523,7 @@
 
     const now = new Date();
     let nextEventEnd = null;
+    let firstUpcomingDone = false;
     const upcomingContainer = document.getElementById('upcoming-container');
     const pastContainer     = document.getElementById('past-container');
 
@@ -537,12 +538,13 @@
         eventEnd.setHours(2,0,0,0);
       }
       const isUpcoming = isTBD || now < eventEnd;
+      const showRsvp = isUpcoming && !firstUpcomingDone && party.signup;
       const eventHTML = `
         <div class="event" data-date="${party.date}">
           <h3 class="gold-shimmer">${party.title}</h3>
           <p>Date: ${displayDate}</p>
           <p>${party.desc||''}</p>
-          ${party.signup ? `
+          ${showRsvp ? `
             <div class="rsvp-required-notice">⚠ MUST RSVP TO ATTEND THE PARTY</div>
             <div class="rsvp-arrow">↓</div>
             <a href="${party.signup}" class="rsvp-event-btn">${party.signupText}</a>` : ''}
@@ -551,6 +553,7 @@
       if (isUpcoming) {
         upcomingContainer.insertAdjacentHTML('beforeend', eventHTML);
         if (!isTBD && (!nextEventEnd || eventEnd < nextEventEnd)) nextEventEnd = eventEnd;
+        firstUpcomingDone = true;
       } else {
         pastContainer.insertAdjacentHTML('beforeend', eventHTML);
       }
