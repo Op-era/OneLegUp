@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Who's Attending | One Leg Up</title>
+  <link rel="icon" type="image/png" href="images/NewLogo/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{min-height:100vh;background:#080808;font-family:'Poppins',sans-serif;color:#fff;overflow-x:hidden;}
+    #bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,rgba(26,24,40,0.18),rgba(4,6,14,0.6) 60%,rgba(0,0,0,0.92) 100%),url('images/playboy-bg.png') center center/cover no-repeat;}
+    #bg::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 25%,rgba(255,186,118,0.07),transparent 50%);}
+    @keyframes goldShimmer{0%{background-position:-400% center;}100%{background-position:400% center;}}
+    .gold-shimmer{background:linear-gradient(90deg,#7a5700 0%,#c8960c 12%,#f3c675 25%,#fffbe8 38%,#ffd700 50%,#fffbe8 62%,#f3c675 75%,#c8960c 88%,#7a5700 100%);background-size:400% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:goldShimmer 5s linear infinite;}
+    .page{position:relative;z-index:10;min-height:100vh;padding:40px 20px 80px;max-width:860px;margin:0 auto;}
+    .back{display:inline-flex;align-items:center;gap:6px;color:rgba(243,198,117,0.7);text-decoration:none;font-size:0.82rem;letter-spacing:0.08em;margin-bottom:32px;}
+    .back:hover{color:#f3c675;}
+    .back svg{width:14px;height:14px;fill:currentColor;}
+    .page-header{text-align:center;margin-bottom:48px;}
+    .page-header .eyebrow{font-size:0.72rem;letter-spacing:0.42em;text-transform:uppercase;color:rgba(255,220,150,0.5);margin-bottom:8px;}
+    .page-header h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,7vw,3.2rem);font-weight:900;line-height:1;}
+    .page-header p{margin-top:12px;color:rgba(255,220,150,0.5);font-size:0.88rem;}
+
+    /* Party section */
+    .party-block{margin-bottom:48px;}
+    .party-header{display:flex;align-items:baseline;gap:16px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(243,198,117,0.18);}
+    .party-name{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:#f3c675;}
+    .party-date{font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,220,150,0.45);}
+    .party-count{margin-left:auto;font-size:0.78rem;color:rgba(255,220,150,0.4);}
+
+    /* Attendee grid */
+    .attendee-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+    .attendee-card{background:rgba(10,25,35,0.65);border:1px solid rgba(243,198,117,0.14);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s;}
+    .attendee-card:hover{border-color:rgba(243,198,117,0.35);}
+    .attendee-username{font-weight:600;font-size:0.95rem;color:#fff;letter-spacing:0.02em;}
+    .attendee-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+    .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;}
+    .badge-type-couple{background:rgba(243,198,117,0.12);border:1px solid rgba(243,198,117,0.35);color:#f3c675;}
+    .badge-type-female{background:rgba(236,100,150,0.12);border:1px solid rgba(236,100,150,0.35);color:#f87da8;}
+    .badge-type-male{background:rgba(100,160,236,0.12);border:1px solid rgba(100,160,236,0.35);color:#7dbcf8;}
+    .badge-platform{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.55);font-size:0.65rem;}
+    .empty-msg{color:rgba(255,220,150,0.35);font-size:0.88rem;font-style:italic;padding:20px 0;}
+
+    /* RSVP CTA */
+    .rsvp-cta{display:inline-block;margin-top:10px;padding:10px 24px;background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;font-weight:600;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;border-radius:8px;transition:transform .2s,box-shadow .2s;}
+    .rsvp-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(236,139,87,0.4);}
+
+    .loading{color:rgba(255,220,150,0.4);text-align:center;padding:60px 0;font-size:0.9rem;}
+  </style>
+</head>
+<body>
+<div id="bg"></div>
+<div class="page">
+  <a href="index.html" class="back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Back</a>
+
+  <div class="page-header">
+    <div class="eyebrow">One Leg Up Events</div>
+    <h1 class="gold-shimmer">Who's Attending</h1>
+    <p>Updated live as people RSVP. See you there.</p>
+  </div>
+
+  <div id="content"><div class="loading">Loading guest list…</div></div>
+</div>
+
+<script>
+  const API = 'https://api.onelegup.club';
+
+  const PLATFORM_SHORT = {
+    'Swingers Lifestyle (SLS)': 'SLS',
+    'Kasidie': 'Kasidie',
+    'Quiver': 'Quiver',
+    'SDC': 'SDC',
+    'One Leg Up': 'OLU Member',
+  };
+
+  function typeBadge(pt) {
+    if (!pt) return '';
+    const cls = pt.includes('Couple') ? 'couple' : pt.includes('Female') ? 'female' : 'male';
+    return `<span class="badge badge-type-${cls}">${pt}</span>`;
+  }
+
+  function platformBadge(p) {
+    const label = PLATFORM_SHORT[p] || p || '—';
+    return `<span class="badge badge-platform">${label}</span>`;
+  }
+
+  function formatDate(dateStr) {
+    const [y,m,d] = dateStr.split('-').map(Number);
+    return new Date(y, m-1, d).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  }
+
+  async function load() {
+    const content = document.getElementById('content');
+    try {
+      const res = await fetch(`${API}/rsvps/public`);
+      const parties = await res.json();
+
+      if (!parties.length) {
+        content.innerHTML = '<p class="empty-msg">No upcoming events right now. Check back soon.</p>';
+        return;
+      }
+
+      content.innerHTML = parties.map(({ party, attendees }) => {
+        const signup = `signup.html?event=${encodeURIComponent(party.title)}&date=${party.date}`;
+        const cards = attendees.length
+          ? attendees.map(a => `
+              <div class="attendee-card">
+                <div class="attendee-username">${a.username || '—'}</div>
+                <div class="attendee-meta">
+                  ${typeBadge(a.profile_type)}
+                  ${platformBadge(a.platform)}
+                </div>
+              </div>`).join('')
+          : '<div class="empty-msg">No RSVPs yet — be the first!</div>';
+
+        return `
+          <div class="party-block">
+            <div class="party-header">
+              <div>
+                <div class="party-name">${party.title}</div>
+                <div class="party-date">${formatDate(party.date)}</div>
+              </div>
+              <div class="party-count">${attendees.length} attending</div>
+            </div>
+            <div class="attendee-grid">${cards}</div>
+            <div style="margin-top:20px;">
+              <a href="${signup}" class="rsvp-cta">RSVP for this Party →</a>
+            </div>
+          </div>`;
+      }).join('');
+
+    } catch(e) {
+      content.innerHTML = '<p class="empty-msg">Could not load guest list. Try again shortly.</p>';
+    }
+  }
+
+  load();
+  setInterval(load, 30000);
+</script>
+<script src="music.js"></script>
+</body>
+</html>

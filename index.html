@@ -555,8 +555,14 @@
           ${signupUrl ? `
             <div class="rsvp-required-notice">⚠ MUST RSVP TO ATTEND THE PARTY</div>
             <div class="rsvp-arrow">↓</div>
-            <a href="${signupUrl}" class="rsvp-event-btn">${party.signupText}</a>` : ''}
-          ${party.sls ? `<a href="${party.sls}" target="_blank" style="margin-left:${party.signup?'10px':'0'}">${party.slsText}</a>` : ''}
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+              <a href="${signupUrl}" class="rsvp-event-btn">${party.signupText}</a>
+              <a href="attending.html" class="rsvp-event-btn" style="background:rgba(243,198,117,0.1);border:1px solid rgba(243,198,117,0.45);color:#f3c675;">Who's Attending →</a>
+            </div>` : `
+            <div style="margin-top:12px;">
+              <a href="attending.html" class="rsvp-event-btn" style="background:rgba(243,198,117,0.1);border:1px solid rgba(243,198,117,0.45);color:#f3c675;">Who's Attending →</a>
+            </div>`}
+          ${party.sls ? `<a href="${party.sls}" target="_blank" style="margin-left:0;margin-top:8px;display:inline-block;">${party.slsText}</a>` : ''}
         </div>`;
       if (isUpcoming) {
         upcomingContainer.insertAdjacentHTML('beforeend', eventHTML);
