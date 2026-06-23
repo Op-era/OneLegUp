@@ -141,6 +141,7 @@
     <table class="rsvp-table" id="rsvp-table">
       <thead><tr>
         <th style="width:36px"><input type="checkbox" id="select-all"></th>
+        <th class="sortable" onclick="setSort('event')">Party<span class="sort-icon" id="si-event">⇅</span></th>
         <th class="sortable" onclick="setSort('platform')">Platform<span class="sort-icon" id="si-platform">⇅</span></th>
         <th class="sortable" onclick="setSort('username')">Username<span class="sort-icon" id="si-username">⇅</span></th>
         <th class="sortable" onclick="setSort('profile_type')">Type<span class="sort-icon" id="si-profile_type">⇅</span></th>
@@ -285,7 +286,7 @@
 
   function renderRsvpTable() {
     // Update sort icons
-    ['platform','username','profile_type','submitted_at','verified'].forEach(f => {
+    ['event','platform','username','profile_type','submitted_at','verified'].forEach(f => {
       const el = document.getElementById('si-'+f);
       if (!el) return;
       const th = el.parentElement;
@@ -299,7 +300,7 @@
     });
 
     const tbody = document.getElementById('rsvp-body');
-    if (!rsvps.length) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:rgba(255,220,150,0.35);padding:30px;">No RSVPs yet.</td></tr>'; return; }
+    if (!rsvps.length) { tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:rgba(255,220,150,0.35);padding:30px;">No RSVPs yet.</td></tr>'; return; }
 
     tbody.innerHTML = sortedRsvps().map(r => {
       const url = profileUrl(r.platform, r.username);
@@ -317,8 +318,10 @@
            </div>`;
       const phone = esc(r.phone || r.contact || '—');
       const email = esc(r.email || '—');
+      const eventShort = (r.event || '—').replace(/ – \w+ \d+, \d{4}$/, '');
       return `<tr data-id="${esc(r.id)}">
         <td><input type="checkbox" class="rsvp-cb" value="${esc(r.id)}"></td>
+        <td style="color:#f3c675;font-size:0.78rem;">${esc(eventShort)}</td>
         <td>${esc(r.platform || '—')}</td>
         <td>${usernameHtml}</td>
         <td>${esc(r.profile_type || '—')}</td>
