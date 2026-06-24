@@ -270,6 +270,25 @@
       text-align:center;margin-bottom:10px;
       animation:goldGlow 3s ease-in-out infinite;
     }
+    .past-toggle{
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      cursor:pointer;user-select:none;
+      font-family:'Playfair Display',serif;
+      font-size:1.45rem;
+      text-align:center;margin-top:4px;margin-bottom:0;
+      animation:goldGlow 3s ease-in-out infinite;
+    }
+    .past-toggle .chevron{
+      font-size:0.85rem;opacity:0.6;
+      transition:transform .3s;display:inline-block;
+    }
+    .past-toggle.open .chevron{transform:rotate(180deg);}
+    #past-container{
+      overflow:hidden;
+      max-height:0;
+      transition:max-height .4s ease;
+    }
+    #past-container.open{max-height:9999px;}
     .event{margin-bottom:12px;padding:10px 12px;border-radius:8px;background:rgba(0,0,0,.26);transition:transform .3s,box-shadow .3s;}
     .event:hover{transform:scale(1.02);box-shadow:0 14px 26px rgba(8,30,39,0.28);}
     .event h3{font-size:1.08rem;margin-bottom:4px;}
@@ -462,7 +481,7 @@
           <p style="font-size:0.82rem;color:#c8b896;line-height:1.55;margin-bottom:14px;">Don't have a <a href="https://www.swinglifestyle.com" target="_blank" rel="noopener" style="color:#f3c675;text-decoration:underline;">SwingLifeStyle</a> or <a href="https://www.kasidie.com" target="_blank" rel="noopener" style="color:#f3c675;text-decoration:underline;">Kasidie</a> membership? No problem — monthly membership to One Leg Up is just <strong style="color:#f3c675;">$9.99</strong>. Donations still apply at the door.</p>
           <a href="subscribe.html" style="display:inline-block;padding:9px 22px;background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;font-weight:700;border-radius:8px;text-decoration:none;font-size:0.84rem;letter-spacing:0.04em;box-shadow:0 6px 18px rgba(236,139,87,0.35);">Join for $9.99 / month →</a>
         </div>
-        <h2 class="gold-shimmer" style="margin-top:4px;">Past Events</h2>
+        <h2 class="past-toggle gold-shimmer" id="past-toggle">Past Events <span class="chevron">▼</span></h2>
         <div id="past-container"></div>
       </div>
     </div>
@@ -584,6 +603,13 @@
       } else {
         pastContainer.insertAdjacentHTML('beforeend', eventHTML);
       }
+    });
+
+    // Past events toggle
+    const pastToggle = document.getElementById('past-toggle');
+    pastToggle.addEventListener('click', () => {
+      const open = pastContainer.classList.toggle('open');
+      pastToggle.classList.toggle('open', open);
     });
 
     // Inject countdown into the first upcoming party card
