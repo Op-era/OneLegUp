@@ -326,16 +326,16 @@
     @media (min-width:768px){
       html,body{height:100vh;overflow:hidden;}
       .overlay{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;padding:78px 34px 18px 34px;}
-      .content{display:grid;grid-template-columns:minmax(260px,0.74fr) minmax(0,1.08fr) minmax(340px,0.92fr);align-items:start;gap:16px;margin-top:8px;flex:1 1 auto;min-height:0;}
-      .expectations{grid-column:1;align-self:start;}
+      .content{display:grid;grid-template-columns:minmax(260px,0.74fr) minmax(0,1.08fr) minmax(340px,0.92fr);align-items:stretch;gap:16px;margin-top:8px;flex:1 1 auto;min-height:0;height:calc(100vh - 108px);}
+      .expectations{grid-column:1;overflow-y:auto;align-self:stretch;}
       .expectations h2,.expect-intro{text-align:left;}
       .expect-list li{font-size:0.8rem;}
       .expect-subhead{font-size:0.82rem;}
       .expect-location{font-size:0.76rem;}
-      .left{grid-column:2;padding:0;display:flex;flex-direction:column;gap:10px;align-items:start;}
+      .left{grid-column:2;padding:0;display:flex;flex-direction:column;gap:10px;align-items:start;overflow-y:auto;}
       .flyer-wrap{width:100%;justify-content:center;}
       .info-stack{width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch;gap:8px 12px;max-width:none;}
-      .events{grid-column:3;max-height:calc(100vh - 180px);overflow-y:auto;}
+      .events{grid-column:3;overflow-y:auto;height:100%;}
       .sign{width:200px;height:60px;font-size:1.8rem;top:20px;left:20px;}
       .sign span{font-size:1.5rem;}
       .notice{grid-column:1 / -1;font-size:0.98rem;padding:10px 14px;margin:6px 0 0;}
