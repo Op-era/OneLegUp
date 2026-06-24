@@ -349,7 +349,7 @@
       <p id="success-msg">
         Thanks for signing up!<br>
         If you left a contact, you'll receive the address closer to the date.<br><br>
-        See you there — 6 PM to Midnight. BYOB!
+        6 PM to Midnight. Doors close at 8 PM — if arriving later, please text us in advance. BYOB!
       </p>
     </div>
 
@@ -370,13 +370,13 @@
 
     document.getElementById('event-title').textContent = eventName;
     document.getElementById('event-date-tag').innerHTML =
-      (eventDateDisplay ? eventDateDisplay + ' &nbsp;·&nbsp; ' : '') + '6 PM – Midnight';
+      (eventDateDisplay ? eventDateDisplay + ' &nbsp;·&nbsp; ' : '') + '6 PM – Midnight · Doors close 8 PM';
     document.title = `RSVP – ${eventName} | One Leg Up`;
     if (eventDateDisplay) {
       document.getElementById('success-msg').innerHTML =
         `Thanks for signing up for the <strong style="color:#f3c675;">${eventName}</strong>.<br>
         If you left a contact, you'll receive the address closer to the date.<br><br>
-        See you ${eventDateDisplay} — 6 PM to Midnight. BYOB!`;
+        See you ${eventDateDisplay} — 6 PM to Midnight. Doors close at 8 PM; if arriving later please text us in advance. BYOB!`;
     }
 
     const form      = document.getElementById('rsvp-form');
