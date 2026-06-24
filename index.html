@@ -445,7 +445,6 @@
             <div style="margin-top:6px;"><a href="https://cash.app/$0neLegUp/100" target="_blank" rel="noopener" style="color:#f87171;font-weight:700;text-decoration:none;">Send $100 via CashApp to $0neLegUp →</a></div>
             <div style="margin-top:3px;font-size:0.78em;color:rgba(248,113,113,0.75);">Include your SLS username in the note.</div>
           </div>
-          <div class="countdown" id="countdown">Loading...</div>
         </div>
       </div>
       <div class="events">
@@ -537,6 +536,7 @@
 
     const now = new Date();
     let nextEventEnd = null;
+    let nextPartyTitle = null;
     const upcomingContainer = document.getElementById('upcoming-container');
     const pastContainer     = document.getElementById('past-container');
 
@@ -574,14 +574,26 @@
         </div>`;
       if (isUpcoming) {
         upcomingContainer.insertAdjacentHTML('beforeend', eventHTML);
-        if (!isTBD && (!nextEventEnd || eventEnd < nextEventEnd)) nextEventEnd = eventEnd;
+        if (!isTBD && (!nextEventEnd || eventEnd < nextEventEnd)) { nextEventEnd = eventEnd; nextPartyTitle = party.title; }
       } else {
         pastContainer.insertAdjacentHTML('beforeend', eventHTML);
       }
     });
 
+    // Inject countdown into the first upcoming party card
+    const firstCard = upcomingContainer.querySelector('.event');
+    if (firstCard && nextPartyTitle) {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'margin-top:12px;padding-top:10px;border-top:1px solid rgba(243,198,117,0.15);';
+      wrap.innerHTML = `
+        <div style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(243,198,117,0.5);margin-bottom:4px;">Countdown till ${nextPartyTitle}</div>
+        <div id="countdown" class="countdown" style="margin-top:0;text-align:left;font-size:1.1rem;">Loading...</div>`;
+      firstCard.appendChild(wrap);
+    }
+
     const countdownEl = document.getElementById('countdown');
     function updateCountdown() {
+      if (!countdownEl) return;
       if (!nextEventEnd) { countdownEl.textContent='No upcoming dated events'; return; }
       const diff = nextEventEnd - Date.now();
       if (diff <= 0) { location.reload(); return; }
