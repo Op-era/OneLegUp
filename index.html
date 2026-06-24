@@ -302,6 +302,8 @@
       transition:transform .2s,box-shadow .2s;
     }
     .rsvp-event-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(236,139,87,0.55);color:#0d1f28!important;}
+    .rsvp-event-btn.ghost{background:rgba(243,198,117,0.1);border:1px solid rgba(243,198,117,0.45);color:#f3c675!important;box-shadow:none;}
+    .rsvp-event-btn.ghost:hover{color:#fff!important;border-color:rgba(243,198,117,0.8);background:rgba(243,198,117,0.18);box-shadow:none;}
 
     /* ─── What to Expect ─── */
     .expectations{width:100%;background:rgba(10,25,35,0.72);border:1px solid rgba(243,198,117,0.14);border-radius:12px;padding:16px;backdrop-filter:blur(8px);}
@@ -560,10 +562,10 @@
             <div class="rsvp-arrow">↓</div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
               <a href="${signupUrl}" class="rsvp-event-btn">${party.signupText}</a>
-              <a href="attending.html" class="rsvp-event-btn" style="background:rgba(243,198,117,0.1);border:1px solid rgba(243,198,117,0.45);color:#f3c675;">Who's Attending →</a>
+              <a href="attending.html" class="rsvp-event-btn ghost">Who's Attending →</a>
             </div>` : `
             <div style="margin-top:12px;">
-              <a href="attending.html" class="rsvp-event-btn" style="background:rgba(243,198,117,0.1);border:1px solid rgba(243,198,117,0.45);color:#f3c675;">Who's Attending →</a>
+              <a href="attending.html" class="rsvp-event-btn ghost">Who's Attending →</a>
             </div>`}
           ${party.sls ? `<a href="${party.sls}" target="_blank" style="margin-left:0;margin-top:8px;display:inline-block;">${party.slsText}</a>` : ''}
         </div>`;
