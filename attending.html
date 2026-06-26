@@ -101,7 +101,8 @@
         return;
       }
 
-      content.innerHTML = parties.map(({ party, attendees }) => {
+      // Only show the next (first) upcoming party
+      content.innerHTML = [parties[0]].map(({ party, attendees }) => {
         const signup = `signup.html?event=${encodeURIComponent(party.title)}&date=${party.date}`;
         const cards = attendees.length
           ? attendees.map(a => `
