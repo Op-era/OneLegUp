@@ -282,11 +282,20 @@
       let va, vb;
       if (sortField === 'submitted_at') { va = new Date(a.submitted_at); vb = new Date(b.submitted_at); }
       else if (sortField === 'verified') { va = a.verified ? 1 : 0; vb = b.verified ? 1 : 0; }
+      else if (sortField === 'donation_paid') { va = a.donation_paid ? 1 : 0; vb = b.donation_paid ? 1 : 0; }
       else { va = (a[sortField]||'').toLowerCase(); vb = (b[sortField]||'').toLowerCase(); }
       if (va < vb) return sortDir === 'asc' ? -1 : 1;
       if (va > vb) return sortDir === 'asc' ?  1 : -1;
       return 0;
     });
+  }
+
+  async function toggleDonation(id, paid) {
+    await fetch(`${RSVP_API}/rsvp/${id}/donation`, {
+      method: 'PUT', headers: { 'Content-Type': 'application/json', ...AUTH },
+      body: JSON.stringify({ donation_paid: paid })
+    });
+    await loadRsvps();
   }
 
   function renderPartyTable(list) {
@@ -305,6 +314,9 @@
             <button class="verify-btn" onclick="verifyRsvp('${esc(r.id)}','Monthly')">Monthly</button>
             <button class="verify-btn" onclick="verifyRsvp('${esc(r.id)}','Lifetime')">Lifetime</button>
            </div>`;
+      const donationHtml = r.donation_paid
+        ? `<button class="verify-btn" onclick="toggleDonation('${esc(r.id)}',false)" style="background:rgba(74,222,128,0.15);border-color:rgba(74,222,128,0.4);color:#4ade80;">✓ Received</button>`
+        : `<button class="verify-btn" onclick="toggleDonation('${esc(r.id)}',true)" style="color:rgba(255,255,255,0.3);border-color:rgba(255,255,255,0.12);">— Mark Paid</button>`;
       return `<tr data-id="${esc(r.id)}">
         <td><input type="checkbox" class="rsvp-cb" value="${esc(r.id)}"></td>
         <td>${esc(r.platform || '—')}</td>
@@ -313,6 +325,7 @@
         <td>${esc(r.phone || r.contact || '—')}</td>
         <td>${esc(r.email || '—')}</td>
         <td>${new Date(r.submitted_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
+        <td>${donationHtml}</td>
         <td>${verifyHtml}</td>
         <td style="white-space:nowrap;">
           <button class="del-rsvp" title="Move to party" onclick="openEditModal('${esc(r.id)}')" style="color:rgba(243,198,117,0.5);margin-right:2px;">✎</button>
@@ -329,6 +342,7 @@
         <th class="sortable" onclick="setSort('profile_type')">Type</th>
         <th>Phone</th><th>Email</th>
         <th class="sortable" onclick="setSort('submitted_at')">Date</th>
+        <th class="sortable" onclick="setSort('donation_paid')">Donation</th>
         <th class="sortable" onclick="setSort('verified')">Verified</th>
         <th></th>
       </tr></thead>
