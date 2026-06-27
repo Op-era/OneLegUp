@@ -267,7 +267,10 @@
       <div class="m-title">⚠ Paid Account Required — No Exceptions</div>
       <p>
         To attend this event you <strong>must</strong> have an active <strong>paid account</strong>
-        on <strong><a href="https://www.swinglifestyle.com" target="_blank" rel="noopener" style="color:#ff9090;text-decoration:underline;">Swingers Lifestyle (SLS)</a></strong> or <strong><a href="https://www.kasidie.com" target="_blank" rel="noopener" style="color:#ff9090;text-decoration:underline;">Kasidie</a></strong>.
+        on <strong><a href="https://www.swinglifestyle.com" target="_blank" rel="noopener" style="color:#ff9090;text-decoration:underline;">SLS</a></strong>,
+        <strong><a href="https://www.kasidie.com" target="_blank" rel="noopener" style="color:#ff9090;text-decoration:underline;">Kasidie</a></strong>,
+        <strong><a href="https://www.quiver.us" target="_blank" rel="noopener" style="color:#ff9090;text-decoration:underline;">Quiver</a></strong>,
+        or an active <strong>One Leg Up membership</strong>.
         Free or trial accounts are <strong>not accepted</strong>. You will be verified at the door
         and denied entry if your account is not paid and active.
       </p>
@@ -279,17 +282,19 @@
 
         <!-- Platform -->
         <div class="field" id="field-platform">
-          <label>Your Profile Is On <span class="req">*</span></label>
+          <label>Your Membership Is On <span class="req">*</span></label>
           <div class="radio-group">
             <label><input type="radio" name="platform" value="Swingers Lifestyle (SLS)"> Swingers Lifestyle (SLS)</label>
             <label><input type="radio" name="platform" value="Kasidie"> Kasidie</label>
+            <label><input type="radio" name="platform" value="Quiver"> Quiver</label>
+            <label><input type="radio" name="platform" value="One Leg Up"> One Leg Up Member</label>
           </div>
-          <div class="err" id="err-platform">Please select your platform.</div>
+          <div class="err" id="err-platform">Please select your membership platform.</div>
         </div>
 
         <!-- Username -->
         <div class="field" id="field-username">
-          <label>Your Username on That Site <span class="req">*</span></label>
+          <label id="username-label">Your Username <span class="req">*</span></label>
           <input type="text" name="username" id="username" placeholder="e.g. HotCouple69" autocomplete="off">
           <div class="err" id="err-username">Please enter your username.</div>
         </div>
@@ -328,7 +333,7 @@
             <input type="checkbox" id="ack-check" name="acknowledged">
             <span>
               I acknowledge that I have read and understand the requirement:
-              <strong>I have an active paid account</strong> on Swingers Lifestyle or Kasidie.
+              <strong>I have an active paid account</strong> on SLS, Kasidie, Quiver, or One Leg Up.
               I understand that <strong>I will not be admitted</strong> without a verified paid account — no exceptions.
             </span>
           </label>
@@ -387,6 +392,21 @@
 
     const form      = document.getElementById('rsvp-form');
     const submitBtn = document.getElementById('submit-btn');
+
+    // Update username label/placeholder based on platform
+    const usernameLabels = {
+      'Swingers Lifestyle (SLS)': { label: 'Your SLS Username', placeholder: 'e.g. HotCouple69' },
+      'Kasidie':                   { label: 'Your Kasidie Username', placeholder: 'e.g. HotCouple69' },
+      'Quiver':                    { label: 'Your Quiver Username', placeholder: 'e.g. HotCouple69' },
+      'One Leg Up':                { label: 'Your Name / Couple Name', placeholder: 'e.g. Shane & Jessica' },
+    };
+    form.querySelectorAll('input[name="platform"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const cfg = usernameLabels[radio.value] || { label: 'Your Username', placeholder: 'e.g. HotCouple69' };
+        document.getElementById('username-label').innerHTML = `${cfg.label} <span class="req">*</span>`;
+        document.getElementById('username').placeholder = cfg.placeholder;
+      });
+    });
 
     function showErr(id, show) {
       document.getElementById(id).style.display = show ? 'block' : 'none';
