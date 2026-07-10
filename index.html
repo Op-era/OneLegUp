@@ -446,7 +446,7 @@
       </section>
       <div class="left">
         <div class="flyer-wrap">
-          <img src="https://github.com/user-attachments/assets/f05a3dce-f611-4bc4-8c7e-6050e6fd8e1c" alt="OneLegUp event poster" class="flyer">
+          <img id="main-flyer" src="https://github.com/user-attachments/assets/f05a3dce-f611-4bc4-8c7e-6050e6fd8e1c" alt="OneLegUp event poster" class="flyer">
         </div>
         <div class="info-stack">
           <div class="notice">
@@ -542,6 +542,17 @@
       nextEventEnd = null; nextPartyTitle = null;
       upcomingContainer.innerHTML = '';
       pastContainer.innerHTML = '';
+
+      // Update main center flyer to next upcoming party's poster
+      const nextWithPoster = allParties.find(p => {
+        if (!p.date || p.date === 'TBD') return false;
+        const end = new Date(p.date.replace(/-/g,'/'));
+        end.setDate(end.getDate()+1); end.setHours(2,0,0,0);
+        return now < end && p.poster;
+      });
+      if (nextWithPoster) {
+        document.getElementById('main-flyer').src = nextWithPoster.poster;
+      }
 
       allParties.forEach(party => {
         const eventDate = parseLocalDate(party.date);
