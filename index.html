@@ -565,11 +565,16 @@
           eventEnd.setHours(2,0,0,0);
         }
         const isUpcoming = isTBD || now < eventEnd;
-        const rsvpOpen = isUpcoming && !isTBD && now < doorsCloseAt(party.date);
+        const rsvpOpen = isUpcoming && !isTBD && now < doorsCloseAt(party.date) && !party.cancelled;
         const signupUrl = rsvpOpen ? `signup.html?event=${encodeURIComponent(party.title)}&date=${encodeURIComponent(party.date)}` : null;
         const posterImg = party.poster ? `<img src="${party.poster}" alt="${party.title}" style="width:100%;border-radius:8px;margin-bottom:10px;display:block;">` : '';
+        const cancelledBanner = party.cancelled ? `
+            <div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);border-radius:8px;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none;">
+              <span style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:#ff4d4d;letter-spacing:0.08em;text-transform:uppercase;transform:rotate(-8deg);text-shadow:0 4px 18px rgba(0,0,0,0.8);border:4px solid #ff4d4d;padding:6px 22px;background:rgba(0,0,0,0.4);">Cancelled</span>
+            </div>` : '';
         const eventHTML = `
-          <div class="event" data-date="${party.date}">
+          <div class="event" style="position:relative;overflow:hidden;" data-date="${party.date}">
+            ${cancelledBanner}
             ${posterImg}
             <h3 class="gold-shimmer">${party.title}</h3>
             <p>Date: ${displayDate}</p>
