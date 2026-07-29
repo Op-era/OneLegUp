@@ -2,7 +2,7 @@ const http       = require('http');
 const fs         = require('fs');
 const path       = require('path');
 const crypto     = require('crypto');
-const nodemailer = require('nodemailer');
+const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 
 // Load .env
 const envFile = path.join(__dirname, '.env');
@@ -14,13 +14,34 @@ if (fs.existsSync(envFile)) {
 }
 
 const PORT           = 3002;
-const RSVPS_FILE     = path.join(__dirname, 'rsvps.json');
-const MEMBERS_FILE   = path.join(__dirname, 'members.json');
-const SESSIONS_FILE  = path.join(__dirname, 'sessions.json');
-const FORUM_POSTS_FILE   = path.join(__dirname, 'forum_posts.json');
-const FORUM_REPLIES_FILE = path.join(__dirname, 'forum_replies.json');
-const CONTACTS_FILE      = path.join(__dirname, 'contacts.json');
-const SITE_URL       = 'https://onelegup.club';
+const DATA_DIR       = '/Users/shanefoster/OneLegUp-data';
+const RSVPS_FILE     = path.join(DATA_DIR, 'rsvps.json');
+const MEMBERS_FILE   = path.join(DATA_DIR, 'members.json');
+const SESSIONS_FILE  = path.join(DATA_DIR, 'sessions.json');
+const FORUM_POSTS_FILE   = path.join(DATA_DIR, 'forum_posts.json');
+const FORUM_REPLIES_FILE = path.join(DATA_DIR, 'forum_replies.json');
+const CONTACTS_FILE      = path.join(DATA_DIR, 'contacts.json');
+const SITE_URL           = 'https://onelegup.club';
+const PARTY_EMAILS_FILE  = path.join(DATA_DIR, 'party_emails_sent.json');
+const EVENTS_FILE        = path.join(DATA_DIR, 'events.json');
+const IMAGES_DIR         = path.join(DATA_DIR, 'images');
+if (!fs.existsSync(IMAGES_DIR)) fs.mkdirSync(IMAGES_DIR, { recursive: true });
+
+// Legacy fallback — only used to seed events.json on first run
+const PARTY_SCHEDULE = [
+  { date: '2026-06-27', title: 'Suns Out Buns Out Pool Party' },
+  { date: '2026-08-01', title: 'School Girls and Professors Party' },
+];
+
+function getEvents() {
+  const stored = readJSON(EVENTS_FILE);
+  if (stored.length) return stored.sort((a,b) => {
+    if (a.date === 'TBD') return 1;
+    if (b.date === 'TBD') return -1;
+    return a.date.localeCompare(b.date);
+  });
+  return PARTY_SCHEDULE.map(p => ({ id: p.date, title: p.title, date: p.date, description: '', poster: null, signup_text: 'RSVP Now', created_at: new Date().toISOString() }));
+}
 
 const FORUM_CATS = [
   { id:'general', name:'General',       desc:'General lifestyle talk',           nsfw:false, icon:'💬' },
@@ -106,31 +127,48 @@ async function handleStripeEvent(event) {
 }
 
 // ── Gmail config ──────────────────────────────────────────────────────────────
-const mailer = nodemailer.createTransport({
-  service: 'gmail',
-  auth: { user: 'witprod@gmail.com', pass: process.env.GMAIL_PASS || 'GMAIL_APP_PASSWORD' }
-});
+async function sendMail({ to, subject, html }) {
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${RESEND_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ from: 'One Leg Up <noreply@onelegup.club>', to, subject, html })
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Resend error: ${err}`);
+  }
+  return res.json();
+}
 
 async function sendSetupEmail(to, token) {
   const link = `${SITE_URL}/set-password.html?token=${token}`;
-  await mailer.sendMail({
-    from: '"One Leg Up" <witprod@gmail.com>',
+  await sendMail({
     to,
-    subject: 'Set up your One Leg Up account',
+    subject: 'Action Required — Reset Your One Leg Up Password',
     html: `
       <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px;background:#080808;color:#fff;border-radius:12px;">
-        <h2 style="color:#f3c675;font-family:serif;">Welcome to One Leg Up</h2>
-        <p style="color:#c8b896;margin:16px 0;">Your membership is active! Click below to set your password and finish setting up your account.</p>
-        <a href="${link}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;font-weight:700;text-decoration:none;border-radius:8px;">Set My Password</a>
+        <h2 style="color:#f3c675;font-family:serif;">One Leg Up — Site Update</h2>
+        <p style="color:#c8b896;margin:16px 0;">
+          We're making some updates to the site and as part of those changes
+          we're requiring all members to reset their passwords.
+        </p>
+        <p style="color:#c8b896;margin-bottom:24px;">
+          Click the button below to set a new password and continue accessing your account.
+          Your membership remains fully active.
+        </p>
+        <a href="${link}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;font-weight:700;text-decoration:none;border-radius:8px;">Reset My Password</a>
         <p style="color:#666;font-size:0.8rem;margin-top:24px;">Or copy this link: ${link}</p>
+        <p style="color:#555;font-size:0.75rem;margin-top:16px;">If you have any questions, reply to this email or text us at 559-787-5801.</p>
       </div>`
   });
 }
 
 async function sendResetEmail(to, token) {
   const link = `${SITE_URL}/set-password.html?token=${token}`;
-  await mailer.sendMail({
-    from: '"One Leg Up" <witprod@gmail.com>',
+  await sendMail({
     to,
     subject: 'Reset your One Leg Up password',
     html: `
@@ -342,8 +380,25 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && req.url === '/rsvp') {
       const body  = await parseBody(req);
       const rsvps = readJSON(RSVPS_FILE);
+      const isDupe = !body.test && rsvps.some(r =>
+        !r.test &&
+        r.event === body.event &&
+        (r.platform || '').toLowerCase() === (body.platform || '').toLowerCase() &&
+        (r.username || '').toLowerCase() === (body.username || '').toLowerCase()
+      );
+      if (isDupe) return send(409, { error: 'You are already on the RSVP list for this party!' });
       const contactId = findOrCreateContact(body.platform, body.username, body.profile_type, body.phone, body.email);
-      rsvps.push({ ...body, id: Date.now().toString(), submitted_at: new Date().toISOString(), contact_id: contactId });
+      const contact = contactId ? readJSON(CONTACTS_FILE).find(c => c.id === contactId) : null;
+      const autoVerify = contact?.verified && contact?.membership_type === 'Lifetime';
+      const autoDonatePaid = body.profile_type === 'Single Female';
+      rsvps.push({
+        ...body,
+        id: Date.now().toString(),
+        submitted_at: new Date().toISOString(),
+        contact_id: contactId,
+        ...(autoVerify && { verified: true, membership_type: 'Lifetime' }),
+        ...(autoDonatePaid && { donation_paid: true })
+      });
       writeJSON(RSVPS_FILE, rsvps);
       return send(200, { ok: true });
     }
@@ -352,6 +407,65 @@ const server = http.createServer(async (req, res) => {
       const me = getMemberFromToken(req);
       if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
       return send(200, readJSON(RSVPS_FILE));
+    }
+
+    // Public: safe fields only for upcoming parties
+    if (req.method === 'GET' && req.url === '/rsvps/public') {
+      const now = new Date();
+      const allRsvps = readJSON(RSVPS_FILE);
+      const result = getEvents()
+        .filter(p => p.date === 'TBD' || new Date(p.date + 'T23:59:59') >= now)
+        .map(p => ({
+          party: p,
+          attendees: allRsvps
+            .filter(r => !r.test && r.event && r.event.startsWith(p.title))
+            .map(r => ({
+              username: r.username,
+              platform: r.platform,
+              profile_type: r.profile_type,
+              submitted_at: r.submitted_at
+            }))
+        }));
+      return send(200, result);
+    }
+
+    const rsvpAddressMatch = req.url.match(/^\/rsvp\/([^/]+)\/address$/);
+    if (req.method === 'PUT' && rsvpAddressMatch) {
+      const me = getMemberFromToken(req);
+      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
+      const { address_sent } = await parseBody(req);
+      const rsvps = readJSON(RSVPS_FILE);
+      const idx = rsvps.findIndex(r => r.id === rsvpAddressMatch[1]);
+      if (idx === -1) return send(404, { error: 'Not found' });
+      rsvps[idx] = { ...rsvps[idx], address_sent: !!address_sent };
+      writeJSON(RSVPS_FILE, rsvps);
+      return send(200, { ok: true });
+    }
+
+    const rsvpDonationMatch = req.url.match(/^\/rsvp\/([^/]+)\/donation$/);
+    if (req.method === 'PUT' && rsvpDonationMatch) {
+      const me = getMemberFromToken(req);
+      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
+      const { donation_paid } = await parseBody(req);
+      const rsvps = readJSON(RSVPS_FILE);
+      const idx = rsvps.findIndex(r => r.id === rsvpDonationMatch[1]);
+      if (idx === -1) return send(404, { error: 'Not found' });
+      rsvps[idx] = { ...rsvps[idx], donation_paid: !!donation_paid };
+      writeJSON(RSVPS_FILE, rsvps);
+      return send(200, { ok: true });
+    }
+
+    const rsvpEventMatch = req.url.match(/^\/rsvp\/([^/]+)\/event$/);
+    if (req.method === 'PUT' && rsvpEventMatch) {
+      const me = getMemberFromToken(req);
+      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
+      const { event } = await parseBody(req);
+      const rsvps = readJSON(RSVPS_FILE);
+      const idx = rsvps.findIndex(r => r.id === rsvpEventMatch[1]);
+      if (idx === -1) return send(404, { error: 'Not found' });
+      rsvps[idx] = { ...rsvps[idx], event };
+      writeJSON(RSVPS_FILE, rsvps);
+      return send(200, { ok: true });
     }
 
     const verifyRsvp = req.url.match(/^\/rsvp\/(.+)\/verify$/);
@@ -644,6 +758,69 @@ const server = http.createServer(async (req, res) => {
       return send(200, { ok: true });
     }
 
+    // ── Serve uploaded images ─────────────────────────────────────────────────
+    const imgMatch = req.url.match(/^\/images\/([^/]+)$/);
+    if (req.method === 'GET' && imgMatch) {
+      const filename = path.basename(imgMatch[1]);
+      const imgPath = path.join(IMAGES_DIR, filename);
+      if (!fs.existsSync(imgPath)) return send(404, { error: 'Not found' });
+      const ext = path.extname(filename).toLowerCase();
+      const mime = { '.jpg':'image/jpeg', '.jpeg':'image/jpeg', '.png':'image/png', '.gif':'image/gif', '.webp':'image/webp' }[ext] || 'application/octet-stream';
+      res.writeHead(200, { 'Content-Type': mime, 'Cache-Control': 'public, max-age=31536000', 'Access-Control-Allow-Origin': '*' });
+      fs.createReadStream(imgPath).pipe(res);
+      return;
+    }
+
+    // ── Events ────────────────────────────────────────────────────────────────
+    if (req.method === 'GET' && req.url === '/events') {
+      return send(200, getEvents());
+    }
+
+    if (req.method === 'POST' && req.url === '/event') {
+      const me = getMemberFromToken(req);
+      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
+      const { title, date, description, poster_data, poster_ext, signup_text } = await parseBody(req);
+      if (!title || !date) return send(400, { error: 'Title and date required' });
+      let poster = null;
+      if (poster_data) {
+        const filename = `${Date.now()}.${(poster_ext || 'jpg').replace(/[^a-z0-9]/g,'')}`;
+        fs.writeFileSync(path.join(IMAGES_DIR, filename), Buffer.from(poster_data, 'base64'));
+        poster = `https://api.onelegup.club/images/${filename}`;
+      }
+      const events = readJSON(EVENTS_FILE);
+      const event = { id: crypto.randomUUID(), title, date, description: description || '', poster, signup_text: signup_text || 'RSVP Now', created_at: new Date().toISOString() };
+      events.push(event);
+      writeJSON(EVENTS_FILE, events);
+      return send(200, { ok: true, event });
+    }
+
+    const eventMatch = req.url.match(/^\/event\/([^/]+)$/);
+
+    if (req.method === 'PUT' && eventMatch) {
+      const me = getMemberFromToken(req);
+      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
+      const { title, date, description, poster_data, poster_ext, signup_text } = await parseBody(req);
+      const events = readJSON(EVENTS_FILE);
+      const idx = events.findIndex(e => e.id === eventMatch[1]);
+      if (idx === -1) return send(404, { error: 'Not found' });
+      let poster = events[idx].poster;
+      if (poster_data) {
+        const filename = `${Date.now()}.${(poster_ext || 'jpg').replace(/[^a-z0-9]/g,'')}`;
+        fs.writeFileSync(path.join(IMAGES_DIR, filename), Buffer.from(poster_data, 'base64'));
+        poster = `https://api.onelegup.club/images/${filename}`;
+      }
+      events[idx] = { ...events[idx], ...(title && { title }), ...(date && { date }), description: description ?? events[idx].description, poster, ...(signup_text && { signup_text }) };
+      writeJSON(EVENTS_FILE, events);
+      return send(200, { ok: true });
+    }
+
+    if (req.method === 'DELETE' && eventMatch) {
+      const me = getMemberFromToken(req);
+      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
+      writeJSON(EVENTS_FILE, readJSON(EVENTS_FILE).filter(e => e.id !== eventMatch[1]));
+      return send(200, { ok: true });
+    }
+
     send(404, { error: 'Not found' });
 
   } catch (e) {
@@ -652,7 +829,84 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
+// ── Party RSVP email blast ────────────────────────────────────────────────────
+// Doors close at 8 PM Los Angeles time; email sends at that moment.
+
+function doorsCloseAt(dateStr) {
+  // 8 PM PDT (UTC-7) for summer parties; adjust offset to -08:00 for winter (PST)
+  const month = parseInt(dateStr.split('-')[1], 10);
+  const offset = (month >= 3 && month <= 11) ? '-07:00' : '-08:00';
+  return new Date(`${dateStr}T20:00:00${offset}`);
+}
+
+async function sendPartyRsvpEmail(party) {
+  const allRsvps = readJSON(RSVPS_FILE);
+  const partyRsvps = allRsvps.filter(r => r.event && r.event.startsWith(party.title) && !r.test);
+
+  const rows = partyRsvps.map(r => `
+    <tr>
+      <td style="padding:10px 12px;border:1px solid #333;">${r.username || '—'}</td>
+      <td style="padding:10px 12px;border:1px solid #333;">${r.platform || '—'}</td>
+      <td style="padding:10px 12px;border:1px solid #333;">${r.profile_type || '—'}</td>
+      <td style="padding:10px 12px;border:1px solid #333;">${r.phone || '—'}</td>
+      <td style="padding:10px 12px;border:1px solid #333;">${r.email || '—'}</td>
+    </tr>`).join('');
+
+  await sendMail({
+    to: 'hautcouple@gmail.com',
+    subject: party.title,
+    html: `
+      <div style="font-family:sans-serif;max-width:680px;margin:0 auto;padding:32px;background:#0a0a0a;color:#fff;border-radius:12px;">
+        <h2 style="color:#f3c675;font-family:serif;margin-bottom:4px;">${party.title}</h2>
+        <p style="color:#888;margin-bottom:24px;">Doors closed — ${partyRsvps.length} RSVP${partyRsvps.length !== 1 ? 's' : ''} total</p>
+        <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">
+          <thead>
+            <tr style="background:#1a1208;color:#f3c675;text-align:left;">
+              <th style="padding:10px 12px;border:1px solid #333;">Username</th>
+              <th style="padding:10px 12px;border:1px solid #333;">Platform</th>
+              <th style="padding:10px 12px;border:1px solid #333;">Type</th>
+              <th style="padding:10px 12px;border:1px solid #333;">Phone</th>
+              <th style="padding:10px 12px;border:1px solid #333;">Email</th>
+            </tr>
+          </thead>
+          <tbody style="color:#ccc;">
+            ${rows || '<tr><td colspan="5" style="padding:12px;color:#666;border:1px solid #333;">No RSVPs recorded.</td></tr>'}
+          </tbody>
+        </table>
+      </div>`
+  });
+  console.log(`RSVP list emailed for "${party.title}" (${partyRsvps.length} entries)`);
+}
+
+async function checkPartyEmailSchedule() {
+  const now = new Date();
+  const sent = readJSON(PARTY_EMAILS_FILE);
+  for (const party of getEvents()) {
+    if (sent.includes(party.date)) continue;
+    if (now >= doorsCloseAt(party.date)) {
+      try {
+        await sendPartyRsvpEmail(party);
+        sent.push(party.date);
+        writeJSON(PARTY_EMAILS_FILE, sent);
+      } catch (e) {
+        console.error(`Failed to send RSVP email for ${party.title}:`, e.message);
+      }
+    }
+  }
+}
+
+setInterval(checkPartyEmailSchedule, 60 * 1000);
+checkPartyEmailSchedule();
+
 server.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  if (readJSON(EVENTS_FILE).length === 0) {
+    writeJSON(EVENTS_FILE, PARTY_SCHEDULE.map(p => ({
+      id: crypto.randomUUID(), title: p.title, date: p.date,
+      description: '', poster: null, signup_text: 'RSVP Now',
+      created_at: new Date().toISOString()
+    })));
+    console.log('Seeded events.json from PARTY_SCHEDULE');
+  }
   await ensureMembershipPrice();
 });
