@@ -128,30 +128,69 @@
   </div>
   <div id="members-list"></div>
 
+  <!-- Events section -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin:32px 0 14px;">
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;" class="gold-shimmer">Events</h2>
+    <button onclick="toggleEventForm()" id="add-event-btn" style="background:rgba(243,198,117,0.1);border:1px solid rgba(243,198,117,0.45);color:#f3c675;font-size:0.8rem;padding:7px 18px;border-radius:8px;cursor:pointer;font-family:'Poppins',sans-serif;">+ Add Event</button>
+  </div>
+
+  <!-- Event creator form (hidden by default) -->
+  <div class="section-wrap" id="event-form-wrap" style="display:none;margin-bottom:18px;">
+    <h3 style="font-family:'Playfair Display',serif;font-size:1rem;color:#f3c675;margin-bottom:16px;" id="event-form-title">New Event</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+      <div>
+        <label style="display:block;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,198,117,0.6);margin-bottom:6px;">Event Title *</label>
+        <input id="ef-title" type="text" placeholder="School Girls and Professors Party" style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(243,198,117,0.2);border-radius:7px;color:#fff;font-family:'Poppins',sans-serif;font-size:0.85rem;outline:none;">
+      </div>
+      <div>
+        <label style="display:block;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,198,117,0.6);margin-bottom:6px;">Date *</label>
+        <input id="ef-date" type="date" style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(243,198,117,0.2);border-radius:7px;color:#fff;font-family:'Poppins',sans-serif;font-size:0.85rem;outline:none;color-scheme:dark;">
+      </div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,198,117,0.6);margin-bottom:6px;">Description</label>
+      <textarea id="ef-desc" placeholder="Join us for an incredible night... BYOB. Cross streets: Maple & Shepherd" rows="3" style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(243,198,117,0.2);border-radius:7px;color:#fff;font-family:'Poppins',sans-serif;font-size:0.85rem;outline:none;resize:vertical;"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;align-items:start;">
+      <div>
+        <label style="display:block;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,198,117,0.6);margin-bottom:6px;">Poster / Flyer</label>
+        <input id="ef-poster" type="file" accept="image/*" onchange="previewPoster(this)" style="width:100%;font-size:0.82rem;color:rgba(255,220,150,0.6);">
+        <img id="ef-poster-preview" src="" alt="" style="display:none;width:100%;border-radius:8px;margin-top:8px;max-height:180px;object-fit:contain;">
+      </div>
+      <div>
+        <label style="display:block;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,198,117,0.6);margin-bottom:6px;">RSVP Button Text</label>
+        <input id="ef-signup-text" type="text" value="RSVP Now" style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(243,198,117,0.2);border-radius:7px;color:#fff;font-family:'Poppins',sans-serif;font-size:0.85rem;outline:none;">
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="saveEvent()" style="padding:9px 24px;background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;font-weight:700;border:none;border-radius:8px;cursor:pointer;font-family:'Poppins',sans-serif;font-size:0.85rem;" id="ef-save-btn">Save Event</button>
+      <button onclick="cancelEventForm()" style="padding:9px 18px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:rgba(255,255,255,0.5);cursor:pointer;font-family:'Poppins',sans-serif;font-size:0.85rem;">Cancel</button>
+    </div>
+  </div>
+
+  <div id="events-list" style="margin-bottom:8px;"></div>
+
   <!-- RSVPs section -->
   <div style="display:flex;justify-content:space-between;align-items:center;margin:32px 0 14px;">
     <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;" class="gold-shimmer">Event RSVPs</h2>
-    <button class="action-btn" id="print-rsvps-btn" onclick="printRsvps()" style="background:rgba(243,198,117,0.1);border:1px solid rgba(243,198,117,0.45);color:#f3c675;font-size:0.8rem;padding:7px 18px;">🖨 Print List</button>
+    <button class="action-btn" onclick="printRsvps()" style="background:rgba(243,198,117,0.1);border:1px solid rgba(243,198,117,0.45);color:#f3c675;font-size:0.8rem;padding:7px 18px;">🖨 Print List</button>
   </div>
-  <div class="section-wrap">
-    <div class="bulk-bar" id="bulk-bar">
-      <span id="bulk-count">0 selected</span>
-      <button class="bulk-del" id="bulk-del-btn">Delete Selected</button>
+  <div class="bulk-bar" id="bulk-bar">
+    <span id="bulk-count">0 selected</span>
+    <button class="bulk-del" id="bulk-del-btn">Delete Selected</button>
+  </div>
+  <div id="rsvp-sections"></div>
+
+  <!-- Edit party modal -->
+  <div id="edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;align-items:center;justify-content:center;">
+    <div style="background:#0d1f28;border:1px solid rgba(243,198,117,0.3);border-radius:14px;padding:28px 32px;max-width:400px;width:90%;">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:#f3c675;margin-bottom:16px;">Move to a Different Party</h3>
+      <select id="edit-party-select" style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(243,198,117,0.25);border-radius:8px;color:#fff;font-family:'Poppins',sans-serif;font-size:0.88rem;outline:none;margin-bottom:20px;"></select>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button onclick="closeEditModal()" style="padding:8px 18px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:7px;color:rgba(255,255,255,0.55);font-family:'Poppins',sans-serif;cursor:pointer;font-size:0.82rem;">Cancel</button>
+        <button onclick="saveEditModal()" style="padding:8px 18px;background:rgba(243,198,117,0.15);border:1px solid rgba(243,198,117,0.4);border-radius:7px;color:#f3c675;font-family:'Poppins',sans-serif;cursor:pointer;font-size:0.82rem;font-weight:600;">Move</button>
+      </div>
     </div>
-    <table class="rsvp-table" id="rsvp-table">
-      <thead><tr>
-        <th style="width:36px"><input type="checkbox" id="select-all"></th>
-        <th class="sortable" onclick="setSort('platform')">Platform<span class="sort-icon" id="si-platform">⇅</span></th>
-        <th class="sortable" onclick="setSort('username')">Username<span class="sort-icon" id="si-username">⇅</span></th>
-        <th class="sortable" onclick="setSort('profile_type')">Type<span class="sort-icon" id="si-profile_type">⇅</span></th>
-        <th>Phone</th>
-        <th>Email</th>
-        <th class="sortable" onclick="setSort('submitted_at')">Date<span class="sort-icon" id="si-submitted_at">↓</span></th>
-        <th class="sortable sort-active" onclick="setSort('verified')">Verified<span class="sort-icon" id="si-verified">⇅</span></th>
-        <th></th>
-      </tr></thead>
-      <tbody id="rsvp-body"></tbody>
-    </table>
   </div>
 
   <!-- Contact Database -->
@@ -192,6 +231,7 @@
     if (!me?.is_admin) { window.location.href = 'dashboard.html'; return; }
     await loadMembers();
     await loadContacts();
+    await loadEvents();
     await loadRsvps();
   }
 
@@ -260,22 +300,35 @@
   let rsvps = [];
   let sortField = 'submitted_at';
   let sortDir   = 'desc';
+  let PARTIES   = [];
 
-  function setSort(field) {
-    if (sortField === field) {
-      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
-    } else {
-      sortField = field;
-      sortDir = field === 'submitted_at' ? 'desc' : 'asc';
-    }
-    renderRsvpTable();
+  function partyEventStr(p) {
+    if (!p.date || p.date === 'TBD') return p.title;
+    const [y,m,d] = p.date.split('-').map(Number);
+    const ds = new Date(y, m-1, d).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+    return `${p.title} – ${ds}`;
   }
 
-  function sortedRsvps() {
-    return [...rsvps].sort((a, b) => {
+  function isPartyPast(p) {
+    if (!p.date || p.date === 'TBD') return false;
+    const end = new Date(p.date.replace(/-/g,'/'));
+    end.setDate(end.getDate() + 1); end.setHours(2,0,0,0);
+    return new Date() >= end;
+  }
+
+  function setSort(field) {
+    sortDir = sortField === field ? (sortDir === 'asc' ? 'desc' : 'asc') : (field === 'submitted_at' ? 'desc' : 'asc');
+    sortField = field;
+    renderRsvpSections();
+  }
+
+  function sortList(list) {
+    return [...list].sort((a, b) => {
       let va, vb;
       if (sortField === 'submitted_at') { va = new Date(a.submitted_at); vb = new Date(b.submitted_at); }
       else if (sortField === 'verified') { va = a.verified ? 1 : 0; vb = b.verified ? 1 : 0; }
+      else if (sortField === 'donation_paid') { va = a.donation_paid ? 1 : 0; vb = b.donation_paid ? 1 : 0; }
+      else if (sortField === 'address_sent') { va = a.address_sent ? 1 : 0; vb = b.address_sent ? 1 : 0; }
       else { va = (a[sortField]||'').toLowerCase(); vb = (b[sortField]||'').toLowerCase(); }
       if (va < vb) return sortDir === 'asc' ? -1 : 1;
       if (va > vb) return sortDir === 'asc' ?  1 : -1;
@@ -283,25 +336,25 @@
     });
   }
 
-  function renderRsvpTable() {
-    // Update sort icons
-    ['platform','username','profile_type','submitted_at','verified'].forEach(f => {
-      const el = document.getElementById('si-'+f);
-      if (!el) return;
-      const th = el.parentElement;
-      if (f === sortField) {
-        el.textContent = sortDir === 'asc' ? '↑' : '↓';
-        th.classList.add('sort-active');
-      } else {
-        el.textContent = '⇅';
-        th.classList.remove('sort-active');
-      }
+  async function toggleDonation(id, paid) {
+    await fetch(`${RSVP_API}/rsvp/${id}/donation`, {
+      method: 'PUT', headers: { 'Content-Type': 'application/json', ...AUTH },
+      body: JSON.stringify({ donation_paid: paid })
     });
+    await loadRsvps();
+  }
 
-    const tbody = document.getElementById('rsvp-body');
-    if (!rsvps.length) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:rgba(255,220,150,0.35);padding:30px;">No RSVPs yet.</td></tr>'; return; }
+  async function toggleAddress(id, sent) {
+    await fetch(`${RSVP_API}/rsvp/${id}/address`, {
+      method: 'PUT', headers: { 'Content-Type': 'application/json', ...AUTH },
+      body: JSON.stringify({ address_sent: sent })
+    });
+    await loadRsvps();
+  }
 
-    tbody.innerHTML = sortedRsvps().map(r => {
+  function renderPartyTable(list) {
+    if (!list.length) return '<div class="empty" style="padding:16px 0 4px;">No RSVPs for this party yet.</div>';
+    const rows = sortList(list).map(r => {
       const url = profileUrl(r.platform, r.username);
       const usernameHtml = url
         ? `<a href="${url}" target="_blank" rel="noopener" class="profile-link">${esc(r.username||'—')}<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3H3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V7"/><path d="M8 1h3v3M10.5 1.5 5 7"/></svg></a>`
@@ -315,24 +368,229 @@
             <button class="verify-btn" onclick="verifyRsvp('${esc(r.id)}','Monthly')">Monthly</button>
             <button class="verify-btn" onclick="verifyRsvp('${esc(r.id)}','Lifetime')">Lifetime</button>
            </div>`;
-      const phone = esc(r.phone || r.contact || '—');
-      const email = esc(r.email || '—');
+      const donationHtml = r.donation_paid
+        ? `<button class="verify-btn" onclick="toggleDonation('${esc(r.id)}',false)" style="background:rgba(74,222,128,0.15);border-color:rgba(74,222,128,0.4);color:#4ade80;">✓ Received</button>`
+        : `<button class="verify-btn" onclick="toggleDonation('${esc(r.id)}',true)" style="color:rgba(255,255,255,0.3);border-color:rgba(255,255,255,0.12);">— Mark Paid</button>`;
+      const addressHtml = r.address_sent
+        ? `<button class="verify-btn" onclick="toggleAddress('${esc(r.id)}',false)" style="background:rgba(99,179,237,0.15);border-color:rgba(99,179,237,0.4);color:#63b3ed;">✓ Sent</button>`
+        : `<button class="verify-btn" onclick="toggleAddress('${esc(r.id)}',true)" style="color:rgba(255,255,255,0.3);border-color:rgba(255,255,255,0.12);">— Send Addy</button>`;
       return `<tr data-id="${esc(r.id)}">
         <td><input type="checkbox" class="rsvp-cb" value="${esc(r.id)}"></td>
         <td>${esc(r.platform || '—')}</td>
         <td>${usernameHtml}</td>
         <td>${esc(r.profile_type || '—')}</td>
-        <td>${phone}</td>
-        <td>${email}</td>
+        <td>${esc(r.phone || r.contact || '—')}</td>
+        <td>${esc(r.email || '—')}</td>
         <td>${new Date(r.submitted_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
+        <td>${donationHtml}</td>
+        <td>${addressHtml}</td>
         <td>${verifyHtml}</td>
-        <td><button class="del-rsvp" onclick="deleteRsvp('${esc(r.id)}')">✕</button></td>
+        <td style="white-space:nowrap;">
+          <button class="del-rsvp" title="Move to party" onclick="openEditModal('${esc(r.id)}')" style="color:rgba(243,198,117,0.5);margin-right:2px;">✎</button>
+          <button class="del-rsvp" onclick="deleteRsvp('${esc(r.id)}')">✕</button>
+        </td>
       </tr>`;
     }).join('');
 
-    document.getElementById('select-all').checked = false;
+    return `<table class="rsvp-table">
+      <thead><tr>
+        <th style="width:36px"><input type="checkbox" class="select-all-section"></th>
+        <th class="sortable" onclick="setSort('platform')">Platform</th>
+        <th class="sortable" onclick="setSort('username')">Username</th>
+        <th class="sortable" onclick="setSort('profile_type')">Type</th>
+        <th>Phone</th><th>Email</th>
+        <th class="sortable" onclick="setSort('submitted_at')">Date</th>
+        <th class="sortable" onclick="setSort('donation_paid')">Donation</th>
+        <th class="sortable" onclick="setSort('address_sent')">Address</th>
+        <th class="sortable" onclick="setSort('verified')">Verified</th>
+        <th></th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  }
+
+  function renderRsvpSections() {
+    const container = document.getElementById('rsvp-sections');
+    document.getElementById('stat-rsvps').textContent = rsvps.filter(r => !r.test).length;
+
+    const assigned = new Set();
+    const today = new Date().toISOString().slice(0,10);
+    const upcoming = PARTIES.filter(p => !isPartyPast(p));
+    const past     = PARTIES.filter(p => isPartyPast(p)).reverse();
+    const nextParty = upcoming[0] || null;
+    const futureParties = upcoming.slice(1);
+
+    function makeSection(p, { collapsed = false } = {}) {
+      const list = rsvps.filter(r => r.event && r.event.startsWith(p.title));
+      list.forEach(r => assigned.add(r.id));
+      const dateStr = p.date && p.date !== 'TBD'
+        ? new Date(p.date.replace(/-/g,'/')).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : 'TBD';
+      const sectionId = `rs-${p.id || p.title.replace(/\W/g,'')}`;
+      const badge = isPartyPast(p)
+        ? `<span style="font-size:0.65rem;padding:2px 8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;color:rgba(255,255,255,0.3);margin-left:8px;">Past</span>` : '';
+      return `<div class="section-wrap" style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;${collapsed?'':'margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(243,198,117,0.15);'}" class="${collapsed?'rsvp-section-toggle':''}">
+          <div style="display:flex;align-items:center;gap:6px;${collapsed?'cursor:pointer;':''}width:100%;" onclick="${collapsed?`toggleRsvpSection('${sectionId}',this)`:''}">
+            <span style="font-family:'Playfair Display',serif;font-size:1.05rem;color:${isPartyPast(p)?'rgba(255,220,150,0.45)':'#f3c675'};">${esc(p.title)}</span>
+            <span style="font-size:0.73rem;color:rgba(255,220,150,0.4);">${dateStr}</span>
+            ${badge}
+            ${collapsed?`<span style="margin-left:auto;font-size:0.73rem;font-weight:600;color:rgba(243,198,117,0.4);">${list.length} RSVP${list.length!==1?'s':''} <span class="rs-chevron">▼</span></span>`:`<span style="margin-left:auto;font-size:0.73rem;font-weight:600;color:rgba(243,198,117,0.5);">${list.length} RSVP${list.length!==1?'s':''}</span>`}
+          </div>
+        </div>
+        <div id="${sectionId}" style="${collapsed?'display:none;':''}padding-top:${collapsed?'12px':'0'};">
+          ${renderPartyTable(list)}
+        </div>
+      </div>`;
+    }
+
+    let html = '';
+    if (nextParty) html += makeSection(nextParty, { collapsed: false });
+    futureParties.forEach(p => { html += makeSection(p, { collapsed: true }); });
+    past.forEach(p => { html += makeSection(p, { collapsed: true }); });
+
+    const other = rsvps.filter(r => !assigned.has(r.id));
+    if (other.length) {
+      html += `<div class="section-wrap" style="margin-bottom:14px;">
+        <div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(243,198,117,0.15);">
+          <span style="font-family:'Playfair Display',serif;font-size:1.05rem;color:rgba(255,220,150,0.45);">Unassigned</span>
+        </div>
+        ${renderPartyTable(other)}
+      </div>`;
+    }
+
+    if (!html) html = '<div class="section-wrap"><div class="empty">No RSVPs yet.</div></div>';
+
+    container.innerHTML = html;
     document.getElementById('bulk-bar').style.display = 'none';
-    tbody.querySelectorAll('.rsvp-cb').forEach(cb => cb.addEventListener('change', updateBulkBar));
+    container.querySelectorAll('.rsvp-cb').forEach(cb => cb.addEventListener('change', updateBulkBar));
+    container.querySelectorAll('.select-all-section').forEach(sa => {
+      sa.addEventListener('change', function() {
+        this.closest('table').querySelectorAll('.rsvp-cb').forEach(cb => { cb.checked = this.checked; });
+        updateBulkBar();
+      });
+    });
+  }
+
+  function toggleRsvpSection(id, headerEl) {
+    const body = document.getElementById(id);
+    if (!body) return;
+    const open = body.style.display === 'none';
+    body.style.display = open ? '' : 'none';
+    if (open) body.style.paddingTop = '12px';
+    const chevron = headerEl.querySelector('.rs-chevron');
+    if (chevron) chevron.style.transform = open ? 'rotate(180deg)' : '';
+  }
+
+  async function loadEvents() {
+    try {
+      const res = await fetch(`${RSVP_API}/events`);
+      PARTIES = res.ok ? await res.json() : [];
+    } catch(e) { PARTIES = []; }
+    renderEventsList();
+  }
+
+  function renderEventsList() {
+    const el = document.getElementById('events-list');
+    if (!PARTIES.length) { el.innerHTML = ''; return; }
+    el.innerHTML = PARTIES.map(p => {
+      const dateStr = p.date && p.date !== 'TBD'
+        ? new Date(p.date.replace(/-/g,'/')).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : p.date || 'TBD';
+      const past = isPartyPast(p);
+      return `<div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:rgba(10,25,35,0.5);border:1px solid rgba(243,198,117,${past?'0.08':'0.14'});border-radius:10px;margin-bottom:8px;">
+        ${p.poster ? `<img src="${p.poster}" style="width:48px;height:30px;object-fit:cover;border-radius:5px;flex-shrink:0;">` : `<div style="width:48px;height:30px;background:rgba(243,198,117,0.06);border-radius:5px;flex-shrink:0;"></div>`}
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:0.88rem;font-weight:600;color:${past?'rgba(255,220,150,0.4)':'#f3c675'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(p.title)}</div>
+          <div style="font-size:0.72rem;color:rgba(255,220,150,0.35);">${dateStr}</div>
+        </div>
+        <button onclick="editEvent('${esc(p.id)}')" style="padding:4px 12px;background:rgba(243,198,117,0.08);border:1px solid rgba(243,198,117,0.25);border-radius:6px;color:rgba(243,198,117,0.7);font-family:'Poppins',sans-serif;font-size:0.75rem;cursor:pointer;">Edit</button>
+        <button onclick="deleteEvent('${esc(p.id)}')" style="padding:4px 10px;background:none;border:1px solid rgba(248,113,113,0.25);border-radius:6px;color:rgba(248,113,113,0.6);font-family:'Poppins',sans-serif;font-size:0.75rem;cursor:pointer;">✕</button>
+      </div>`;
+    }).join('');
+  }
+
+  let editingEventId = null;
+  let posterBase64 = null;
+  let posterExt = null;
+
+  function toggleEventForm() {
+    const wrap = document.getElementById('event-form-wrap');
+    const showing = wrap.style.display !== 'none';
+    if (showing) { cancelEventForm(); return; }
+    editingEventId = null; posterBase64 = null; posterExt = null;
+    document.getElementById('ef-title').value = '';
+    document.getElementById('ef-date').value = '';
+    document.getElementById('ef-desc').value = '';
+    document.getElementById('ef-signup-text').value = 'RSVP Now';
+    document.getElementById('ef-poster').value = '';
+    document.getElementById('ef-poster-preview').style.display = 'none';
+    document.getElementById('event-form-title').textContent = 'New Event';
+    document.getElementById('ef-save-btn').textContent = 'Save Event';
+    wrap.style.display = 'block';
+  }
+
+  function cancelEventForm() {
+    document.getElementById('event-form-wrap').style.display = 'none';
+    editingEventId = null; posterBase64 = null; posterExt = null;
+  }
+
+  function previewPoster(input) {
+    const file = input.files[0];
+    if (!file) return;
+    posterExt = file.name.split('.').pop().toLowerCase();
+    const reader = new FileReader();
+    reader.onload = e => {
+      const dataUrl = e.target.result;
+      posterBase64 = dataUrl.split(',')[1];
+      const prev = document.getElementById('ef-poster-preview');
+      prev.src = dataUrl; prev.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function editEvent(id) {
+    const p = PARTIES.find(e => e.id === id);
+    if (!p) return;
+    editingEventId = id; posterBase64 = null; posterExt = null;
+    document.getElementById('ef-title').value = p.title || '';
+    document.getElementById('ef-date').value = p.date || '';
+    document.getElementById('ef-desc').value = p.description || '';
+    document.getElementById('ef-signup-text').value = p.signup_text || 'RSVP Now';
+    document.getElementById('ef-poster').value = '';
+    const prev = document.getElementById('ef-poster-preview');
+    if (p.poster) { prev.src = p.poster; prev.style.display = 'block'; } else { prev.style.display = 'none'; }
+    document.getElementById('event-form-title').textContent = 'Edit Event';
+    document.getElementById('ef-save-btn').textContent = 'Update Event';
+    document.getElementById('event-form-wrap').style.display = 'block';
+    document.getElementById('event-form-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  async function saveEvent() {
+    const title = document.getElementById('ef-title').value.trim();
+    const date  = document.getElementById('ef-date').value;
+    if (!title || !date) { alert('Title and date are required.'); return; }
+    const btn = document.getElementById('ef-save-btn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    const body = {
+      title, date,
+      description: document.getElementById('ef-desc').value.trim(),
+      signup_text: document.getElementById('ef-signup-text').value.trim() || 'RSVP Now',
+      ...(posterBase64 && { poster_data: posterBase64, poster_ext: posterExt })
+    };
+    const url  = editingEventId ? `${RSVP_API}/event/${editingEventId}` : `${RSVP_API}/event`;
+    const method = editingEventId ? 'PUT' : 'POST';
+    await fetch(url, { method, headers: { 'Content-Type': 'application/json', ...AUTH }, body: JSON.stringify(body) });
+    btn.disabled = false;
+    cancelEventForm();
+    await loadEvents();
+    await loadRsvps();
+  }
+
+  async function deleteEvent(id) {
+    const p = PARTIES.find(e => e.id === id);
+    if (!confirm(`Delete "${p?.title}"? This cannot be undone.`)) return;
+    await fetch(`${RSVP_API}/event/${id}`, { method: 'DELETE', headers: AUTH });
+    await loadEvents();
+    await loadRsvps();
   }
 
   async function loadRsvps() {
@@ -343,8 +601,7 @@
     } catch (e) {
       console.warn('Could not reach RSVP server:', e.message);
     }
-    document.getElementById('stat-rsvps').textContent = rsvps.length;
-    renderRsvpTable();
+    renderRsvpSections();
   }
 
   function updateBulkBar() {
@@ -352,22 +609,13 @@
     const bar = document.getElementById('bulk-bar');
     document.getElementById('bulk-count').textContent = `${checked.length} selected`;
     bar.style.display = checked.length ? 'flex' : 'none';
-    document.getElementById('select-all').checked =
-      checked.length === document.querySelectorAll('.rsvp-cb').length;
   }
-
-  document.getElementById('select-all').addEventListener('change', function() {
-    document.querySelectorAll('.rsvp-cb').forEach(cb => { cb.checked = this.checked; });
-    updateBulkBar();
-  });
 
   document.getElementById('bulk-del-btn').addEventListener('click', async () => {
     const ids = [...document.querySelectorAll('.rsvp-cb:checked')].map(cb => cb.value);
     if (!ids.length) return;
     if (!confirm(`Delete ${ids.length} RSVP(s)?`)) return;
-    await Promise.all(ids.map(id =>
-      fetch(`${RSVP_API}/rsvp/${id}`, { method: 'DELETE', headers: AUTH })
-    ));
+    await Promise.all(ids.map(id => fetch(`${RSVP_API}/rsvp/${id}`, { method: 'DELETE', headers: AUTH })));
     await loadRsvps();
   });
 
@@ -376,6 +624,41 @@
     await fetch(`${RSVP_API}/rsvp/${id}`, { method: 'DELETE', headers: AUTH });
     await loadRsvps();
   }
+
+  // ── Edit modal (reassign party) ─────────────────────────────────────────────
+  let editingRsvpId = null;
+
+  function openEditModal(id) {
+    editingRsvpId = id;
+    const r = rsvps.find(x => x.id === id);
+    const sel = document.getElementById('edit-party-select');
+    sel.innerHTML = PARTIES.map(p => {
+      const val = partyEventStr(p);
+      const sel2 = r?.event === val ? 'selected' : '';
+      return `<option value="${esc(val)}" ${sel2}>${esc(p.title)}</option>`;
+    }).join('');
+    document.getElementById('edit-modal').style.display = 'flex';
+  }
+
+  function closeEditModal() {
+    document.getElementById('edit-modal').style.display = 'none';
+    editingRsvpId = null;
+  }
+
+  async function saveEditModal() {
+    if (!editingRsvpId) return;
+    const event = document.getElementById('edit-party-select').value;
+    await fetch(`${RSVP_API}/rsvp/${editingRsvpId}/event`, {
+      method: 'PUT', headers: { 'Content-Type': 'application/json', ...AUTH },
+      body: JSON.stringify({ event })
+    });
+    closeEditModal();
+    await loadRsvps();
+  }
+
+  document.getElementById('edit-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('edit-modal')) closeEditModal();
+  });
 
   // Filter tabs
   document.getElementById('filter-tabs').addEventListener('click', e => {
@@ -515,32 +798,39 @@
 
   function printRsvps() {
     if (!rsvps.length) { alert('No RSVPs to print.'); return; }
-    const rows = sortedRsvps().map(r => `
+    const rowCols = `<th>Platform</th><th>Username</th><th>Type</th><th>Phone</th><th>Email</th><th>RSVP Date</th><th>Verified</th>`;
+    const makeRows = list => list.map(r => `
       <tr>
-        <td>${esc(r.platform || '—')}</td>
-        <td>${esc(r.username || '—')}</td>
-        <td>${esc(r.profile_type || '—')}</td>
-        <td>${esc(r.phone || r.contact || '—')}</td>
-        <td>${esc(r.email || '—')}</td>
+        <td>${esc(r.platform||'—')}</td><td>${esc(r.username||'—')}</td>
+        <td>${esc(r.profile_type||'—')}</td><td>${esc(r.phone||r.contact||'—')}</td>
+        <td>${esc(r.email||'—')}</td>
         <td>${new Date(r.submitted_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td>
-        <td>${r.verified ? '✓ ' + esc(r.membership_type||'Verified') : '—'}</td>
+        <td>${r.verified ? '✓ '+(r.membership_type||'Verified') : '—'}</td>
       </tr>`).join('');
-    const win = window.open('', '_blank', 'width=820,height=650');
-    win.document.write(`<!DOCTYPE html><html><head><title>One Leg Up – Event RSVPs</title>
+
+    const sections = PARTIES.map(p => {
+      const list = sortList(rsvps.filter(r => r.event && r.event.startsWith(p.title)));
+      if (!list.length) return '';
+      const dateStr = p.date !== 'TBD'
+        ? new Date(p.date.replace(/-/g,'/')).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : 'TBD';
+      return `<h2 style="font-size:15px;margin:22px 0 4px;">${p.title} <span style="font-size:11px;font-weight:400;color:#555;">— ${dateStr} &nbsp;·&nbsp; ${list.length} RSVPs</span></h2>
+        <table><thead><tr>${rowCols}</tr></thead><tbody>${makeRows(list)}</tbody></table>`;
+    }).join('');
+
+    const win = window.open('', '_blank', 'width=860,height=680');
+    win.document.write(`<!DOCTYPE html><html><head><title>One Leg Up – RSVPs</title>
 <style>
   body{font-family:Arial,sans-serif;color:#000;background:#fff;padding:24px;}
-  h1{font-size:20px;margin-bottom:4px;}
-  .sub{font-size:12px;color:#555;margin-bottom:18px;}
-  table{width:100%;border-collapse:collapse;font-size:13px;}
-  th{text-align:left;padding:8px 10px;border-bottom:2px solid #000;font-size:11px;text-transform:uppercase;letter-spacing:.08em;}
-  td{padding:7px 10px;border-bottom:1px solid #ddd;}
+  h1{font-size:20px;margin-bottom:2px;} .sub{font-size:12px;color:#555;margin-bottom:12px;}
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:8px;}
+  th{text-align:left;padding:7px 8px;border-bottom:2px solid #000;font-size:10px;text-transform:uppercase;letter-spacing:.06em;}
+  td{padding:6px 8px;border-bottom:1px solid #ddd;}
   tr:nth-child(even) td{background:#f7f7f7;}
-  @media print{.no-print{display:none;}}
+  @media print{h2{page-break-before:auto;}}
 </style></head><body>
   <h1>One Leg Up – Event RSVPs</h1>
-  <div class="sub">Printed ${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})} &nbsp;·&nbsp; ${rsvps.length} RSVPs</div>
-  <table><thead><tr><th>Platform / Membership</th><th>Username</th><th>Type</th><th>Phone</th><th>Email</th><th>Date</th><th>Verified</th></tr></thead>
-  <tbody>${rows}</tbody></table>
+  <div class="sub">Printed ${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
+  ${sections}
   <script>window.onload=()=>{window.print();}<\/script>
 </body></html>`);
     win.document.close();

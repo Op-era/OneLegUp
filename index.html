@@ -270,6 +270,25 @@
       text-align:center;margin-bottom:10px;
       animation:goldGlow 3s ease-in-out infinite;
     }
+    .past-toggle{
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      cursor:pointer;user-select:none;
+      font-family:'Playfair Display',serif;
+      font-size:1.45rem;
+      text-align:center;margin-top:4px;margin-bottom:0;
+      animation:goldGlow 3s ease-in-out infinite;
+    }
+    .past-toggle .chevron{
+      font-size:0.85rem;opacity:0.6;
+      transition:transform .3s;display:inline-block;
+    }
+    .past-toggle.open .chevron{transform:rotate(180deg);}
+    #past-container{
+      overflow:hidden;
+      max-height:0;
+      transition:max-height .4s ease;
+    }
+    #past-container.open{max-height:9999px;}
     .event{margin-bottom:12px;padding:10px 12px;border-radius:8px;background:rgba(0,0,0,.26);transition:transform .3s,box-shadow .3s;}
     .event:hover{transform:scale(1.02);box-shadow:0 14px 26px rgba(8,30,39,0.28);}
     .event h3{font-size:1.08rem;margin-bottom:4px;}
@@ -302,9 +321,11 @@
       transition:transform .2s,box-shadow .2s;
     }
     .rsvp-event-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(236,139,87,0.55);color:#0d1f28!important;}
+    .rsvp-event-btn.ghost{background:rgba(243,198,117,0.1);border:1px solid rgba(243,198,117,0.45);color:#f3c675!important;box-shadow:none;}
+    .rsvp-event-btn.ghost:hover{color:#fff!important;border-color:rgba(243,198,117,0.8);background:rgba(243,198,117,0.18);box-shadow:none;}
 
     /* ─── What to Expect ─── */
-    .expectations{width:100%;background:rgba(10,25,35,0.72);border:1px solid rgba(243,198,117,0.14);border-radius:12px;padding:16px;backdrop-filter:blur(8px);margin-top:10px;}
+    .expectations{width:100%;background:rgba(10,25,35,0.72);border:1px solid rgba(243,198,117,0.14);border-radius:12px;padding:16px;backdrop-filter:blur(8px);}
     .expectations h2{font-family:'Playfair Display',serif;font-size:1.35rem;margin-bottom:8px;text-align:center;}
     .expect-intro{font-size:0.84rem;line-height:1.5;color:#c8b896;margin-bottom:10px;text-align:center;}
     .expect-list{list-style:none;display:grid;gap:8px;}
@@ -313,8 +334,8 @@
     .expect-subhead{margin:10px 0 6px;color:rgba(243,198,117,0.7);font-size:0.8rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;}
     .expect-location{margin-top:10px;font-size:0.78rem;color:rgba(200,184,150,0.65);line-height:1.45;}
     /* ─── Single Male notice ─── */
-    .sm-notice{width:100%;padding:12px 14px;background:rgba(248,113,113,0.1);border:2px solid rgba(248,113,113,0.5);border-radius:10px;font-size:0.84rem;color:#fca5a5;line-height:1.55;text-align:center;margin-top:10px;}
-    .sm-notice strong{color:#f87171;display:block;font-size:0.9rem;margin-bottom:4px;letter-spacing:0.04em;text-transform:uppercase;}
+    .sm-notice{width:100%;padding:10px 12px;background:rgba(248,113,113,0.1);border:2px solid rgba(248,113,113,0.5);border-radius:10px;font-size:0.78rem;color:#fca5a5;line-height:1.45;text-align:center;margin-top:10px;}
+    .sm-notice strong{color:#f87171;display:block;font-size:0.82rem;margin-bottom:3px;letter-spacing:0.04em;text-transform:uppercase;}
 
     ::-webkit-scrollbar{width:10px;}
     ::-webkit-scrollbar-track{background:#000;}
@@ -324,16 +345,16 @@
     @media (min-width:768px){
       html,body{height:100vh;overflow:hidden;}
       .overlay{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;padding:78px 34px 18px 34px;}
-      .content{display:grid;grid-template-columns:minmax(260px,0.74fr) minmax(0,1.08fr) minmax(340px,0.92fr);align-items:start;gap:16px;margin-top:8px;flex:1 1 auto;min-height:0;}
-      .expectations{grid-column:1;align-self:start;}
+      .content{display:grid;grid-template-columns:minmax(260px,0.74fr) minmax(0,1.08fr) minmax(340px,0.92fr);align-items:stretch;gap:16px;margin-top:8px;flex:1 1 auto;min-height:0;height:calc(100vh - 108px);}
+      .expectations{grid-column:1;overflow-y:auto;align-self:stretch;}
       .expectations h2,.expect-intro{text-align:left;}
       .expect-list li{font-size:0.8rem;}
       .expect-subhead{font-size:0.82rem;}
       .expect-location{font-size:0.76rem;}
-      .left{grid-column:2;padding:0;display:flex;flex-direction:column;gap:10px;align-items:start;}
+      .left{grid-column:2;padding:0;display:flex;flex-direction:column;gap:10px;align-items:start;overflow-y:auto;}
       .flyer-wrap{width:100%;justify-content:center;}
       .info-stack{width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch;gap:8px 12px;max-width:none;}
-      .events{grid-column:3;max-height:calc(100vh - 180px);overflow-y:auto;}
+      .events{grid-column:3;overflow-y:auto;height:100%;}
       .sign{width:200px;height:60px;font-size:1.8rem;top:20px;left:20px;}
       .sign span{font-size:1.5rem;}
       .notice{grid-column:1 / -1;font-size:0.98rem;padding:10px 14px;margin:6px 0 0;}
@@ -386,8 +407,8 @@
     <img src="images/NewLogo/logo.png" alt="One Leg Up">
     <span class="gold-shimmer">One Leg Up</span>
   </div>
-  <a href="help.html" class="members-btn" style="right:auto;left:22px;top:22px;font-size:0.75rem;padding:8px 14px;">Help &amp; FAQ</a>
   <a href="login.html" class="members-btn">Members Portal</a>
+  <a href="help.html" class="members-btn" style="top:58px;">Help &amp; FAQ</a>
 
   <div class="overlay">
     <div class="content">
@@ -410,14 +431,26 @@
           <li><strong>Travel light:</strong> We do not have lockers, so bring only what you can keep with you.</li>
         </ul>
         <p class="expect-location"><strong>Location zone:</strong> Maple &amp; Shepherd area in North Fresno — exact address texted after RSVP approval.</p>
+        <a href="https://onelegup.club" style="display:block;margin-top:16px;">
+          <img src="images/NewLogo/BannerSmall.png" alt="One Leg Up" style="width:100%;border-radius:8px;display:block;">
+        </a>
+        <a href="https://www.swinglifestyle.com" target="_blank" rel="noopener" style="display:block;margin-top:8px;">
+          <img src="https://www.swinglifestyle.com/login/newsls.jpg" alt="SwingLifeStyle" style="width:100%;border-radius:8px;display:block;">
+        </a>
+        <a href="https://www.kasidie.com" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;margin-top:8px;background:#1a1a2e;border-radius:8px;width:100%;aspect-ratio:397/60;border:1px solid rgba(255,255,255,0.08);overflow:hidden;">
+          <img src="https://cdn.prod.website-files.com/6629a3809a4146b2f73d5349/67d768063a572efeff553fd6_Kasidie-Logo-White-1000x243-p-500.png" alt="Kasidie" style="height:60%;width:auto;display:block;">
+        </a>
+        <a href="https://www.quiver.us" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;margin-top:8px;background:#1a1a2e;border-radius:8px;width:100%;aspect-ratio:397/60;border:1px solid rgba(255,255,255,0.08);overflow:hidden;">
+          <img src="https://d1546iyl0bov9n.cloudfront.net/v3/img/landing-page/logo-color.svg" alt="Quiver" style="height:60%;width:auto;display:block;">
+        </a>
       </section>
       <div class="left">
         <div class="flyer-wrap">
-          <img src="images/sunsout-bg.png" alt="Suns Out Buns Out Pool Party Flyer" class="flyer">
+          <img id="main-flyer" src="https://github.com/user-attachments/assets/f05a3dce-f611-4bc4-8c7e-6050e6fd8e1c" alt="OneLegUp event poster" class="flyer">
         </div>
         <div class="info-stack">
           <div class="notice">
-            All pay will be cash in envelopes at the door.
+            All donations will be cash in envelopes at the door.
           </div>
           <a href="sms:15597875801" class="rsvp-button">
             Text 559-787-5801 for address
@@ -433,11 +466,10 @@
           </div>
           <div class="sm-notice">
             <strong>⚠ Single Males — Read This</strong>
-            You must RSVP <em>and</em> pay in advance to secure your spot. Single males who have not pre-paid may not be admitted at the door. We allow a limited number per couple — spots go fast.
-            <div style="margin-top:8px;"><a href="https://cash.app/$0neLegUp/100" target="_blank" rel="noopener" style="color:#f87171;font-weight:700;text-decoration:none;">Send $100 to $0neLegUp on CashApp →</a></div>
-            <div style="margin-top:4px;font-size:0.85em;color:rgba(248,113,113,0.75);">Include your SLS username in the note.</div>
+            RSVP <em>and</em> submit your donation in advance. Limited spots — unconfirmed donations not admitted at the door.
+            <div style="margin-top:6px;"><a href="https://cash.app/$0neLegUp/100" target="_blank" rel="noopener" style="color:#f87171;font-weight:700;text-decoration:none;">Send $100 via CashApp to $0neLegUp →</a></div>
+            <div style="margin-top:3px;font-size:0.78em;color:rgba(248,113,113,0.75);">Include your SLS username in the note.</div>
           </div>
-          <div class="countdown" id="countdown">Loading...</div>
         </div>
       </div>
       <div class="events">
@@ -446,10 +478,10 @@
         <div style="background:rgba(243,198,117,0.06);border:1px solid rgba(243,198,117,0.25);border-radius:12px;padding:18px 20px;margin:18px 0;">
           <div style="font-size:0.68rem;letter-spacing:0.25em;text-transform:uppercase;color:rgba(243,198,117,0.55);margin-bottom:6px;">Exclusive Member Access</div>
           <div style="font-family:'Playfair Display',serif;font-size:1.15rem;color:#f3c675;margin-bottom:8px;">No SwingLifeStyle or Kasidie? No Problem.</div>
-          <p style="font-size:0.82rem;color:#c8b896;line-height:1.55;margin-bottom:14px;">Don't have a SwingLifeStyle or Kasidie membership? No problem — subscribe for just <strong style="color:#f3c675;">$9.99/month</strong>. Entry fees still apply at the door.</p>
+          <p style="font-size:0.82rem;color:#c8b896;line-height:1.55;margin-bottom:14px;">Don't have a <a href="https://www.swinglifestyle.com" target="_blank" rel="noopener" style="color:#f3c675;text-decoration:underline;">SwingLifeStyle</a> or <a href="https://www.kasidie.com" target="_blank" rel="noopener" style="color:#f3c675;text-decoration:underline;">Kasidie</a> membership? No problem — monthly membership to One Leg Up is just <strong style="color:#f3c675;">$9.99</strong>. Donations still apply at the door.</p>
           <a href="subscribe.html" style="display:inline-block;padding:9px 22px;background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;font-weight:700;border-radius:8px;text-decoration:none;font-size:0.84rem;letter-spacing:0.04em;box-shadow:0 6px 18px rgba(236,139,87,0.35);">Join for $9.99 / month →</a>
         </div>
-        <h2 class="gold-shimmer" style="margin-top:4px;">Past Events</h2>
+        <h2 class="past-toggle gold-shimmer" id="past-toggle">Past Events <span class="chevron">▼</span></h2>
         <div id="past-container"></div>
       </div>
     </div>
@@ -470,108 +502,115 @@
       if (e.key === 'Enter' && landing.style.display !== 'none') enterSite();
     });
 
-    // ─── Party data & events ───
-    const allParties = [
-      {
-        date:"2026-06-27",title:"Suns Out Buns Out Pool Party",
-        desc:"Join us for the Suns Out Buns Out Pool Party from 4 PM to Midnight. BYOB.<br><strong>Cross streets: Maple &amp; Shepherd</strong>",
-        signup:"signup.html",signupText:"RSVP Now"
-      },
-      {
-        date:"2026-08-01",title:"School Girls and Professors Party",
-        desc:"Join us for the School Girls and Professors Party from 4 PM to Midnight. BYOB.<br><strong>Cross streets: Maple &amp; Shepherd</strong>",
-        signup:"signup.html",signupText:"RSVP Now"
-      },
-      {
-        date:"2026-05-30",title:"Playboy Pool Party",
-        desc:"Join us for the Playboy Pool Party from 4 PM to Midnight. BYOB.<br><strong>Cross streets: Maple &amp; Shepherd</strong>",
-        sls:"https://www.swinglifestyle.com/events/showevent.cfm?eventid=407202",slsText:"View on SLS",
-        signup:"signup.html",signupText:"RSVP Now"
-      },
-      {
-        date:"2026-04-18",title:"Tropical Temptation",
-        desc:"Join us for Tropical Temptation from 4 PM to Midnight. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
-        sls:"https://www.swinglifestyle.com/events/showevent.cfm?eventid=405537",slsText:"View on SLS"
-      },
-      {
-        date:"2025-11-15",title:"NEON GLOW PARTY",
-        desc:"Light up the night! Dress in vibrant neon. 8 PM to 2 AM. Doors close 10 PM. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
-        sls:"https://www.swinglifestyle.com/events/showevent.cfm?eventid=399642",slsText:"View on SLS"
-      },
-      {
-        date:"2025-10-04",title:"Oktoberfest Party",
-        desc:"Join us for an Oktoberfest Party! Starts at 8 PM, doors close at 10 PM, party ends at 2 AM. Celebrate with festive vibes and connect with like-minded individuals. BYOB.<br><strong>Cross streets: Maple & Shepherd</strong>",
-        sls:"https://www.swinglifestyle.com/events/showEvent.cfm?eventID=398628",slsText:"View on SLS"
-      },
-      {
-        date:"2025-07-20",title:"Sunday Funday Pool Party",
-        desc:"Join us for a Sunday funday! Full of wet play time for adults! Dive into the fun and connect with like-minded individuals in a relaxed, vibrant atmosphere. Mixers will be provided. BYOB<br><strong>Cross streets: Maple & Shepherd</strong>",
-        sls:"https://www.swinglifestyle.com/events/showevent.cfm?eventid=395723",slsText:"View on SLS"
-      },
-      {
-        date:"2025-05-31",title:"Skinny Dipping Pool Party",
-        desc:"<strong>Cross streets: Maple & Shepherd</strong>",
-        sls:"https://www.swinglifestyle.com/events/showevent.cfm?eventid=393639",slsText:"View on SLS"
-      }
-    ];
-
+    // ─── Party data & events (fetched from API) ───
     function parseLocalDate(s) {
       if (s === "TBD") return null;
       const [y,m,d] = s.split('-').map(Number);
       return new Date(y, m-1, d);
     }
+    function doorsCloseAt(dateStr) {
+      const month = parseInt(dateStr.split('-')[1], 10);
+      const offset = (month >= 3 && month <= 11) ? '-07:00' : '-08:00';
+      return new Date(`${dateStr}T20:00:00${offset}`);
+    }
 
-    const now = new Date();
     let nextEventEnd = null;
+    let nextPartyTitle = null;
     const upcomingContainer = document.getElementById('upcoming-container');
     const pastContainer     = document.getElementById('past-container');
+    const pastToggle        = document.getElementById('past-toggle');
 
-    allParties.forEach(party => {
-      const eventDate = parseLocalDate(party.date);
-      const isTBD = party.date === "TBD";
-      const displayDate = isTBD ? "TBD" : eventDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-      let eventEnd = null;
-      if (!isTBD) {
-        eventEnd = new Date(eventDate);
-        eventEnd.setDate(eventEnd.getDate()+1);
-        eventEnd.setHours(2,0,0,0);
-      }
-      const isUpcoming = isTBD || now < eventEnd;
-      const signupUrl = party.signup
-        ? `${party.signup}?event=${encodeURIComponent(party.title)}&date=${encodeURIComponent(party.date)}`
-        : null;
-      const eventHTML = `
-        <div class="event" data-date="${party.date}">
-          <h3 class="gold-shimmer">${party.title}</h3>
-          <p>Date: ${displayDate}</p>
-          <p>${party.desc||''}</p>
-          ${signupUrl ? `
-            <div class="rsvp-required-notice">⚠ MUST RSVP TO ATTEND THE PARTY</div>
-            <div class="rsvp-arrow">↓</div>
-            <a href="${signupUrl}" class="rsvp-event-btn">${party.signupText}</a>` : ''}
-          ${party.sls ? `<a href="${party.sls}" target="_blank" style="margin-left:${party.signup?'10px':'0'}">${party.slsText}</a>` : ''}
-        </div>`;
-      if (isUpcoming) {
-        upcomingContainer.insertAdjacentHTML('beforeend', eventHTML);
-        if (!isTBD && (!nextEventEnd || eventEnd < nextEventEnd)) nextEventEnd = eventEnd;
-      } else {
-        pastContainer.insertAdjacentHTML('beforeend', eventHTML);
-      }
+    pastToggle.addEventListener('click', () => {
+      const open = pastContainer.classList.toggle('open');
+      pastToggle.classList.toggle('open', open);
     });
 
-    const countdownEl = document.getElementById('countdown');
+    let countdownInterval = null;
     function updateCountdown() {
-      if (!nextEventEnd) { countdownEl.textContent='No upcoming dated events'; return; }
+      const el = document.getElementById('countdown');
+      if (!el) return;
+      if (!nextEventEnd) { el.textContent = 'No upcoming dated events'; return; }
       const diff = nextEventEnd - Date.now();
       if (diff <= 0) { location.reload(); return; }
-      const d=Math.floor(diff/86400000);
-      const h=Math.floor((diff%86400000)/3600000);
-      const m=Math.floor((diff%3600000)/60000);
-      const s=Math.floor((diff%60000)/1000);
-      countdownEl.innerHTML=`${d}d : ${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s`;
+      const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),
+            m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+      el.innerHTML=`${d}d : ${h.toString().padStart(2,'0')}h : ${m.toString().padStart(2,'0')}m : ${s.toString().padStart(2,'0')}s`;
     }
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
+
+    function renderParties(allParties) {
+      const now = new Date();
+      nextEventEnd = null; nextPartyTitle = null;
+      upcomingContainer.innerHTML = '';
+      pastContainer.innerHTML = '';
+
+      // Update main center flyer to next upcoming party's poster
+      const nextWithPoster = allParties.find(p => {
+        if (!p.date || p.date === 'TBD') return false;
+        const end = new Date(p.date.replace(/-/g,'/'));
+        end.setDate(end.getDate()+1); end.setHours(2,0,0,0);
+        return now < end && p.poster;
+      });
+      if (nextWithPoster) {
+        document.getElementById('main-flyer').src = nextWithPoster.poster;
+      }
+
+      allParties.forEach(party => {
+        const eventDate = parseLocalDate(party.date);
+        const isTBD = party.date === "TBD";
+        const displayDate = isTBD ? "TBD" : eventDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+        let eventEnd = null;
+        if (!isTBD) {
+          eventEnd = new Date(eventDate);
+          eventEnd.setDate(eventEnd.getDate()+1);
+          eventEnd.setHours(2,0,0,0);
+        }
+        const isUpcoming = isTBD || now < eventEnd;
+        const rsvpOpen = isUpcoming && !isTBD && now < doorsCloseAt(party.date);
+        const signupUrl = rsvpOpen ? `signup.html?event=${encodeURIComponent(party.title)}&date=${encodeURIComponent(party.date)}` : null;
+        const posterImg = party.poster ? `<img src="${party.poster}" alt="${party.title}" style="width:100%;border-radius:8px;margin-bottom:10px;display:block;">` : '';
+        const eventHTML = `
+          <div class="event" data-date="${party.date}">
+            ${posterImg}
+            <h3 class="gold-shimmer">${party.title}</h3>
+            <p>Date: ${displayDate}</p>
+            <p>${party.description||''}</p>
+            ${signupUrl ? `
+              <div class="rsvp-required-notice">⚠ MUST RSVP TO ATTEND THE PARTY</div>
+              <div class="rsvp-arrow">↓</div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+                <a href="${signupUrl}" class="rsvp-event-btn">${party.signup_text||'RSVP Now'}</a>
+                <a href="attending.html" class="rsvp-event-btn ghost">Who's Attending →</a>
+              </div>` : `
+              <div style="margin-top:12px;">
+                <a href="attending.html" class="rsvp-event-btn ghost">Who's Attending →</a>
+              </div>`}
+          </div>`;
+        if (isUpcoming) {
+          upcomingContainer.insertAdjacentHTML('beforeend', eventHTML);
+          if (!isTBD && (!nextEventEnd || eventEnd < nextEventEnd)) { nextEventEnd = eventEnd; nextPartyTitle = party.title; }
+        } else {
+          pastContainer.insertAdjacentHTML('beforeend', eventHTML);
+        }
+      });
+
+      const firstCard = upcomingContainer.querySelector('.event');
+      if (firstCard && nextPartyTitle) {
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'margin-top:12px;padding-top:10px;border-top:1px solid rgba(243,198,117,0.15);';
+        wrap.innerHTML = `
+          <div style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(243,198,117,0.5);margin-bottom:4px;">Countdown till ${nextPartyTitle}</div>
+          <div id="countdown" class="countdown" style="margin-top:0;text-align:left;font-size:1.1rem;">Loading...</div>`;
+        firstCard.appendChild(wrap);
+      }
+      if (countdownInterval) clearInterval(countdownInterval);
+      updateCountdown();
+      countdownInterval = setInterval(updateCountdown, 1000);
+    }
+
+    fetch('https://api.onelegup.club/events')
+      .then(r => r.json())
+      .then(renderParties)
+      .catch(() => { upcomingContainer.innerHTML = '<p style="color:rgba(255,220,150,0.4);font-size:0.85rem;">Could not load events.</p>'; });
   </script>
 </body>
 </html>

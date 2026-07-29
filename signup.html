@@ -259,7 +259,7 @@
     <div class="header">
       <div class="eyebrow">One Leg Up Presents</div>
       <h1 class="gold-shimmer" id="event-title">One Leg Up Party</h1>
-      <div class="date-tag" id="event-date-tag">4 PM – Midnight</div>
+      <div class="date-tag" id="event-date-tag">6 PM – Midnight</div>
     </div>
 
     <!-- MANDATORY NOTICE -->
@@ -267,7 +267,10 @@
       <div class="m-title">⚠ Paid Account Required — No Exceptions</div>
       <p>
         To attend this event you <strong>must</strong> have an active <strong>paid account</strong>
-        on <strong>Swingers Lifestyle (SLS)</strong> or <strong>Kasidie</strong>.
+        on <strong><a href="https://www.swinglifestyle.com" target="_blank" rel="noopener" style="color:#ff9090;text-decoration:underline;">SLS</a></strong>,
+        <strong><a href="https://www.kasidie.com" target="_blank" rel="noopener" style="color:#ff9090;text-decoration:underline;">Kasidie</a></strong>,
+        <strong><a href="https://www.quiver.us" target="_blank" rel="noopener" style="color:#ff9090;text-decoration:underline;">Quiver</a></strong>,
+        or an active <strong>One Leg Up membership</strong>.
         Free or trial accounts are <strong>not accepted</strong>. You will be verified at the door
         and denied entry if your account is not paid and active.
       </p>
@@ -279,17 +282,19 @@
 
         <!-- Platform -->
         <div class="field" id="field-platform">
-          <label>Your Profile Is On <span class="req">*</span></label>
+          <label>Your Membership Is On <span class="req">*</span></label>
           <div class="radio-group">
             <label><input type="radio" name="platform" value="Swingers Lifestyle (SLS)"> Swingers Lifestyle (SLS)</label>
             <label><input type="radio" name="platform" value="Kasidie"> Kasidie</label>
+            <label><input type="radio" name="platform" value="Quiver"> Quiver</label>
+            <label><input type="radio" name="platform" value="One Leg Up"> One Leg Up Member</label>
           </div>
-          <div class="err" id="err-platform">Please select your platform.</div>
+          <div class="err" id="err-platform">Please select your membership platform.</div>
         </div>
 
         <!-- Username -->
         <div class="field" id="field-username">
-          <label>Your Username on That Site <span class="req">*</span></label>
+          <label id="username-label">Your Username <span class="req">*</span></label>
           <input type="text" name="username" id="username" placeholder="e.g. HotCouple69" autocomplete="off">
           <div class="err" id="err-username">Please enter your username.</div>
         </div>
@@ -308,8 +313,11 @@
         <!-- Optional contact -->
         <div class="field">
           <label>Phone <span style="color:rgba(255,255,255,0.3);font-weight:400;text-transform:none;letter-spacing:0;">(optional — we'll text you the address)</span></label>
-          <input type="tel" name="phone" id="phone" placeholder="(555) 867-5309" autocomplete="tel">
-          <div class="err" id="err-phone">Please enter a valid phone number.</div>
+          <div style="display:flex;align-items:stretch;">
+            <span style="display:flex;align-items:center;padding:0 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(243,198,117,0.25);border-right:none;border-radius:8px 0 0 8px;color:rgba(243,198,117,0.75);font-size:0.95rem;white-space:nowrap;flex-shrink:0;">+1</span>
+            <input type="tel" name="phone" id="phone" placeholder="(555) 867-5309" autocomplete="tel" style="border-radius:0 8px 8px 0;">
+          </div>
+          <div class="err" id="err-phone">Please enter a valid 10-digit phone number.</div>
         </div>
         <div class="field">
           <label>Email <span style="color:rgba(255,255,255,0.3);font-weight:400;text-transform:none;letter-spacing:0;">(optional — for event updates)</span></label>
@@ -325,13 +333,16 @@
             <input type="checkbox" id="ack-check" name="acknowledged">
             <span>
               I acknowledge that I have read and understand the requirement:
-              <strong>I have an active paid account</strong> on Swingers Lifestyle or Kasidie.
+              <strong>I have an active paid account</strong> on SLS, Kasidie, Quiver, or One Leg Up.
               I understand that <strong>I will not be admitted</strong> without a verified paid account — no exceptions.
             </span>
           </label>
           <div class="err" id="err-ack">You must acknowledge the paid account requirement.</div>
         </div>
 
+        <div id="dupe-msg" style="display:none;margin-top:16px;padding:14px 18px;background:rgba(243,198,117,0.08);border:1px solid rgba(243,198,117,0.3);border-radius:10px;font-size:0.88rem;color:#f3c675;text-align:center;">
+          You're already on the RSVP list for this party! If something needs to be changed, text us at 559-787-5801.
+        </div>
         <button type="submit" class="rsvp-btn" id="submit-btn">RSVP for the Party</button>
 
       </form>
@@ -349,7 +360,7 @@
       <p id="success-msg">
         Thanks for signing up!<br>
         If you left a contact, you'll receive the address closer to the date.<br><br>
-        See you there — 4 PM to Midnight. BYOB!
+        6 PM to Midnight. Doors close at 8 PM — if arriving later, please text us in advance. BYOB!
       </p>
     </div>
 
@@ -370,17 +381,32 @@
 
     document.getElementById('event-title').textContent = eventName;
     document.getElementById('event-date-tag').innerHTML =
-      (eventDateDisplay ? eventDateDisplay + ' &nbsp;·&nbsp; ' : '') + '4 PM – Midnight';
+      (eventDateDisplay ? eventDateDisplay + ' &nbsp;·&nbsp; ' : '') + '6 PM – Midnight · Doors close 8 PM';
     document.title = `RSVP – ${eventName} | One Leg Up`;
     if (eventDateDisplay) {
       document.getElementById('success-msg').innerHTML =
         `Thanks for signing up for the <strong style="color:#f3c675;">${eventName}</strong>.<br>
         If you left a contact, you'll receive the address closer to the date.<br><br>
-        See you ${eventDateDisplay} — 4 PM to Midnight. BYOB!`;
+        See you ${eventDateDisplay} — 6 PM to Midnight. Doors close at 8 PM; if arriving later please text us in advance. BYOB!`;
     }
 
     const form      = document.getElementById('rsvp-form');
     const submitBtn = document.getElementById('submit-btn');
+
+    // Update username label/placeholder based on platform
+    const usernameLabels = {
+      'Swingers Lifestyle (SLS)': { label: 'Your SLS Username', placeholder: 'e.g. HotCouple69' },
+      'Kasidie':                   { label: 'Your Kasidie Username', placeholder: 'e.g. HotCouple69' },
+      'Quiver':                    { label: 'Your Quiver Username', placeholder: 'e.g. HotCouple69' },
+      'One Leg Up':                { label: 'Your Name / Couple Name', placeholder: 'e.g. Shane & Jessica' },
+    };
+    form.querySelectorAll('input[name="platform"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const cfg = usernameLabels[radio.value] || { label: 'Your Username', placeholder: 'e.g. HotCouple69' };
+        document.getElementById('username-label').innerHTML = `${cfg.label} <span class="req">*</span>`;
+        document.getElementById('username').placeholder = cfg.placeholder;
+      });
+    });
 
     function showErr(id, show) {
       document.getElementById(id).style.display = show ? 'block' : 'none';
@@ -427,6 +453,15 @@
           })
         });
 
+        if (res.status === 409) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'RSVP for the Party';
+          const dupeEl = document.getElementById('dupe-msg');
+          dupeEl.style.display = 'block';
+          dupeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+
         if (!res.ok) throw new Error('Server error');
 
         document.getElementById('form-card').style.display = 'none';
@@ -444,11 +479,13 @@
     });
 
     document.getElementById('phone').addEventListener('input', function() {
-      const digits = this.value.replace(/\D/g, '').slice(0, 10);
+      let digits = this.value.replace(/\D/g, '');
+      if (digits.startsWith('1')) digits = digits.slice(1);
+      digits = digits.slice(0, 10);
       let formatted = '';
-      if (digits.length > 6)       formatted = `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
-      else if (digits.length > 3)  formatted = `(${digits.slice(0,3)}) ${digits.slice(3)}`;
-      else if (digits.length > 0)  formatted = `(${digits}`;
+      if (digits.length > 6)      formatted = `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
+      else if (digits.length > 3) formatted = `(${digits.slice(0,3)}) ${digits.slice(3)}`;
+      else if (digits.length > 0) formatted = `(${digits}`;
       this.value = formatted;
     });
   </script>
