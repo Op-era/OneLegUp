@@ -43,6 +43,17 @@ function getEvents() {
   return PARTY_SCHEDULE.map(p => ({ id: p.date, title: p.title, date: p.date, description: '', poster: null, signup_text: 'RSVP Now', created_at: new Date().toISOString() }));
 }
 
+function publicClubListing(m) {
+  return {
+    id: m.id,
+    club_name: m.club_name || m.display_name || 'Partner Club',
+    club_city: m.club_city || '',
+    club_bio: m.club_bio || '',
+    club_website: m.club_website || '',
+    club_contact: m.club_contact || '',
+  };
+}
+
 const FORUM_CATS = [
   { id:'general', name:'General',       desc:'General lifestyle talk',           nsfw:false, icon:'💬' },
   { id:'events',  name:'Event Talk',    desc:'Upcoming and past events',          nsfw:false, icon:'🎉' },
@@ -164,6 +175,47 @@ async function sendSetupEmail(to, token) {
         <p style="color:#555;font-size:0.75rem;margin-top:16px;">If you have any questions, reply to this email or text us at 559-787-5801.</p>
       </div>`
   });
+}
+
+async function sendClubOwnerInviteEmail(to, token, clubName) {
+  const link = `${SITE_URL}/set-password.html?token=${token}`;
+  const clubLine = clubName
+    ? `<p style="color:#c8b896;margin:16px 0;">You're invited as the club owner for <strong style="color:#f3c675;">${clubName}</strong>.</p>`
+    : `<p style="color:#c8b896;margin:16px 0;">You're invited as a club owner on One Leg Up.</p>`;
+  await sendMail({
+    to,
+    subject: 'Your One Leg Up club owner account is ready',
+    html: `
+      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px;background:#080808;color:#fff;border-radius:12px;">
+        <h2 style="color:#f3c675;font-family:serif;">Welcome, Club Owner</h2>
+        ${clubLine}
+        <p style="color:#c8b896;margin-bottom:16px;">
+          Create your password, then open the Club Owner panel to write your club listing and publish parties with posters. When you post the next upcoming party, it can appear on onelegup.club.
+        </p>
+        <p style="color:#c8b896;margin-bottom:24px;">This complimentary account is free for partner clubs in our area.</p>
+        <a href="${link}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;font-weight:700;text-decoration:none;border-radius:8px;">Create My Password</a>
+        <p style="color:#666;font-size:0.8rem;margin-top:24px;">Or copy this link: ${link}</p>
+        <p style="color:#555;font-size:0.75rem;margin-top:16px;">Questions? Text 559-787-5801 or reply to this email.</p>
+      </div>`
+  });
+}
+
+function canManageEvents(me) {
+  return !!(me && (me.is_admin || me.is_club_owner));
+}
+
+function canEditEvent(me, event) {
+  if (!me) return false;
+  if (me.is_admin) return true;
+  if (me.is_club_owner && event.owner_id === me.id) return true;
+  return false;
+}
+
+function savePosterFromBody(poster_data, poster_ext) {
+  if (!poster_data) return null;
+  const filename = `${Date.now()}.${(poster_ext || 'jpg').replace(/[^a-z0-9]/g, '')}`;
+  fs.writeFileSync(path.join(IMAGES_DIR, filename), Buffer.from(poster_data, 'base64'));
+  return `https://api.onelegup.club/images/${filename}`;
 }
 
 async function sendResetEmail(to, token) {
@@ -511,7 +563,8 @@ const server = http.createServer(async (req, res) => {
       members.push({
         id: crypto.randomUUID(), display_name, email, profile_type,
         password_hash: '', setup_token,
-        status: 'pending', is_admin: false, notes: '',
+        status: 'pending', is_admin: false, is_club_owner: false, club_name: '',
+        notes: '',
         subscription_status: 'none', stripe_customer_id: null, stripe_subscription_id: null,
         created_at: new Date().toISOString()
       });
@@ -607,13 +660,70 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'PUT' && statusMatch) {
       const me = getMemberFromToken(req);
       if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
-      const { status, notes } = await parseBody(req);
+      const { status, notes, is_club_owner, club_name } = await parseBody(req);
       writeJSON(MEMBERS_FILE, readJSON(MEMBERS_FILE).map(m =>
         m.id === statusMatch[1]
-          ? { ...m, ...(status !== undefined && { status }), ...(notes !== undefined && { notes }) }
+          ? {
+              ...m,
+              ...(status !== undefined && { status }),
+              ...(notes !== undefined && { notes }),
+              ...(is_club_owner !== undefined && { is_club_owner: !!is_club_owner }),
+              ...(club_name !== undefined && { club_name: String(club_name || '').trim() }),
+            }
           : m
       ));
       return send(200, { ok: true });
+    }
+
+    // Admin: invite club owner by email (free account + Resend set-password link)
+    if (req.method === 'POST' && req.url === '/admin/invite-club-owner') {
+      const me = getMemberFromToken(req);
+      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
+      const { email, club_name, display_name } = await parseBody(req);
+      const cleanEmail = String(email || '').trim().toLowerCase();
+      if (!cleanEmail || !cleanEmail.includes('@')) return send(400, { error: 'Valid email required' });
+      const clubName = String(club_name || '').trim();
+      const members = readJSON(MEMBERS_FILE);
+      const existing = members.find(m => m.email.toLowerCase() === cleanEmail);
+      const setup_token = crypto.randomBytes(32).toString('hex');
+      if (existing) {
+        const idx = members.findIndex(m => m.id === existing.id);
+        members[idx] = {
+          ...members[idx],
+          is_club_owner: true,
+          club_name: clubName || members[idx].club_name || '',
+          display_name: display_name || members[idx].display_name || clubName || members[idx].email,
+          status: members[idx].status === 'denied' ? 'approved' : (members[idx].status || 'approved'),
+          setup_token,
+          reset_mode: !!members[idx].password_hash,
+        };
+        writeJSON(MEMBERS_FILE, members);
+        await sendClubOwnerInviteEmail(cleanEmail, setup_token, members[idx].club_name);
+        const { password_hash, setup_token: _t, ...safe } = members[idx];
+        return send(200, { ok: true, member: safe, invited: true, existing: true });
+      }
+      const member = {
+        id: crypto.randomUUID(),
+        display_name: String(display_name || clubName || cleanEmail.split('@')[0]).trim(),
+        email: cleanEmail,
+        profile_type: 'club_owner',
+        password_hash: '',
+        setup_token,
+        status: 'approved',
+        is_admin: false,
+        is_club_owner: true,
+        club_name: clubName,
+        notes: 'Invited club owner (free partner account)',
+        subscription_status: 'comp_club_owner',
+        stripe_customer_id: null,
+        stripe_subscription_id: null,
+        created_at: new Date().toISOString(),
+      };
+      members.push(member);
+      writeJSON(MEMBERS_FILE, members);
+      await sendClubOwnerInviteEmail(cleanEmail, setup_token, clubName);
+      const { password_hash, setup_token: _t, ...safe } = member;
+      return send(200, { ok: true, member: safe, invited: true, existing: false });
     }
 
     const delMember = req.url.match(/^\/member\/(.+)$/);
@@ -622,6 +732,63 @@ const server = http.createServer(async (req, res) => {
       if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
       writeJSON(MEMBERS_FILE, readJSON(MEMBERS_FILE).filter(m => m.id !== delMember[1]));
       return send(200, { ok: true });
+    }
+
+    const clubOwnerFlag = req.url.match(/^\/member\/(.+)\/club-owner$/);
+    if (req.method === 'PUT' && clubOwnerFlag) {
+      const me = getMemberFromToken(req);
+      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
+      const { is_club_owner, club_name } = await parseBody(req);
+      const members = readJSON(MEMBERS_FILE);
+      const idx = members.findIndex(m => m.id === clubOwnerFlag[1]);
+      if (idx === -1) return send(404, { error: 'Not found' });
+      members[idx].is_club_owner = !!is_club_owner;
+      if (club_name !== undefined) members[idx].club_name = String(club_name || '');
+      if (is_club_owner && members[idx].status !== 'approved') members[idx].status = 'approved';
+      if (is_club_owner && (!members[idx].subscription_status || members[idx].subscription_status === 'none')) {
+        members[idx].subscription_status = 'comp_club_owner';
+      }
+      writeJSON(MEMBERS_FILE, members);
+      return send(200, { ok: true, is_club_owner: members[idx].is_club_owner });
+    }
+
+    // ── Public club listings ──────────────────────────────────────────────────
+
+    if (req.method === 'GET' && req.url === '/clubs') {
+      const clubs = readJSON(MEMBERS_FILE)
+        .filter(m => m.is_club_owner && m.status === 'approved' && (m.club_name || m.club_bio))
+        .map(publicClubListing);
+      return send(200, clubs);
+    }
+
+    if (req.method === 'GET' && req.url === '/club/me') {
+      const me = getMemberFromToken(req);
+      if (!me) return send(401, { error: 'Not logged in' });
+      if (!me.is_club_owner && !me.is_admin) return send(403, { error: 'Club owner access required' });
+      return send(200, {
+        ...publicClubListing(me),
+        email: me.email,
+        is_admin: !!me.is_admin,
+        is_club_owner: !!me.is_club_owner,
+      });
+    }
+
+    if (req.method === 'PUT' && req.url === '/club/listing') {
+      const me = getMemberFromToken(req);
+      if (!me) return send(401, { error: 'Not logged in' });
+      if (!me.is_club_owner && !me.is_admin) return send(403, { error: 'Club owner access required' });
+      const { club_name, club_city, club_bio, club_website, club_contact, display_name } = await parseBody(req);
+      const members = readJSON(MEMBERS_FILE);
+      const idx = members.findIndex(m => m.id === me.id);
+      if (idx === -1) return send(404, { error: 'Not found' });
+      if (club_name !== undefined) members[idx].club_name = String(club_name || '').slice(0, 120);
+      if (club_city !== undefined) members[idx].club_city = String(club_city || '').slice(0, 80);
+      if (club_bio !== undefined) members[idx].club_bio = String(club_bio || '').slice(0, 2000);
+      if (club_website !== undefined) members[idx].club_website = String(club_website || '').slice(0, 200);
+      if (club_contact !== undefined) members[idx].club_contact = String(club_contact || '').slice(0, 120);
+      if (display_name !== undefined) members[idx].display_name = String(display_name || '').slice(0, 80);
+      writeJSON(MEMBERS_FILE, members);
+      return send(200, { ok: true, listing: publicClubListing(members[idx]) });
     }
 
     // ── Contacts ──────────────────────────────────────────────────────────────
@@ -778,17 +945,25 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'POST' && req.url === '/event') {
       const me = getMemberFromToken(req);
-      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
-      const { title, date, description, poster_data, poster_ext, signup_text } = await parseBody(req);
+      if (!canManageEvents(me)) return send(401, { error: 'Unauthorized' });
+      const { title, date, description, poster_data, poster_ext, signup_text, club_name } = await parseBody(req);
       if (!title || !date) return send(400, { error: 'Title and date required' });
-      let poster = null;
-      if (poster_data) {
-        const filename = `${Date.now()}.${(poster_ext || 'jpg').replace(/[^a-z0-9]/g,'')}`;
-        fs.writeFileSync(path.join(IMAGES_DIR, filename), Buffer.from(poster_data, 'base64'));
-        poster = `https://api.onelegup.club/images/${filename}`;
-      }
+      const poster = savePosterFromBody(poster_data, poster_ext);
       const events = readJSON(EVENTS_FILE);
-      const event = { id: crypto.randomUUID(), title, date, description: description || '', poster, signup_text: signup_text || 'RSVP Now', created_at: new Date().toISOString() };
+      const event = {
+        id: crypto.randomUUID(),
+        title: String(title).trim(),
+        date,
+        description: description || '',
+        poster,
+        signup_text: signup_text || 'RSVP Now',
+        owner_id: me.id,
+        club_name: me.is_admin
+          ? String(club_name || me.club_name || 'One Leg Up').trim()
+          : String(club_name || me.club_name || me.display_name || 'Partner Club').trim(),
+        source: me.is_club_owner && !me.is_admin ? 'partner' : 'onelegup',
+        created_at: new Date().toISOString(),
+      };
       events.push(event);
       writeJSON(EVENTS_FILE, events);
       return send(200, { ok: true, event });
@@ -798,27 +973,47 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'PUT' && eventMatch) {
       const me = getMemberFromToken(req);
-      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
-      const { title, date, description, poster_data, poster_ext, signup_text } = await parseBody(req);
+      if (!canManageEvents(me)) return send(401, { error: 'Unauthorized' });
+      const { title, date, description, poster_data, poster_ext, signup_text, club_name, cancelled } = await parseBody(req);
       const events = readJSON(EVENTS_FILE);
       const idx = events.findIndex(e => e.id === eventMatch[1]);
       if (idx === -1) return send(404, { error: 'Not found' });
+      if (!canEditEvent(me, events[idx])) return send(403, { error: 'You can only edit your own listings' });
       let poster = events[idx].poster;
-      if (poster_data) {
-        const filename = `${Date.now()}.${(poster_ext || 'jpg').replace(/[^a-z0-9]/g,'')}`;
-        fs.writeFileSync(path.join(IMAGES_DIR, filename), Buffer.from(poster_data, 'base64'));
-        poster = `https://api.onelegup.club/images/${filename}`;
-      }
-      events[idx] = { ...events[idx], ...(title && { title }), ...(date && { date }), description: description ?? events[idx].description, poster, ...(signup_text && { signup_text }) };
+      const uploaded = savePosterFromBody(poster_data, poster_ext);
+      if (uploaded) poster = uploaded;
+      events[idx] = {
+        ...events[idx],
+        ...(title && { title: String(title).trim() }),
+        ...(date && { date }),
+        description: description ?? events[idx].description,
+        poster,
+        ...(signup_text && { signup_text }),
+        ...(club_name !== undefined && { club_name: String(club_name || '').trim() }),
+        ...(cancelled !== undefined && { cancelled: !!cancelled }),
+      };
       writeJSON(EVENTS_FILE, events);
-      return send(200, { ok: true });
+      return send(200, { ok: true, event: events[idx] });
     }
 
     if (req.method === 'DELETE' && eventMatch) {
       const me = getMemberFromToken(req);
-      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
-      writeJSON(EVENTS_FILE, readJSON(EVENTS_FILE).filter(e => e.id !== eventMatch[1]));
+      if (!canManageEvents(me)) return send(401, { error: 'Unauthorized' });
+      const events = readJSON(EVENTS_FILE);
+      const target = events.find(e => e.id === eventMatch[1]);
+      if (!target) return send(404, { error: 'Not found' });
+      if (!canEditEvent(me, target)) return send(403, { error: 'You can only delete your own listings' });
+      writeJSON(EVENTS_FILE, events.filter(e => e.id !== eventMatch[1]));
       return send(200, { ok: true });
+    }
+
+    // Club owners: list only their events (admins use /events)
+    if (req.method === 'GET' && req.url === '/club-owner/events') {
+      const me = getMemberFromToken(req);
+      if (!canManageEvents(me)) return send(401, { error: 'Unauthorized' });
+      const events = getEvents();
+      if (me.is_admin) return send(200, events);
+      return send(200, events.filter(e => e.owner_id === me.id));
     }
 
     send(404, { error: 'Not found' });

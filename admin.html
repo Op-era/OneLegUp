@@ -49,6 +49,7 @@
     .badge-approved{background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.35);color:#4ade80;}
     .badge-denied{background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.35);color:#f87171;}
     .badge-type{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,220,150,0.65);}
+    .badge-owner{background:rgba(147,197,253,0.12);border:1px solid rgba(147,197,253,0.35);color:#93c5fd;}
     .member-date{font-size:0.72rem;color:rgba(255,255,255,0.35);}
     .member-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;flex-shrink:0;}
     .action-btn{padding:7px 16px;border-radius:7px;font-family:'Poppins',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;letter-spacing:0.04em;}
@@ -127,6 +128,30 @@
     <button class="tab" data-filter="denied">Denied</button>
   </div>
   <div id="members-list"></div>
+
+  <!-- Invite club owner -->
+  <div class="section-wrap" style="margin-top:28px;">
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:#f3c675;margin-bottom:8px;">Invite Club Owner</h2>
+    <p style="font-size:0.82rem;color:rgba(200,184,150,0.7);margin-bottom:14px;line-height:1.5;">
+      Create a free club-owner account from an email address. Resend sends a set-password link so they can log in and publish parties.
+    </p>
+    <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:10px;align-items:end;">
+      <div>
+        <label style="display:block;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,198,117,0.6);margin-bottom:6px;">Email *</label>
+        <input id="invite-email" type="email" placeholder="owner@club.com" style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(243,198,117,0.2);border-radius:7px;color:#fff;font-family:'Poppins',sans-serif;font-size:0.85rem;outline:none;">
+      </div>
+      <div>
+        <label style="display:block;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,198,117,0.6);margin-bottom:6px;">Club name</label>
+        <input id="invite-club" type="text" placeholder="Club name" style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(243,198,117,0.2);border-radius:7px;color:#fff;font-family:'Poppins',sans-serif;font-size:0.85rem;outline:none;">
+      </div>
+      <div>
+        <label style="display:block;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,198,117,0.6);margin-bottom:6px;">Display name</label>
+        <input id="invite-name" type="text" placeholder="Optional" style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(243,198,117,0.2);border-radius:7px;color:#fff;font-family:'Poppins',sans-serif;font-size:0.85rem;outline:none;">
+      </div>
+      <button onclick="inviteClubOwner()" class="action-btn btn-approve" style="height:38px;white-space:nowrap;">Send invite</button>
+    </div>
+    <div id="invite-status" style="margin-top:10px;font-size:0.8rem;color:#86efac;display:none;"></div>
+  </div>
 
   <!-- Events section -->
   <div style="display:flex;justify-content:space-between;align-items:center;margin:32px 0 14px;">
@@ -220,6 +245,7 @@
 <script>
   const token = localStorage.getItem('olu_token');
   const AUTH  = { Authorization: `Bearer ${token}` };
+  const RSVP_API = 'https://api.onelegup.club';
 
   const profileLabels = { single_male: 'Single Male', single_female: 'Single Female', couple: 'Couple' };
   let allMembers = [];
@@ -260,6 +286,7 @@
           <div class="member-meta">
             <span class="badge badge-${m.status}">${m.status}</span>
             <span class="badge badge-type">${profileLabels[m.profile_type] || '—'}</span>
+            ${m.is_club_owner ? `<span class="badge badge-owner">Club Owner${m.club_name ? ': '+esc(m.club_name) : ''}</span>` : ''}
             <span class="member-date">${new Date(m.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
           </div>
           <textarea class="notes-input" placeholder="Notes about this member…" data-id="${m.id}">${esc(m.notes || '')}</textarea>
@@ -267,6 +294,7 @@
         <div class="member-actions">
           ${m.status !== 'approved' ? `<button class="action-btn btn-approve" onclick="updateStatus('${m.id}','approved')">Approve</button>` : ''}
           ${m.status !== 'denied'   ? `<button class="action-btn btn-deny"    onclick="updateStatus('${m.id}','denied')">Deny</button>` : ''}
+          <button class="action-btn ${m.is_club_owner ? 'btn-deny' : 'btn-approve'}" onclick="toggleClubOwner('${m.id}', ${m.is_club_owner ? 'false' : 'true'})">${m.is_club_owner ? 'Remove owner' : 'Make club owner'}</button>
           <button class="action-btn btn-delete" onclick="deleteMember('${m.id}')">Delete</button>
         </div>
       </div>
@@ -296,7 +324,57 @@
     await loadMembers();
   }
 
-  const RSVP_API = 'https://api.onelegup.club';
+  async function inviteClubOwner() {
+    const email = document.getElementById('invite-email').value.trim();
+    const club_name = document.getElementById('invite-club').value.trim();
+    const display_name = document.getElementById('invite-name').value.trim();
+    const statusEl = document.getElementById('invite-status');
+    statusEl.style.display = 'none';
+    if (!email) {
+      statusEl.style.display = 'block';
+      statusEl.style.color = '#fca5a5';
+      statusEl.textContent = 'Email is required.';
+      return;
+    }
+    const res = await fetch(`${RSVP_API}/admin/invite-club-owner`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...AUTH },
+      body: JSON.stringify({ email, club_name, display_name }),
+    });
+    const data = await res.json().catch(() => ({}));
+    statusEl.style.display = 'block';
+    if (!res.ok) {
+      statusEl.style.color = '#fca5a5';
+      statusEl.textContent = data.error || 'Invite failed.';
+      return;
+    }
+    statusEl.style.color = '#86efac';
+    statusEl.textContent = data.existing
+      ? `Updated existing account and sent set-password email to ${email}.`
+      : `Created free club-owner account and sent set-password email to ${email}.`;
+    document.getElementById('invite-email').value = '';
+    document.getElementById('invite-club').value = '';
+    document.getElementById('invite-name').value = '';
+    await loadMembers();
+  }
+
+  async function toggleClubOwner(id, makeOwner) {
+    const club_name = makeOwner
+      ? (prompt('Club name (optional):') || '')
+      : undefined;
+    const res = await fetch(`${RSVP_API}/member/${id}/club-owner`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...AUTH },
+      body: JSON.stringify({ is_club_owner: !!makeOwner, ...(club_name !== undefined && { club_name }) }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      alert(data.error || 'Could not update club owner status.');
+      return;
+    }
+    await loadMembers();
+  }
+
   let rsvps = [];
   let sortField = 'submitted_at';
   let sortDir   = 'desc';

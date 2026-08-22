@@ -166,6 +166,9 @@
   <div class="admin-link" id="admin-link" style="display:none;">
     <a href="admin.html">Admin Panel →</a>
   </div>
+  <div class="admin-link" id="club-owner-link" style="display:none;margin-top:6px;">
+    <a href="club-owner.html">Club Owner Panel →</a>
+  </div>
   <div class="admin-link" style="margin-top:6px;">
     <a href="forum.html">Community Forum →</a>
   </div>
@@ -317,6 +320,7 @@
       document.getElementById('color-preview').textContent = this.value || 'Preview Handle';
     });
     if (member.is_admin) document.getElementById('admin-link').style.display = 'block';
+    if (member.is_club_owner || member.is_admin) document.getElementById('club-owner-link').style.display = 'block';
     renderSubCard(member);
   }
 
