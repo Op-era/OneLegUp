@@ -2,15 +2,29 @@ const http       = require('http');
 const fs         = require('fs');
 const path       = require('path');
 const crypto     = require('crypto');
-const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 
-// Load .env
+// Load .env before any process.env reads (launchd does not inject secrets).
 const envFile = path.join(__dirname, '.env');
 if (fs.existsSync(envFile)) {
   fs.readFileSync(envFile, 'utf8').split('\n').forEach(line => {
-    const [k, ...rest] = line.split('=');
-    if (k && rest.length) process.env[k.trim()] = rest.join('=').trim();
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) return;
+    const eq = trimmed.indexOf('=');
+    if (eq <= 0) return;
+    const k = trimmed.slice(0, eq).trim();
+    let v = trimmed.slice(eq + 1).trim();
+    if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
+      v = v.slice(1, -1);
+    }
+    if (k && process.env[k] === undefined) process.env[k] = v;
   });
+}
+
+const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
+if (!RESEND_API_KEY) {
+  console.warn('RESEND_API_KEY missing — invite and RSVP emails will fail until it is set in .env');
+} else {
+  console.log(`Resend configured (key prefix ${RESEND_API_KEY.slice(0, 5)}…)`);
 }
 
 const PORT           = 3002;
@@ -139,10 +153,12 @@ async function handleStripeEvent(event) {
 
 // ── Gmail config ──────────────────────────────────────────────────────────────
 async function sendMail({ to, subject, html }) {
+  const apiKey = process.env.RESEND_API_KEY || RESEND_API_KEY;
+  if (!apiKey) throw new Error('RESEND_API_KEY is not configured');
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${RESEND_API_KEY}`,
+      'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ from: 'One Leg Up <noreply@onelegup.club>', to, subject, html })
