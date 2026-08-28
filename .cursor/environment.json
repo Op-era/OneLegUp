@@ -1,0 +1,4 @@
+{
+  "name": "One Leg Up",
+  "install": "bash scripts/cursor-cloud-install.sh"
+}
