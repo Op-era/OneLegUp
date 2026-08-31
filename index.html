@@ -446,7 +446,7 @@
       </section>
       <div class="left">
         <div class="flyer-wrap">
-          <img id="main-flyer" src="https://github.com/user-attachments/assets/f05a3dce-f611-4bc4-8c7e-6050e6fd8e1c" alt="OneLegUp event poster" class="flyer">
+          <img id="main-flyer" src="https://api.onelegup.club/images/leather-lace-2026-09-26-v2.jpg" alt="OneLegUp event poster" class="flyer">
         </div>
         <div class="info-stack">
           <div class="notice">
@@ -554,18 +554,21 @@
         document.getElementById('main-flyer').src = nextWithPoster.poster;
       }
 
-      allParties.forEach(party => {
+      const datedParties = allParties.filter(p => p.date && p.date !== 'TBD');
+      const tbdParties = allParties.filter(p => p.date === 'TBD');
+      const withEnd = datedParties.map(party => {
         const eventDate = parseLocalDate(party.date);
-        const isTBD = party.date === "TBD";
-        const displayDate = isTBD ? "TBD" : eventDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-        let eventEnd = null;
-        if (!isTBD) {
-          eventEnd = new Date(eventDate);
-          eventEnd.setDate(eventEnd.getDate()+1);
-          eventEnd.setHours(2,0,0,0);
-        }
-        const isUpcoming = isTBD || now < eventEnd;
-        const rsvpOpen = isUpcoming && !isTBD && now < doorsCloseAt(party.date) && !party.cancelled;
+        const eventEnd = new Date(eventDate);
+        eventEnd.setDate(eventEnd.getDate()+1);
+        eventEnd.setHours(2,0,0,0);
+        return { party, eventDate, eventEnd, isUpcoming: now < eventEnd };
+      });
+      const upcoming = withEnd.filter(x => x.isUpcoming).sort((a,b) => a.party.date.localeCompare(b.party.date));
+      const past = withEnd.filter(x => !x.isUpcoming).sort((a,b) => b.party.date.localeCompare(a.party.date));
+
+      function renderCard({ party, eventDate, eventEnd, isUpcoming }) {
+        const displayDate = eventDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+        const rsvpOpen = isUpcoming && now < doorsCloseAt(party.date) && !party.cancelled;
         const signupUrl = rsvpOpen ? `signup.html?event=${encodeURIComponent(party.title)}&date=${encodeURIComponent(party.date)}` : null;
         const posterImg = party.poster ? `<img src="${party.poster}" alt="${party.title}" style="width:100%;border-radius:8px;margin-bottom:10px;display:block;">` : '';
         const cancelledBanner = party.cancelled ? `
@@ -592,10 +595,26 @@
           </div>`;
         if (isUpcoming) {
           upcomingContainer.insertAdjacentHTML('beforeend', eventHTML);
-          if (!isTBD && (!nextEventEnd || eventEnd < nextEventEnd)) { nextEventEnd = eventEnd; nextPartyTitle = party.title; }
+          if (!nextEventEnd || eventEnd < nextEventEnd) { nextEventEnd = eventEnd; nextPartyTitle = party.title; }
         } else {
           pastContainer.insertAdjacentHTML('beforeend', eventHTML);
         }
+      }
+
+      upcoming.forEach(renderCard);
+      past.forEach(renderCard);
+      tbdParties.forEach(party => {
+        const posterImg = party.poster ? `<img src="${party.poster}" alt="${party.title}" style="width:100%;border-radius:8px;margin-bottom:10px;display:block;">` : '';
+        upcomingContainer.insertAdjacentHTML('beforeend', `
+          <div class="event" style="position:relative;overflow:hidden;" data-date="${party.date}">
+            ${posterImg}
+            <h3 class="gold-shimmer">${party.title}</h3>
+            <p>Date: TBD</p>
+            <p>${party.description||''}</p>
+            <div style="margin-top:12px;">
+              <a href="attending.html" class="rsvp-event-btn ghost">Who's Attending →</a>
+            </div>
+          </div>`);
       });
 
       const firstCard = upcomingContainer.querySelector('.event');

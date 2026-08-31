@@ -179,6 +179,7 @@
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;align-items:start;">
       <div>
         <label style="display:block;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,198,117,0.6);margin-bottom:6px;">Poster / Flyer</label>
+        <p style="margin:0 0 8px;font-size:0.78rem;line-height:1.45;color:rgba(200,184,150,0.72);">Required size: 682 × 1024 pixels, portrait (2:3). That is the same size as the One Leg Up event flyers.</p>
         <input id="ef-poster" type="file" accept="image/*" onchange="previewPoster(this)" style="width:100%;font-size:0.82rem;color:rgba(255,220,150,0.6);">
         <img id="ef-poster-preview" src="" alt="" style="display:none;width:100%;border-radius:8px;margin-top:8px;max-height:180px;object-fit:contain;">
       </div>
@@ -570,7 +571,13 @@
   function renderEventsList() {
     const el = document.getElementById('events-list');
     if (!PARTIES.length) { el.innerHTML = ''; return; }
-    el.innerHTML = PARTIES.map(p => {
+    const listed = [...PARTIES].sort((a, b) => {
+      if (a.date === 'TBD' && b.date === 'TBD') return 0;
+      if (a.date === 'TBD') return 1;
+      if (b.date === 'TBD') return -1;
+      return String(b.date).localeCompare(String(a.date));
+    });
+    el.innerHTML = listed.map(p => {
       const dateStr = p.date && p.date !== 'TBD'
         ? new Date(p.date.replace(/-/g,'/')).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : p.date || 'TBD';
       const past = isPartyPast(p);

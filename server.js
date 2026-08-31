@@ -47,14 +47,28 @@ const PARTY_SCHEDULE = [
   { date: '2026-08-01', title: 'School Girls and Professors Party' },
 ];
 
+function partyEnd(dateStr) {
+  const end = new Date(String(dateStr).replace(/-/g, '/'));
+  end.setDate(end.getDate() + 1);
+  end.setHours(2, 0, 0, 0);
+  return end;
+}
+
 function getEvents() {
   const stored = readJSON(EVENTS_FILE);
-  if (stored.length) return stored.sort((a,b) => {
-    if (a.date === 'TBD') return 1;
-    if (b.date === 'TBD') return -1;
-    return a.date.localeCompare(b.date);
-  });
-  return PARTY_SCHEDULE.map(p => ({ id: p.date, title: p.title, date: p.date, description: '', poster: null, signup_text: 'RSVP Now', created_at: new Date().toISOString() }));
+  if (!stored.length) {
+    return PARTY_SCHEDULE.map(p => ({ id: p.date, title: p.title, date: p.date, description: '', poster: null, signup_text: 'RSVP Now', created_at: new Date().toISOString() }));
+  }
+  const now = new Date();
+  const tbd = stored.filter(e => e.date === 'TBD');
+  const dated = stored.filter(e => e.date !== 'TBD');
+  const upcoming = dated
+    .filter(e => now < partyEnd(e.date))
+    .sort((a, b) => a.date.localeCompare(b.date));
+  const past = dated
+    .filter(e => now >= partyEnd(e.date))
+    .sort((a, b) => b.date.localeCompare(a.date));
+  return [...upcoming, ...past, ...tbd];
 }
 
 function publicClubListing(m) {
@@ -1027,7 +1041,12 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET' && req.url === '/club-owner/events') {
       const me = getMemberFromToken(req);
       if (!canManageEvents(me)) return send(401, { error: 'Unauthorized' });
-      const events = getEvents();
+      const events = getEvents().slice().sort((a, b) => {
+        if (a.date === 'TBD' && b.date === 'TBD') return 0;
+        if (a.date === 'TBD') return 1;
+        if (b.date === 'TBD') return -1;
+        return String(b.date).localeCompare(String(a.date));
+      });
       if (me.is_admin) return send(200, events);
       return send(200, events.filter(e => e.owner_id === me.id));
     }

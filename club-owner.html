@@ -36,6 +36,7 @@
     .action-btn{padding:6px 12px;border-radius:7px;font-size:0.75rem;font-family:'Poppins',sans-serif;cursor:pointer;border:1px solid rgba(243,198,117,0.3);background:rgba(243,198,117,0.08);color:#f3c675;}
     .btn-del{border-color:rgba(248,113,113,0.4);color:#f87171;background:rgba(248,113,113,0.08);}
     .empty{text-align:center;padding:28px;color:rgba(255,220,150,0.35);font-size:0.88rem;}
+    .field-hint{margin:6px 0 0;font-size:0.78rem;line-height:1.45;color:rgba(200,184,150,0.72);text-transform:none;letter-spacing:0;font-weight:400;}
   </style>
 </head>
 <body>
@@ -111,6 +112,7 @@
     <div class="grid2" style="margin-bottom:14px;align-items:start;">
       <div>
         <label>Poster / flyer</label>
+        <p class="field-hint">Required size: 682 × 1024 pixels, portrait (2:3). That is the same size as the One Leg Up event flyers.</p>
         <input id="ef-poster" type="file" accept="image/*">
         <img id="ef-poster-preview" alt="" style="display:none;width:100%;border-radius:8px;margin-top:8px;max-height:200px;object-fit:contain;">
       </div>
@@ -210,6 +212,14 @@
   async function loadEvents() {
     const res = await fetch(`${RSVP_API}/club-owner/events`, { headers: AUTH });
     myEvents = await res.json();
+    if (Array.isArray(myEvents)) {
+      myEvents.sort((a, b) => {
+        if (a.date === 'TBD' && b.date === 'TBD') return 0;
+        if (a.date === 'TBD') return 1;
+        if (b.date === 'TBD') return -1;
+        return String(b.date).localeCompare(String(a.date));
+      });
+    }
     const el = document.getElementById('events-list');
     if (!Array.isArray(myEvents) || !myEvents.length) {
       el.innerHTML = '<div class="empty">No listings yet. Publish your first party above.</div>';
