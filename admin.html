@@ -153,7 +153,27 @@
     <div id="invite-status" style="margin-top:10px;font-size:0.8rem;color:#86efac;display:none;"></div>
   </div>
 
-  <!-- Events section -->
+    <div class="section-wrap" style="margin-top:28px;">
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.15rem;color:#f3c675;margin-bottom:8px;">Trial Codes</h2>
+    <p style="font-size:0.82rem;color:rgba(200,184,150,0.7);margin-bottom:14px;line-height:1.5;">
+      Hand these out for a free membership until the end of the month. No card needed &mdash; the member signs up with email and password on the trial page.
+    </p>
+    <div style="display:grid;grid-template-columns:1.2fr 1fr auto;gap:10px;align-items:end;">
+      <div>
+        <label style="display:block;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,198,117,0.6);margin-bottom:6px;">Label</label>
+        <input id="trial-label" type="text" placeholder="e.g. Sept 26 party handout" style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(243,198,117,0.2);border-radius:7px;color:#fff;font-family:'Poppins',sans-serif;font-size:0.85rem;outline:none;">
+      </div>
+      <div>
+        <label style="display:block;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(243,198,117,0.6);margin-bottom:6px;">Max uses</label>
+        <input id="trial-max" type="number" value="25" min="1" style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(243,198,117,0.2);border-radius:7px;color:#fff;font-family:'Poppins',sans-serif;font-size:0.85rem;outline:none;">
+      </div>
+      <button onclick="makeTrialCode()" class="action-btn btn-approve" style="height:38px;white-space:nowrap;">Generate code</button>
+    </div>
+    <div id="trial-status" style="margin-top:10px;font-size:0.8rem;color:#86efac;display:none;"></div>
+    <div id="trial-codes-list" style="margin-top:14px;"></div>
+  </div>
+
+<!-- Events section -->
   <div style="display:flex;justify-content:space-between;align-items:center;margin:32px 0 14px;">
     <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;" class="gold-shimmer">Events</h2>
     <button onclick="toggleEventForm()" id="add-event-btn" style="background:rgba(243,198,117,0.1);border:1px solid rgba(243,198,117,0.45);color:#f3c675;font-size:0.8rem;padding:7px 18px;border-radius:8px;cursor:pointer;font-family:'Poppins',sans-serif;">+ Add Event</button>
@@ -260,6 +280,7 @@
     await loadContacts();
     await loadEvents();
     await loadRsvps();
+    await loadTrialCodes();
   }
 
   async function loadMembers() {
@@ -357,6 +378,59 @@
     document.getElementById('invite-club').value = '';
     document.getElementById('invite-name').value = '';
     await loadMembers();
+  }
+
+  async function loadTrialCodes() {
+    const list = document.getElementById('trial-codes-list');
+    const res = await fetch(`${RSVP_API}/admin/trial-codes`, { headers: { ...AUTH } });
+    const data = await res.json().catch(() => ({}));
+    const codes = data.codes || [];
+    if (!codes.length) {
+      list.innerHTML = '<p style="font-size:0.8rem;color:rgba(200,184,150,0.55);">No trial codes yet.</p>';
+      return;
+    }
+    list.innerHTML = codes.map(c => `
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 12px;margin-bottom:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(243,198,117,0.18);border-radius:8px;">
+        <div>
+          <div style="font-weight:600;letter-spacing:0.06em;color:#f3c675;">${c.code}</div>
+          <div style="font-size:0.75rem;color:rgba(200,184,150,0.6);">${(c.label || 'No label').replace(/</g, '&lt;')} &mdash; ${c.uses}/${c.max_uses} used</div>
+        </div>
+        <button onclick="copyTrialCode('${c.code}')" class="action-btn" style="white-space:nowrap;">Copy link</button>
+      </div>`).join('');
+  }
+
+  function copyTrialCode(code) {
+    const link = `${window.location.origin}/trial.html?code=${code}`;
+    const done = () => {
+      const s = document.getElementById('trial-status');
+      s.style.display = 'block'; s.style.color = '#86efac';
+      s.textContent = 'Signup link copied: ' + link;
+    };
+    if (navigator.clipboard) navigator.clipboard.writeText(link).then(done, () => prompt('Copy this link:', link));
+    else prompt('Copy this link:', link);
+  }
+
+  async function makeTrialCode() {
+    const label = document.getElementById('trial-label').value.trim();
+    const max_uses = parseInt(document.getElementById('trial-max').value, 10) || 1;
+    const statusEl = document.getElementById('trial-status');
+    statusEl.style.display = 'none';
+    const res = await fetch(`${RSVP_API}/admin/trial-codes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...AUTH },
+      body: JSON.stringify({ label, max_uses })
+    });
+    const data = await res.json().catch(() => ({}));
+    statusEl.style.display = 'block';
+    if (!res.ok) {
+      statusEl.style.color = '#fca5a5';
+      statusEl.textContent = data.error || 'Could not generate code.';
+      return;
+    }
+    statusEl.style.color = '#86efac';
+    statusEl.textContent = `New code ${data.code} — signup link: ${window.location.origin}/trial.html?code=${data.code}`;
+    document.getElementById('trial-label').value = '';
+    await loadTrialCodes();
   }
 
   async function toggleClubOwner(id, makeOwner) {

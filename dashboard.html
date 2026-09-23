@@ -243,6 +243,28 @@
         openPortal(this, 'Manage Subscription');
       });
       cancelCard.style.display = 'block';
+    } else if (member.subscription_status === 'trial' && member.trial_expires_at && new Date(member.trial_expires_at).getTime() > Date.now()) {
+      const expStr = new Date(member.trial_expires_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+      el.innerHTML = `
+        <div class="sub-card sub-active">
+          <div class="sub-row">
+            <div class="sub-info">
+              <div class="sub-label">Free Trial</div>
+              <div class="sub-val">Active until ${expStr}</div>
+              <div class="sub-cancel">Cleared to attend all One Leg Up parties &mdash; donations apply at the door. No card on file &mdash; subscribe before ${expStr} to keep it going.</div>
+            </div>
+            <button class="manage-sub-btn btn-subscribe" id="trial-sub-btn">Keep My Membership</button>
+          </div>
+        </div>`;
+      document.getElementById('trial-sub-btn').addEventListener('click', async () => {
+        const btn = document.getElementById('trial-sub-btn');
+        btn.textContent = 'Loading...';
+        const res  = await fetch(`${API}/subscribe/checkout`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+        const data = await res.json();
+        if (res.ok) window.location.href = data.url;
+        else { alert(data.error || 'Could not start checkout'); btn.textContent = 'Keep My Membership'; }
+      });
+      cancelCard.style.display = 'none';
     } else {
       el.innerHTML = `
         <div class="sub-card sub-upsell">

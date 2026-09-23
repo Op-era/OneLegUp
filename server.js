@@ -35,6 +35,7 @@ const SESSIONS_FILE  = path.join(DATA_DIR, 'sessions.json');
 const FORUM_POSTS_FILE   = path.join(DATA_DIR, 'forum_posts.json');
 const FORUM_REPLIES_FILE = path.join(DATA_DIR, 'forum_replies.json');
 const CONTACTS_FILE      = path.join(DATA_DIR, 'contacts.json');
+const TRIAL_CODES_FILE   = path.join(DATA_DIR, 'trial_codes.json');
 const SITE_URL           = 'https://onelegup.club';
 const PARTY_EMAILS_FILE  = path.join(DATA_DIR, 'party_emails_sent.json');
 const EVENTS_FILE        = path.join(DATA_DIR, 'events.json');
@@ -132,7 +133,13 @@ async function handleStripeEvent(event) {
   const obj = event.data.object;
   if (event.type === 'checkout.session.completed' && obj.mode === 'subscription') {
     const members = readJSON(MEMBERS_FILE);
-    const idx = members.findIndex(m => m.id === obj.client_reference_id);
+    let idx = members.findIndex(m => m.id === obj.client_reference_id);
+    // Fallback: payment-link checkouts may not carry client_reference_id --
+    // match the Stripe customer email against member records instead.
+    if (idx === -1) {
+      const sessionEmail = String(obj.customer_details?.email || obj.customer_email || "").trim().toLowerCase();
+      if (sessionEmail) idx = members.findIndex(m => String(m.email || "").trim().toLowerCase() === sessionEmail);
+    }
     if (idx !== -1) {
       const needsSetup = !members[idx].password_hash && members[idx].setup_token;
       members[idx] = {
@@ -202,7 +209,7 @@ async function sendSetupEmail(to, token) {
         </p>
         <a href="${link}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;font-weight:700;text-decoration:none;border-radius:8px;">Reset My Password</a>
         <p style="color:#666;font-size:0.8rem;margin-top:24px;">Or copy this link: ${link}</p>
-        <p style="color:#555;font-size:0.75rem;margin-top:16px;">If you have any questions, reply to this email or text us at 559-787-5801.</p>
+        <p style="color:#555;font-size:0.75rem;margin-top:16px;">If you have any questions, reply to this email or text us at 559-549-4765.</p>
       </div>`
   });
 }
@@ -225,7 +232,7 @@ async function sendClubOwnerInviteEmail(to, token, clubName) {
         <p style="color:#c8b896;margin-bottom:24px;">This complimentary account is free for partner clubs in our area.</p>
         <a href="${link}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;font-weight:700;text-decoration:none;border-radius:8px;">Create My Password</a>
         <p style="color:#666;font-size:0.8rem;margin-top:24px;">Or copy this link: ${link}</p>
-        <p style="color:#555;font-size:0.75rem;margin-top:16px;">Questions? Text 559-787-5801 or reply to this email.</p>
+        <p style="color:#555;font-size:0.75rem;margin-top:16px;">Questions? Text 559-549-4765 or reply to this email.</p>
       </div>`
   });
 }
@@ -310,6 +317,79 @@ function verifyPassword(pw, stored) {
   return crypto.scryptSync(pw, salt, 64).toString('hex') === hash;
 }
 
+// ---- Trial codes: free memberships until end of month, no card ----
+const TRIAL_CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no 0/O/1/I/L
+function makeTrialCode() {
+  let s = '';
+  const buf = crypto.randomBytes(6);
+  for (let i = 0; i < 6; i++) s += TRIAL_CODE_ALPHABET[buf[i] % TRIAL_CODE_ALPHABET.length];
+  return 'OLU-' + s;
+}
+function getTrialCodes() { return readJSON(TRIAL_CODES_FILE); }
+function saveTrialCodes(codes) { writeJSON(TRIAL_CODES_FILE, codes); }
+// Minutes a Pacific wall-clock reading is ahead of UTC, for the given instant.
+function ptOffsetMinutes(date) {
+  const dtf = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Los_Angeles', hour12: false,
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  });
+  const p = Object.fromEntries(dtf.formatToParts(date).map(x => [x.type, x.value]));
+  const asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, (+p.hour) % 24, +p.minute, +p.second);
+  return (asUTC - date.getTime()) / 60000;
+}
+// ISO timestamp for the last second of the current month, Pacific time.
+function endOfMonthPT() {
+  const dtf = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', year: 'numeric', month: 'numeric' });
+  const p = Object.fromEntries(dtf.formatToParts(new Date()).map(x => [x.type, +x.value]));
+  const ny = p.month === 12 ? p.year + 1 : p.year;
+  const nm = p.month === 12 ? 1 : p.month + 1;
+  const firstOfNextUTC = Date.UTC(ny, nm - 1, 1, 0, 0, 0);
+  const off = ptOffsetMinutes(new Date(firstOfNextUTC));
+  return new Date(firstOfNextUTC - off * 60000 - 1000).toISOString();
+}
+function trialIsActive(m) {
+  return !!(m && m.subscription_status === 'trial' && m.trial_expires_at &&
+    new Date(m.trial_expires_at).getTime() > Date.now());
+}
+// Expired trials revert the moment the member record is read - no cron needed.
+function applyTrialExpiry(member) {
+  if (member && member.subscription_status === 'trial' && member.trial_expires_at &&
+      new Date(member.trial_expires_at).getTime() <= Date.now()) {
+    const members = readJSON(MEMBERS_FILE);
+    const idx = members.findIndex(m => m.id === member.id);
+    if (idx !== -1) {
+      members[idx].subscription_status = 'expired';
+      writeJSON(MEMBERS_FILE, members);
+      return members[idx];
+    }
+  }
+  return member;
+}
+async function sendTrialExpiryEmail(to, displayName, expiresAt) {
+  const dateStr = new Date(expiresAt).toLocaleDateString('en-US', {
+    timeZone: 'America/Los_Angeles', month: 'long', day: 'numeric'
+  });
+  const link = `${SITE_URL}/subscribe.html`;
+  await sendMail({
+    to,
+    subject: 'Your One Leg Up free trial ends soon',
+    html: `
+      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px;background:#080808;color:#fff;border-radius:12px;">
+        <h2 style="color:#f3c675;font-family:serif;">One Leg Up</h2>
+        <p style="color:#c8b896;margin:16px 0;">Hi ${displayName || 'there'},</p>
+        <p style="color:#c8b896;margin:16px 0;">
+          Your free One Leg Up trial ends on <strong style="color:#f3c675;">${dateStr}</strong>.
+          After that you won't be cleared for parties until you pick up a membership.
+        </p>
+        <a href="${link}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#f3c675,#ec8b57);color:#0d1f28;font-weight:700;text-decoration:none;border-radius:8px;">Keep My Membership</a>
+        <p style="color:#666;font-size:0.8rem;margin-top:24px;">Or copy this link: ${link}</p>
+        <p style="color:#555;font-size:0.75rem;margin-top:16px;">Questions? Text 559-549-4765 or reply to this email.</p>
+      </div>`
+  });
+}
+
+
 // ── Sessions (persisted to disk so server restarts don't log users out) ────────
 function loadSessions() {
   try { return new Map(Object.entries(JSON.parse(fs.readFileSync(SESSIONS_FILE, 'utf8')))); }
@@ -330,7 +410,11 @@ function getMemberFromToken(req) {
   const token = (req.headers['authorization'] || '').replace('Bearer ', '').trim();
   const id = sessions.get(token);
   if (!id) return null;
-  return readJSON(MEMBERS_FILE).find(m => m.id === id) || null;
+  let member = readJSON(MEMBERS_FILE).find(m => m.id === id) || null;
+  member = applyTrialExpiry(member);
+  // Deactivated members lose API access immediately, even with a live session token.
+  if (member && member.status !== 'approved' && member.status !== 'pending') return null;
+  return member;
 }
 
 // ── Body parsers ──────────────────────────────────────────────────────────────
@@ -644,6 +728,8 @@ const server = http.createServer(async (req, res) => {
         return send(401, { error: 'Account not set up yet — check your email for the setup link' });
       if (!verifyPassword(password, member.password_hash))
         return send(401, { error: 'Invalid email or password' });
+      if (member.status !== 'approved' && member.status !== 'pending')
+        return send(403, { error: 'This membership is no longer active' });
       const { password_hash, setup_token, ...safe } = member;
       return send(200, { token: createSession(member.id), member: safe });
     }
@@ -782,6 +868,78 @@ const server = http.createServer(async (req, res) => {
       return send(200, { ok: true, is_club_owner: members[idx].is_club_owner });
     }
 
+
+    // ---- Trial codes (admin) ----
+
+    if (req.method === 'POST' && req.url === '/admin/trial-codes') {
+      const me = getMemberFromToken(req);
+      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
+      const { label, max_uses } = await parseBody(req);
+      const codes = getTrialCodes();
+      let code = makeTrialCode();
+      while (codes.some(c => c.code === code)) code = makeTrialCode();
+      const entry = {
+        code,
+        label: String(label || '').trim(),
+        max_uses: Math.max(1, parseInt(max_uses, 10) || 1),
+        uses: 0,
+        created_at: new Date().toISOString(),
+        created_by: me.id
+      };
+      codes.push(entry);
+      saveTrialCodes(codes);
+      return send(200, { ok: true, code: entry.code });
+    }
+
+    if (req.method === 'GET' && req.url === '/admin/trial-codes') {
+      const me = getMemberFromToken(req);
+      if (!me?.is_admin) return send(401, { error: 'Unauthorized' });
+      return send(200, { codes: getTrialCodes() });
+    }
+
+    // ---- Trial signup: email + password + code, free until end of month ----
+
+    if (req.method === 'POST' && req.url === '/member/trial-signup') {
+      const { display_name, email, profile_type, code, password } = await parseBody(req);
+      const cleanEmail = String(email || '').trim().toLowerCase();
+      const cleanCode = String(code || '').trim().toUpperCase();
+      if (!display_name || !cleanEmail.includes('@') || !profile_type)
+        return send(400, { error: 'Name, email, and couple/single required' });
+      if (!password || String(password).length < 8)
+        return send(400, { error: 'Password must be at least 8 characters' });
+      const codes = getTrialCodes();
+      const tc = codes.find(c => c.code === cleanCode);
+      if (!tc) return send(400, { error: 'That code is not valid' });
+      if (tc.uses >= tc.max_uses) return send(400, { error: 'That code has already been used up' });
+      const members = readJSON(MEMBERS_FILE);
+      if (members.find(m => m.email.toLowerCase() === cleanEmail))
+        return send(409, { error: 'That email is already registered - log in instead' });
+      const expiresAt = endOfMonthPT();
+      const member = {
+        id: crypto.randomUUID(),
+        display_name: String(display_name).trim(),
+        email: cleanEmail,
+        profile_type: String(profile_type),
+        password_hash: hashPassword(String(password)),
+        setup_token: null,
+        status: 'approved',
+        is_admin: false, is_club_owner: false, club_name: '',
+        notes: 'Free trial via code ' + cleanCode,
+        subscription_status: 'trial',
+        trial_code: cleanCode,
+        trial_started_at: new Date().toISOString(),
+        trial_expires_at: expiresAt,
+        trial_reminder_sent_at: null,
+        stripe_customer_id: null, stripe_subscription_id: null,
+        created_at: new Date().toISOString()
+      };
+      members.push(member);
+      tc.uses += 1;
+      saveTrialCodes(codes);
+      writeJSON(MEMBERS_FILE, members);
+      const { password_hash, setup_token, ...safe } = member;
+      return send(200, { ok: true, token: createSession(member.id), member: safe, trial_expires_at: expiresAt });
+    }
     // ── Public club listings ──────────────────────────────────────────────────
 
     if (req.method === 'GET' && req.url === '/clubs') {
