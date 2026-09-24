@@ -36,6 +36,14 @@
     .cancel-btn:hover{background:rgba(248,113,113,0.22);transform:translateY(-1px);}
     .cancel-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
     .cancel-note{margin-top:14px;font-size:0.78rem;color:rgba(200,184,150,0.45);}
+    .grandfather-warning{background:rgba(243,198,117,0.06);border:1px solid rgba(243,198,117,0.4);border-radius:14px;padding:22px 24px;margin-top:20px;text-align:left;}
+    .grandfather-warning strong{display:block;font-size:0.92rem;color:#f3c675;margin-bottom:10px;}
+    .grandfather-warning p{font-size:0.86rem;color:#e0d4b8;line-height:1.65;margin-bottom:14px;}
+    .grandfather-warning .ack-row{display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#e0d4b8;line-height:1.5;cursor:pointer;margin-bottom:18px;}
+    .grandfather-warning .ack-row input{margin-top:3px;width:16px;height:16px;accent-color:#f3c675;flex-shrink:0;}
+    .warn-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+    .keep-btn{padding:13px 26px;border-radius:10px;background:linear-gradient(135deg,#f3c675,#ec8b57);border:none;color:#0d1f28;font-family:'Poppins',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;letter-spacing:0.04em;}
+    .reminder-line{margin-top:12px;font-size:0.78rem;color:rgba(243,198,117,0.7);line-height:1.55;}
 
     /* FAQ section */
     .section-label{width:100%;max-width:600px;font-size:0.7rem;letter-spacing:0.35em;text-transform:uppercase;color:rgba(243,198,117,0.5);margin-bottom:16px;font-weight:600;}
@@ -110,6 +118,16 @@
     <div class="alert" id="cancel-alert"></div>
     <button class="cancel-btn" id="cancel-btn">Cancel My Membership →</button>
     <div class="cancel-note">You'll be redirected to Stripe's secure portal — we never store your card details.</div>
+    <div class="reminder-line">Reminder: cancelling ends your grandfathered $9.99/month rate. If you rejoin later, you pay the current standard rate.</div>
+    <div class="grandfather-warning" id="grandfather-warning" style="display:none;">
+      <strong>Wait — your rate is locked in at $9.99 a month.</strong>
+      <p>If you cancel now, you permanently lose your grandfathered $9.99/month rate. If you rejoin later, you will pay the current standard rate. Your rate only stays locked while your membership stays continuous.</p>
+      <label class="ack-row"><input type="checkbox" id="help-grandfather-ack"> <span>I understand — cancelling ends my $9.99/month rate.</span></label>
+      <div class="warn-actions">
+        <button class="keep-btn" id="warn-keep-btn">Keep My Membership</button>
+        <button class="cancel-btn" id="warn-confirm-btn" disabled>Yes, Cancel →</button>
+      </div>
+    </div>
   </div>
 
   <!-- FAQ -->
@@ -219,13 +237,37 @@
     cancelAlert.style.display  = 'block';
   }
 
-  cancelBtn.addEventListener('click', async () => {
+  const warnBox     = document.getElementById('grandfather-warning');
+  const warnAck     = document.getElementById('help-grandfather-ack');
+  const warnConfirm = document.getElementById('warn-confirm-btn');
+  const warnKeep    = document.getElementById('warn-keep-btn');
+
+  cancelBtn.addEventListener('click', () => {
     if (!token) {
       showAlert('Please log in first — click "My Dashboard" above, sign in, then come back here.', 'info');
       return;
     }
-    cancelBtn.disabled     = true;
-    cancelBtn.textContent  = 'Opening portal…';
+    warnAck.checked = false;
+    warnConfirm.disabled = true;
+    warnConfirm.textContent = 'Yes, Cancel →';
+    cancelBtn.style.display = 'none';
+    warnBox.style.display = 'block';
+    warnBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  warnAck.addEventListener('change', () => {
+    warnConfirm.disabled = !warnAck.checked;
+  });
+
+  warnKeep.addEventListener('click', () => {
+    warnBox.style.display = 'none';
+    cancelBtn.style.display = 'inline-block';
+  });
+
+  warnConfirm.addEventListener('click', async () => {
+    if (warnConfirm.disabled) return;
+    warnConfirm.disabled     = true;
+    warnConfirm.textContent  = 'Opening portal…';
     try {
       const res  = await fetch(`${API}/subscribe/portal`, {
         method: 'POST',
@@ -236,13 +278,13 @@
         window.location.href = data.url;
       } else {
         showAlert(data.error || 'Could not open the billing portal. Try from your Dashboard instead.');
-        cancelBtn.disabled    = false;
-        cancelBtn.textContent = 'Cancel My Membership →';
+        warnConfirm.disabled    = false;
+        warnConfirm.textContent = 'Yes, Cancel →';
       }
     } catch (e) {
       showAlert('Network error — please try again or visit your Dashboard.');
-      cancelBtn.disabled    = false;
-      cancelBtn.textContent = 'Cancel My Membership →';
+      warnConfirm.disabled    = false;
+      warnConfirm.textContent = 'Yes, Cancel →';
     }
   });
 </script>
