@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -85,167 +86,42 @@
 
   <div class="topbar">
     <a href="index.html" class="back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Back to Site</a>
-    <a href="dashboard.html" class="back">My Dashboard →</a>
+    <a href="dashboard.html" class="back">My Dashboard &rarr;</a>
   </div>
 
   <div class="header">
-    <div class="eyebrow">One Leg Up Help Center</div>
-    <h1 class="gold-shimmer">Help & FAQ</h1>
-    <p>Everything you need to manage your membership, cancel anytime, or get in touch with us.</p>
+    <div class="eyebrow">One Leg Up Legal</div>
+    <h1 class="gold-shimmer">Privacy Policy</h1>
+    <p>How we handle your personal information at One Leg Up.</p>
+    <p class="policy-updated">Last updated September 24, 2026.</p>
   </div>
 
-  <!-- Cancel hero -->
-  <div class="cancel-hero">
-    <div class="icon">🚫</div>
-    <h2>Cancel Your Membership</h2>
-    <p>You can cancel anytime — no calls, no hoops. Your access stays active through the end of your current billing period.</p>
-
-    <ul class="cancel-steps">
-      <li><div class="step-num">1</div><span><strong>Log in</strong> to your account. If you're not logged in, click "My Dashboard" above and sign in first.</span></li>
-      <li><div class="step-num">2</div><span>Click the <strong>"Cancel Membership"</strong> button below (or find it on your <a href="dashboard.html">Dashboard</a>).</span></li>
-      <li><div class="step-num">3</div><span>You'll be taken to the <strong>secure Stripe billing portal</strong> where you can cancel in one click. No forms, no waiting.</span></li>
-      <li><div class="step-num">4</div><span>After canceling, your membership stays active until the end of the billing cycle you already paid for.</span></li>
-    </ul>
-
-    <div class="alert" id="cancel-alert"></div>
-    <button class="cancel-btn" id="cancel-btn">Cancel My Membership →</button>
-    <div class="cancel-note">You'll be redirected to Stripe's secure portal — we never store your card details.</div>
-  </div>
-
-  <!-- FAQ -->
-  <div class="section-label">Frequently Asked Questions</div>
-  <div class="faq-card">
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Where do I go to cancel my membership?
-        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="faq-a">
-        <div class="faq-a-inner">Log into your account, then go to your <a href="dashboard.html">Dashboard</a>. You'll see a <strong>Cancel Membership</strong> section. Click the button and you'll be taken to Stripe's billing portal to cancel in one click. You can also use the Cancel button at the top of this page.</div>
-      </div>
+  <div class="policy-card">
+    <div class="policy-section">
+      <h2>What we collect</h2>
+      <p>When you create an account, RSVP to an event, or send us a message, we collect the information you give us: your name, email address, phone number, and username. We also keep a record of your event RSVPs and your membership status.</p>
     </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Will I lose access immediately after canceling?
-        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="faq-a">
-        <div class="faq-a-inner">No. When you cancel, your membership stays active until the end of the billing period you already paid for. After that, your subscription won't renew and access will end.</div>
-      </div>
+    <div class="policy-section">
+      <h2>Payments</h2>
+      <p>Membership payments are processed by our payment processor. Your card details go directly to them and never touch our servers. We do not see or store your full card number.</p>
     </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Can I get a refund?
-        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="faq-a">
-        <div class="faq-a-inner">Refunds are handled case by case. If you believe you were charged in error or have a special circumstance, <a href="contact.html">contact us</a> and we'll work it out.</div>
-      </div>
+    <div class="policy-section">
+      <h2>How we use it</h2>
+      <p>We use your information to run your membership, manage event RSVPs, and contact you about events and your account. That is all we use it for.</p>
     </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        How do I update my payment method?
-        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="faq-a">
-        <div class="faq-a-inner">Go to your <a href="dashboard.html">Dashboard</a> and click <strong>Manage Subscription</strong>. The Stripe portal lets you update your card, view payment history, and download invoices.</div>
-      </div>
+    <div class="policy-section">
+      <h2>What we do not do</h2>
+      <p>We do not sell your personal information to anyone. We do not share it with third parties except where needed to run the service, such as processing your payment.</p>
     </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        I forgot my password. How do I get back in?
-        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="faq-a">
-        <div class="faq-a-inner">Go to the <a href="login.html">Login page</a> and click <strong>Forgot password?</strong> — we'll email you a reset link within a few minutes.</div>
-      </div>
+    <div class="policy-section">
+      <h2>Questions about your data</h2>
+      <p>If you have questions about your personal information, reach out through our <a href="contact.html">contact page</a> and we will answer you.</p>
     </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        What does the $9.99/month membership include?
-        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="faq-a">
-        <div class="faq-a-inner">The membership lets you attend any One Leg Up event without needing a SwingLifeStyle or Kasidie profile. You also get members-only event info and early access. Donations still apply at the door — the membership is your <em>access pass</em>, not your event ticket.</div>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Can I re-subscribe after canceling?
-        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="faq-a">
-        <div class="faq-a-inner">Yes! Just visit the <a href="subscribe.html">Membership page</a> and subscribe again anytime. Your existing account will be reactivated.</div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Contact -->
-  <div class="contact-card">
-    <h3>Still need help?</h3>
-    <p>If your question isn't answered above, reach out and we'll get back to you as soon as possible.</p>
-    <a href="contact.html" class="contact-link">Contact Us →</a>
   </div>
 
   <div class="legal-links"><a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a> &middot; <a href="refunds.html">Refunds</a></div>
 
 </div>
-
-<script>
-  const API   = 'https://api.onelegup.club';
-  const token = localStorage.getItem('olu_token');
-
-  function toggleFaq(btn) {
-    const answer = btn.nextElementSibling;
-    const isOpen = answer.classList.contains('open');
-    document.querySelectorAll('.faq-a.open').forEach(el => { el.classList.remove('open'); el.previousElementSibling.classList.remove('open'); });
-    if (!isOpen) { answer.classList.add('open'); btn.classList.add('open'); }
-  }
-
-  const cancelBtn   = document.getElementById('cancel-btn');
-  const cancelAlert = document.getElementById('cancel-alert');
-
-  function showAlert(msg, type = 'err') {
-    cancelAlert.textContent    = msg;
-    cancelAlert.className      = 'alert alert-' + type;
-    cancelAlert.style.display  = 'block';
-  }
-
-  cancelBtn.addEventListener('click', async () => {
-    if (!token) {
-      showAlert('Please log in first — click "My Dashboard" above, sign in, then come back here.', 'info');
-      return;
-    }
-    cancelBtn.disabled     = true;
-    cancelBtn.textContent  = 'Opening portal…';
-    try {
-      const res  = await fetch(`${API}/subscribe/portal`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (res.ok) {
-        window.location.href = data.url;
-      } else {
-        showAlert(data.error || 'Could not open the billing portal. Try from your Dashboard instead.');
-        cancelBtn.disabled    = false;
-        cancelBtn.textContent = 'Cancel My Membership →';
-      }
-    } catch (e) {
-      showAlert('Network error — please try again or visit your Dashboard.');
-      cancelBtn.disabled    = false;
-      cancelBtn.textContent = 'Cancel My Membership →';
-    }
-  });
-</script>
 <script src="music.js"></script>
 </body>
 </html>
