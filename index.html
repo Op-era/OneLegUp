@@ -365,7 +365,13 @@
       .countdown{font-size:1.05rem;max-width:none;margin-top:0;text-align:left;}
       .flyer{width:min(100%,460px);margin:0 auto 8px;}
     }
-  </style>
+      /* Poster lightbox: tap a poster to see it big */
+    #poster-lightbox{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.93);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s ease;}
+    #poster-lightbox.open{opacity:1;pointer-events:auto;}
+    #poster-lightbox img{max-width:94vw;max-height:92vh;border-radius:10px;box-shadow:0 30px 80px rgba(0,0,0,0.65);}
+    #plb-close{position:absolute;top:14px;right:22px;color:#f3c675;font-size:2.4rem;line-height:1;cursor:pointer;font-family:'Poppins',sans-serif;}
+    img.flyer{cursor:zoom-in;}
+</style>
 </head>
 <body>
 
@@ -573,7 +579,7 @@
         const displayDate = eventDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
         const rsvpOpen = isUpcoming && now < doorsCloseAt(party.date) && !party.cancelled;
         const signupUrl = rsvpOpen ? `signup.html?event=${encodeURIComponent(party.title)}&date=${encodeURIComponent(party.date)}` : null;
-        const posterImg = party.poster ? `<img src="${party.poster}" alt="${party.title}" style="width:100%;border-radius:8px;margin-bottom:10px;display:block;">` : '';
+        const posterImg = party.poster ? `<img src="${party.poster}" alt="${party.title}" class="poster-img" title="Tap to enlarge" style="width:100%;border-radius:8px;margin-bottom:10px;display:block;cursor:zoom-in;">` : '';
         const cancelledBanner = party.cancelled ? `
             <div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);border-radius:8px;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none;">
               <span style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:#ff4d4d;letter-spacing:0.08em;text-transform:uppercase;transform:rotate(-8deg);text-shadow:0 4px 18px rgba(0,0,0,0.8);border:4px solid #ff4d4d;padding:6px 22px;background:rgba(0,0,0,0.4);">Cancelled</span>
@@ -607,7 +613,7 @@
       upcoming.forEach(renderCard);
       past.forEach(renderCard);
       tbdParties.forEach(party => {
-        const posterImg = party.poster ? `<img src="${party.poster}" alt="${party.title}" style="width:100%;border-radius:8px;margin-bottom:10px;display:block;">` : '';
+        const posterImg = party.poster ? `<img src="${party.poster}" alt="${party.title}" class="poster-img" title="Tap to enlarge" style="width:100%;border-radius:8px;margin-bottom:10px;display:block;cursor:zoom-in;">` : '';
         upcomingContainer.insertAdjacentHTML('beforeend', `
           <div class="event" style="position:relative;overflow:hidden;" data-date="${party.date}">
             ${posterImg}
@@ -638,6 +644,27 @@
       .then(r => r.json())
       .then(renderParties)
       .catch(() => { upcomingContainer.innerHTML = '<p style="color:rgba(255,220,150,0.4);font-size:0.85rem;">Could not load events.</p>'; });
+  </script>
+  <script>
+    // Poster lightbox: tap any event poster to view it full screen
+    (function(){
+      var ov = document.createElement('div');
+      ov.id = 'poster-lightbox';
+      ov.innerHTML = '<span id="plb-close" aria-label="Close">&times;</span><img alt="Event poster enlarged">';
+      document.body.appendChild(ov);
+      var big = ov.querySelector('img');
+      function close(){ ov.classList.remove('open'); big.removeAttribute('src'); document.body.style.overflow = ''; }
+      ov.addEventListener('click', close);
+      document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+      document.addEventListener('click', function(e){
+        var t = e.target;
+        if (t && t.tagName === 'IMG' && (t.classList.contains('flyer') || t.classList.contains('poster-img')) && t.src) {
+          big.src = t.src;
+          ov.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    })();
   </script>
 </body>
 </html>
