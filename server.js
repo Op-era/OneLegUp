@@ -545,6 +545,10 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'POST' && req.url === '/rsvp') {
       const body  = await parseBody(req);
+      // Every RSVP must carry a username - Shane 2026-10-30: the list shows names, not bare phone numbers.
+      if (!(body.username || '').toString().trim()) {
+        return send(400, { error: 'A username is required to RSVP.' });
+      }
       const rsvps = readJSON(RSVPS_FILE);
       const isDupe = !body.test && rsvps.some(r =>
         !r.test &&
